@@ -128,108 +128,51 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
 
                   <div className="s__llii0099 ms-auto">
                     <div className="nav-flex">
-                      <div className="wallet__cash s__0144114414 full__trockk" role="button" tabIndex={0}>
+                      <div className="wallet__cash s__0144114414 full__trockk">
                         <h3>
-                          <span className="s__114414">
-                            <FiTruck size={22} />
-                          </span>
-                          <span>Full Truck Load</span>
+                          <FiTruck size={22} /> Full Truck Load
                         </h3>
                       </div>
-                      <div
-                        className="wallet__cash s__0144114414 loa__dedd"
-                        onClick={() => navigate('/support/tickets')}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <h3>
-                          <span className="s__114414">
-                            <TbTicket size={18} />
-                          </span>
-                          <span>Tickets</span>
-                        </h3>
-                      </div>
-                      <div className="wallet__cash therechareapps" onClick={() => setWalletDialogOpen(true)}>
-                        <h3>
-                          ShipOrbit <span className="d-responsive ms-1">Wallet</span> :{' '}
-                          <span className="s__4774747">₹ {liveBalance.toFixed(2)}</span>
-                        </h3>
-                        <span className="s__114414">
-                          <Link to="/wallet/addmoney" onClick={(event) => event.preventDefault()}>
-                            Recharge <span className="d-responsive ms-1">Wallet</span>
-                          </Link>
-                        </span>
+
+                      <div onClick={() => navigate('/support/tickets')}>
+                        <TbTicket size={18} /> Tickets
                       </div>
                     </div>
 
-                    <div className="side__menuusd notification-card">
-                      <ul className="nav">
-                        <li className="s11777 nav-s11777">
-                          <button type="button" aria-label="Notifications">
-                            <span className="iocns__00 c__114411 notification-wrapper">
-                              <FiBell />
-                            </span>
-                          </button>
-                        </li>
-                        <li className="s11777">
-                          <button type="button" aria-label="Downloads">
-                            <span className="iocns__00 c__114411">
-                              <FiDownload />
-                            </span>
-                          </button>
-                        </li>
-                        <li className="s11777">
-                          <button type="button" aria-label="Support" onClick={() => navigate('/support')}>
-                            <span className="iocns__00 c__114411">
-                              <FiHeadphones />
-                            </span>
-                          </button>
-                        </li>
-                        <li className="s_user_09 position-relative" ref={profileMenuRef}>
-                          <button
-                            type="button"
-                            className="profile__0244"
-                            aria-expanded={profileOpen}
-                            aria-haspopup="menu"
-                            onClick={(event) => {
-                              event.stopPropagation()
-                              setProfileOpen((value) => !value)
-                            }}
-                          >
-                            <span className="profiledropdown">
-                              <span className="userprofile_0">{initials}</span>
-                              <span>
-                                <HiChevronDown className="drop012" />
-                              </span>
-                            </span>
-                          </button>
-                          {profileOpen ? (
-                            <div className="chakra-menu__menu-list profile-menu" onClick={(event) => event.stopPropagation()}>
-                              <div className="profile-menu-header">
-                                <strong>{resolvedFullName || 'ShipOrbit User'}</strong>
-                                <p>{email}</p>
-                              </div>
-                              {profileActions.map((item) => (
-                                <button
-                                  key={item.label}
-                                  type="button"
-                                  className={`chakra-menu__menuitem profile-settings${item.danger ? ' logout-button' : ''}`}
-                                  onClick={() => {
-                                    setProfileOpen(false)
-                                    item.onClick()
-                                  }}
-                                >
-                                  <p className="chakra-text css-197xc22">
-                                    <span style={{ marginLeft: 8 }}>{item.label}</span>
-                                    <span aria-hidden="true">{item.icon}</span>
-                                  </p>
-                                </button>
-                              ))}
-                            </div>
-                          ) : null}
-                        </li>
-                      </ul>
-                    </div>
+                    <ul>
+                      <li ref={profileMenuRef}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setProfileOpen((v) => !v)
+                          }}
+                        >
+                          {initials} <HiChevronDown />
+                        </button>
+
+                        {profileOpen && (
+                          <div>
+                            <strong>{resolvedFullName || 'User'}</strong>
+                            <p>{email}</p>
+
+                            {profileActions.map((item: any) => (
+                              <button
+                                key={item.label}
+                                className={item.danger ? 'logout-button' : ''}
+                                onClick={() => {
+                                  setProfileOpen(false)
+                                  item.onClick()
+                                }}
+                              >
+                                {item.label} {item.icon}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </li>
+                    </ul>
                   </div>
+
                 </div>
               </nav>
             </div>
@@ -237,7 +180,11 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
         </div>
       </div>
 
-      <AddMoneyDialog currentBalance={liveBalance} open={walletDialogOpen} setOpen={setWalletDialogOpen} />
+      <AddMoneyDialog
+        currentBalance={liveBalance}
+        open={walletDialogOpen}
+        setOpen={setWalletDialogOpen}
+      />
     </>
   )
-}  
+}
