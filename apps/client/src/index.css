@@ -601,6 +601,13 @@ span.no__987 {
   overflow: hidden;
 }
 
+.dividerline {
+  color: #00000052;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .sidebar-responsive {
   display: none;
   background: transparent;
@@ -690,6 +697,14 @@ span.no__987 {
   background: #fff;
   border: 1px solid rgba(17, 24, 39, 0.08);
   padding: 0 12px;
+}
+
+.wallet__cash.s__0144114414.loa__dedd {
+  cursor: pointer;
+}
+
+.wallet__cash.s__0144114414.loa__dedd:hover {
+  border-color: rgba(255, 102, 0, 0.36);
 }
 
 .wallet__cash.s__0144114414 h3,
@@ -797,6 +812,17 @@ span.s__114414 a {
 .side__menuusd span.iocns__00.c__114411 svg {
   color: #222;
   font-size: 18px !important;
+}
+
+.notification-wrapper {
+  position: relative;
+}
+
+.notification-popover {
+  right: 0;
+  width: 280px;
+  min-width: 280px;
+  z-index: 12000;
 }
 
 .profile__0244 {
