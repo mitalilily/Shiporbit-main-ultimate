@@ -15,7 +15,6 @@ import {
   FiUser,
 } from 'react-icons/fi'
 import { HiChevronDown, HiOutlineMenuAlt3 } from 'react-icons/hi'
-import { TbTicket } from 'react-icons/tb'
 import { useAuth } from '../../context/auth/AuthContext'
 import { useWalletBalance } from '../../hooks/useWalletBalance'
 
@@ -30,6 +29,9 @@ interface ProfileAction {
   onClick: () => void
   danger?: boolean
 }
+
+const ticketGlyph =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAYAAAAe2bNZAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAFUSURBVHgB7ZbhbcIwEIVfKwbIBrkNygZ1N+gGZIO2E5ANygYdId2AblB1gqQTABOArdiKA+cEOcaA5E96Mj8u3Mv5zg6QSCQScSGptdQ+kmqpV5eZr4hGjDYm+QynlVF8SH2DR2jTjdQL/CG0u5BJ5VL/M0fgVifjaBy/J/OIG8Jl5hndll0CtTXFWFCFfnMtmRiBbhJ8WKBtWjtPxgWSVIn+eC8DmhHoT9EKZ1QI2hTnXEwwU+tnKziqMYSp0HsAM3N0L0dcwNg0/en1CdMhvf7AcSSMmcn1ukM45vCA0JXVvj8E/LZJ9YiZosW5D5FOXjuSCvg3cIn+lA5W6ROntyoFNKOomBwsZnpUOUvw4ycwzYyikPq1DOUYMFMM/JEIYEZBx2bu4qK8CsffM1u9vsE9fpm1ruGP3Y/sOaaO/X1krUzyB8YQoW3SGDRor4dE4v45ACc5teRehvq0AAAAAElFTkSuQmCC'
 
 const getInitials = (value?: string | null) => {
   const safe = (value || '').trim()
@@ -122,8 +124,10 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
                       <ul className="dropdown-menu customer-dropdown">
                         <li>
                           <div className="helpline-box">
-                            <FiPhoneCall size={32} className="mb-2" />
-                            <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>Customer Support</h2>
+                            <img src="/logo/shiporbit-mark.svg" height={32} className="mb-2" alt="fav" />
+                            <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>
+                              Customer Support
+                            </h2>
                             <p style={{ fontSize: '14px', fontWeight: 400, marginBottom: '14px' }}>
                               For urgent shipment issues or operational support, contact the ParcelX Helpline.
                               Timings: Mon-Sat | 10:30 AM - 6:30 PM
@@ -165,7 +169,7 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
                     >
                       <h3>
                         <span className="s__114414">
-                          <TbTicket size={18} />
+                          <img src={ticketGlyph} className="Apparrow" alt="logo" width={18} />
                         </span>
                         <span>Tickets</span>
                       </h3>
@@ -174,7 +178,7 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
                     <div className="wallet__cash therechareapps">
                       <h3>
                         PX <span className="d-responsive ms-1">Wallet</span> :
-                        <span className="s__4774747 ms-1">₹ {formattedBalance}</span>
+                        <span className="s__4774747 ms-1">{'\u20B9'} {formattedBalance}</span>
                       </h3>
                       <span className="s__114414">
                         <Link to="/wallet/addmoney">
