@@ -64,7 +64,7 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
     },
     { label: 'Support', icon: <FiLifeBuoy size={18} />, onClick: () => navigate('/support/tickets') },
     { label: 'Log out', icon: <FiLogOut size={18} />, onClick: () => void logout(), danger: true },
-  ] as const
+  ] as any
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
