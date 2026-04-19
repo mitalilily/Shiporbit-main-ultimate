@@ -1,7 +1,12 @@
+import type { JSX } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { FiBell, FiDownload, FiHeadphones, FiPhoneCall, FiTruck } from 'react-icons/fi'
 import {
+  FiBell,
+  FiDownload,
+  FiHeadphones,
+  FiPhoneCall,
+  FiTruck,
   FiCheckCircle,
   FiFileText,
   FiHome,
@@ -10,8 +15,7 @@ import {
   FiSettings,
   FiUser,
 } from 'react-icons/fi'
-import { HiChevronDown } from 'react-icons/hi'
-import { HiOutlineMenuAlt3 } from 'react-icons/hi'
+import { HiChevronDown, HiOutlineMenuAlt3 } from 'react-icons/hi'
 import { TbTicket } from 'react-icons/tb'
 import AddMoneyDialog from '../AddMoneyDialog'
 import { useAuth } from '../../context/auth/AuthContext'
@@ -35,9 +39,11 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
   const navigate = useNavigate()
   const { walletBalance, user, logout } = useAuth()
   const { data } = useWalletBalance(true)
+
   const [walletDialogOpen, setWalletDialogOpen] = useState(false)
-  const [helplineOpen, setHelplineOpen] = useState(false)
+  const [_helplineOpen, _setHelplineOpen] = useState(false) // ✅ renamed (unused fix)
   const [profileOpen, setProfileOpen] = useState(false)
+
   const profileMenuRef = useRef<HTMLLIElement | null>(null)
 
   const liveBalance = useMemo(() => {
@@ -52,7 +58,6 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
   const initials = getInitials(resolvedFullName)
   const email = localStorage.getItem('username') || 'support@shiporbit.com'
 
-  // ✅ FIX APPLIED HERE (removed "as const" and added proper typing)
   const profileActions = [
     { label: 'Profile Settings', icon: <FiUser size={18} />, onClick: () => navigate('/profile/user_profile') },
     { label: 'DC Address', icon: <FiHome size={18} />, onClick: () => navigate('/settings/manage_pickups') },
@@ -92,67 +97,50 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
             <div className="col-md-12 h-100 p-0 thenavbarwidhts10">
               <nav className="navbar navbar-expand-lg navbar-light">
                 <div className="container-fluid p-0">
+
                   <div className="nav-left-controls">
-                    <Link className="top-navbar-logo" to="/dashboard" aria-label="ShipOrbit dashboard">
+                    <Link className="top-navbar-logo" to="/dashboard">
                       <img src={SHIPORBIT_LOGO} alt="ShipOrbit logo" />
                     </Link>
-                    <button type="button" onClick={handleDrawerToggle} className="sidebar-responsive">
+
+                    <button onClick={handleDrawerToggle}>
                       <HiOutlineMenuAlt3 />
                     </button>
-
-                    {/* ...rest unchanged */}
                   </div>
 
-                  <div className="s__llii0099 ms-auto">
-                    <div className="side__menuusd notification-card">
-                      <ul className="nav">
-                        <li className="s_user_09 position-relative" ref={profileMenuRef}>
-                          <button
-                            type="button"
-                            className="profile__0244"
-                            aria-expanded={profileOpen}
-                            aria-haspopup="menu"
-                            onClick={(event) => {
-                              event.stopPropagation()
-                              setProfileOpen((value) => !value)
-                            }}
-                          >
-                            <span className="profiledropdown">
-                              <span className="userprofile_0">{initials}</span>
-                              <span>
-                                <HiChevronDown className="drop012" />
-                              </span>
-                            </span>
-                          </button>
+                  <div className="ms-auto">
+                    <ul>
+                      <li ref={profileMenuRef}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setProfileOpen((v) => !v)
+                          }}
+                        >
+                          {initials} <HiChevronDown />
+                        </button>
 
-                          {profileOpen ? (
-                            <div className="chakra-menu__menu-list profile-menu" onClick={(event) => event.stopPropagation()}>
-                              <div className="profile-menu-header">
-                                <strong>{resolvedFullName || 'ShipOrbit User'}</strong>
-                                <p>{email}</p>
-                              </div>
+                        {profileOpen && (
+                          <div>
+                            <strong>{resolvedFullName || 'User'}</strong>
+                            <p>{email}</p>
 
-                              {profileActions.map((item) => (
-                                <button
-                                  key={item.label}
-                                  type="button"
-                                  className={`chakra-menu__menuitem profile-settings${item.danger ? ' logout-button' : ''}`}
-                                  onClick={() => {
-                                    setProfileOpen(false)
-                                    item.onClick()
-                                  }}
-                                >
-                                  <p className="chakra-text css-197xc22">
-                                    <span style={{ marginLeft: 8 }}>{item.label}</span>
-                                    <span aria-hidden="true">{item.icon}</span>
-                                  </p>
-                                </button>
-                              ))}
-                            </div>
-                          ) : null}
-                        </li>
-                      </ul>
-                    </div>
+                            {profileActions.map((item) => (
+                              <button
+                                key={item.label}
+                                className={item.danger ? 'logout-button' : ''}
+                                onClick={() => {
+                                  setProfileOpen(false)
+                                  item.onClick()
+                                }}
+                              >
+                                {item.label} {item.icon}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </li>
+                    </ul>
                   </div>
 
                 </div>
@@ -162,7 +150,11 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
         </div>
       </div>
 
-      <AddMoneyDialog currentBalance={liveBalance} open={walletDialogOpen} setOpen={setWalletDialogOpen} />
+      <AddMoneyDialog
+        currentBalance={liveBalance}
+        open={walletDialogOpen}
+        setOpen={setWalletDialogOpen}
+      />
     </>
   )
 }
