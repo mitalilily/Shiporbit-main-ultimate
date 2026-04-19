@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { FiBell, FiDownload, FiHeadphones, FiPhoneCall, FiTruck } from 'react-icons/fi'
+import {  FiHeadphones, FiPhoneCall, FiTruck } from 'react-icons/fi'
 import {
   FiCheckCircle,
   FiFileText,
