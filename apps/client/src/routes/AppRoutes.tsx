@@ -28,6 +28,7 @@ const OrderTracking = lazy(() => import('../pages/orders/OrderTracking'))
 
 // Settings
 const Settings = lazy(() => import('../pages/settings/Settings'))
+const LegacySettingsSections = lazy(() => import('../pages/settings/LegacySettingsSections'))
 const PickupAddresses = lazy(() => import('../pages/pickup-addresses/PickupAddresses'))
 const InvoicePreferences = lazy(() => import('../components/settings/InvoicePreference'))
 const LabelSettingsPage = lazy(() => import('../components/settings/Label/LabelSettings'))
@@ -44,6 +45,8 @@ const BillingPreferences = lazy(() => import('../pages/billings/BillingPreferenc
 // Channels
 const Channels = lazy(() => import('../pages/channels/Channels'))
 const ChannelList = lazy(() => import('../pages/channels/ChannelList'))
+const ChannelOrders = lazy(() => import('../pages/channels/ChannelOrders'))
+const AddChannel = lazy(() => import('../pages/channels/AddChannel'))
 
 // Policies
 const PoliciesLayout = lazy(() => import('../pages/policy/PoliciesLayout'))
@@ -80,7 +83,6 @@ const TicketDetailsPage = lazy(
 )
 
 // Other
-const Home = lazy(() => import('../pages/home/Home'))
 const Couriers = lazy(() => import('../pages/couriers/Couriers'))
 const CodRemittancesList = lazy(() => import('../pages/cod-remittance/CodRemittancesList'))
 const KeyboardShortcutsPage = lazy(() => import('../pages/KeyboardShortcutsPage'))
@@ -136,14 +138,14 @@ export default function AppRoutes() {
             {/* ParcelX-style dashboard + shell */}
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/api-docs" element={<ApiIntegration />} />
-            <Route path="/setting/apidocs" element={<ApiIntegration />} />
+            <Route path="/setting/apidocs" element={<LegacySettingsSections />} />
             <Route path="/apidocs" element={<ApiIntegration />} />
             <Route path="/setting/labelsetting" element={<LabelSettingsPage />} />
-            <Route path="/setting/secureshipment" element={<LabelSettingsPage />} />
-            <Route path="/setting/manageteam" element={<UsersManagement />} />
-            <Route path="/setting/uniqueqr" element={<LabelSettingsPage />} />
+            <Route path="/setting/secureshipment" element={<LegacySettingsSections />} />
+            <Route path="/setting/manageteam" element={<LegacySettingsSections />} />
+            <Route path="/setting/uniqueqr" element={<LegacySettingsSections />} />
             <Route path="/settings/manage_pickups" element={<PickupAddresses />} />
-            <Route path="/setting/invoicepage" element={<Invoices />} />
+            <Route path="/setting/invoicepage" element={<LegacySettingsSections />} />
             <Route path="/billing/wallet_transactions" element={<WalletTransactions />} />
             <Route path="/billingdetail" element={<WalletTransactions />} />
             <Route path="/wallet/wallet_deduction" element={<WalletTransactions />} />
@@ -229,10 +231,10 @@ export default function AppRoutes() {
             <Route path="/channels/connected" element={<Channels />} />
             <Route path="/channels" element={<Channels />} />
             <Route path="/channel/connected" element={<Channels />} />
-            <Route path="/channel/pending" element={<Orders />} />
+            <Route path="/channel/pending" element={<ChannelOrders />} />
             <Route path="/channels/channel_list" element={<ChannelList />} />
             <Route path="/channel/available" element={<ChannelList />} />
-            <Route path="/channel/addchannel" element={<ChannelList />} />
+            <Route path="/channel/addchannel" element={<AddChannel />} />
             <Route path="/policies/*" element={<PoliciesLayout />}>
               <Route path="refund_cancellation" element={<CancellationPolicy />} />
               <Route path="privacy_policy" element={<PrivacyPolicy />} />
@@ -269,7 +271,7 @@ export default function AppRoutes() {
             <Route path="/support/tickets" element={<SupportTicketsPage />} />
             <Route path="/support" element={<CompanyDetails />} />
             <Route path="/support/tickets/:id" element={<TicketDetailsPage />} />
-            <Route path="/home" element={<Home />} />
+            <Route path="/home" element={<Navigate to="/dashboard" replace />} />
             <Route path="/couriers/partners" element={<Couriers />} />
             <Route path="/cod-remittance" element={<CodRemittancesList />} />
             <Route path="/cod" element={<CodRemittancesList />} />
@@ -278,11 +280,11 @@ export default function AppRoutes() {
             <Route path="/report/mis-report" element={<Reports />} />
             <Route path="/communication/credit_recharge" element={<WalletTransactions />} />
             <Route path="/communication/recharge_history" element={<WalletTransactions />} />
-            <Route path="/communication/notificationsetting" element={<BillingPreferences />} />
-            <Route path="/communication/notification-history" element={<BillingPreferences />} />
-            <Route path="/communication/ladger" element={<BillingPreferences />} />
+            <Route path="/communication/notificationsetting" element={<WalletTransactions />} />
+            <Route path="/communication/notification-history" element={<WalletTransactions />} />
+            <Route path="/communication/ladger" element={<WalletTransactions />} />
             <Route path="/communication/ndr" element={<NdrList />} />
-            <Route path="/communication/channelpricing" element={<BillingPreferences />} />
+            <Route path="/communication/channelpricing" element={<WalletTransactions />} />
             <Route path="/reconciliation/weight" element={<WeightReconciliation />} />
             <Route path="/reconciliation/weight/:id" element={<DiscrepancyDetails />} />
             <Route

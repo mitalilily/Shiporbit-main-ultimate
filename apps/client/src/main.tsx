@@ -27,8 +27,14 @@ const tryReloadForChunkError = () => {
   const alreadyAttempted = sessionStorage.getItem(CHUNK_RELOAD_KEY) === "1";
   if (alreadyAttempted) return;
   sessionStorage.setItem(CHUNK_RELOAD_KEY, "1");
-  window.location.reload();
+  const url = new URL(window.location.href);
+  url.searchParams.set("__chunk_retry", String(Date.now()));
+  window.location.replace(url.toString());
 };
+
+window.addEventListener("load", () => {
+  sessionStorage.removeItem(CHUNK_RELOAD_KEY);
+});
 
 window.addEventListener("error", (event) => {
   const message = event?.error?.message || event?.message;

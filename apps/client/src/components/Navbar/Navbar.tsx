@@ -1,273 +1,44 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { FiBell, FiDownload, FiHeadphones, FiPhoneCall, FiTruck } from 'react-icons/fi'
 import {
-  alpha,
-  Box,
-  Button,
-  Link as MuiLink,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material'
-import { useEffect, useMemo, useState } from 'react'
-import { HiMenuAlt2 } from 'react-icons/hi'
-import { NavLink, useLocation } from 'react-router-dom'
+  FiCheckCircle,
+  FiFileText,
+  FiHome,
+  FiLifeBuoy,
+  FiLogOut,
+  FiSettings,
+  FiUser,
+} from 'react-icons/fi'
+import { HiChevronDown } from 'react-icons/hi'
+import { HiOutlineMenuAlt3 } from 'react-icons/hi'
+import { TbTicket } from 'react-icons/tb'
 import AddMoneyDialog from '../AddMoneyDialog'
-import BrandLogo from '../brand/BrandLogo'
-import BrandTopBar from '../brand/BrandTopBar'
-import UserMenu from './UserMenu'
 import { useAuth } from '../../context/auth/AuthContext'
 import { useWalletBalance } from '../../hooks/useWalletBalance'
-import { brand } from '../../theme/brand'
+
+const SHIPORBIT_LOGO = '/logo/shiporbit-logo.jpeg'
 
 interface NavbarProps {
   handleDrawerToggle: () => void
-  pinned: boolean
-  name?: string
+  collapsed: boolean
 }
 
-type RouteLink = {
-  label: string
-  path: string
-  matches: string[]
+const getInitials = (value?: string | null) => {
+  const safe = (value || '').trim()
+  if (!safe) return 'SO'
+  const parts = safe.split(/\s+/).slice(0, 2)
+  return parts.map((part) => part[0]?.toUpperCase() || '').join('') || 'SO'
 }
-
-const navLinkSx = {
-  textDecoration: 'none',
-  color: 'inherit',
-}
-
-const matchesPath = (pathname: string, matches: string[]) =>
-  matches.some((match) => {
-    if (match === '/') return pathname === '/'
-    return pathname === match || pathname.startsWith(`${match}/`)
-  })
-
-const MAIN_NAV: RouteLink[] = [
-  { label: 'Dashboard', path: '/dashboard', matches: ['/dashboard'] },
-  {
-    label: 'Add Orders',
-    path: '/addorders/forward/AddOrder',
-    matches: ['/addorders', '/orders/create'],
-  },
-  {
-    label: 'Shipments',
-    path: '/shipment',
-    matches: ['/shipment', '/orders/list', '/orders/b2c/list', '/orders/b2b/list'],
-  },
-  {
-    label: 'Channel Orders',
-    path: '/channel/pending',
-    matches: ['/channel', '/channels'],
-  },
-  {
-    label: 'Wallet',
-    path: '/wallet/wallet_deduction',
-    matches: ['/wallet', '/billingdetail', '/billing/wallet_transactions'],
-  },
-  { label: 'NDR', path: '/ndr/ndr-shipment', matches: ['/ndr', '/ops/ndr'] },
-  {
-    label: 'Reports',
-    path: '/report/mis-report',
-    matches: ['/report', '/reports'],
-  },
-  {
-    label: 'Billing',
-    path: '/billing/cod',
-    matches: ['/billing', '/invoicepage', '/invoiceprint', '/invoiceprints', '/cod'],
-  },
-  {
-    label: 'Custom Tracking',
-    path: '/custom-tracking',
-    matches: ['/custom-tracking', '/preview'],
-  },
-  {
-    label: 'Communication',
-    path: '/communication/credit_recharge',
-    matches: ['/communication'],
-  },
-  { label: 'Tickets', path: '/tickets', matches: ['/tickets', '/support/tickets'] },
-  {
-    label: 'Utilities',
-    path: '/utility/ratecalculator',
-    matches: ['/utility', '/tools', '/trackingbill'],
-  },
-  {
-    label: 'Help & Support',
-    path: '/support',
-    matches: ['/support', '/support/about_us'],
-  },
-  { label: 'Settings', path: '/setting/labelsetting', matches: ['/setting', '/settings'] },
-]
-
-const SUB_NAV: Record<string, RouteLink[]> = {
-  Dashboard: [
-    { label: 'Overview', path: '/dashboard', matches: ['/dashboard'] },
-    {
-      label: 'Date Wise Shipment',
-      path: '/dashboard/date-wise-shipments',
-      matches: ['/dashboard/date-wise-shipments'],
-    },
-    {
-      label: 'Product Wise Shipment',
-      path: '/dashboard/product-wise-shipments',
-      matches: ['/dashboard/product-wise-shipments'],
-    },
-  ],
-  'Add Orders': [
-    {
-      label: 'Forward Single',
-      path: '/addorders/forward/AddOrder',
-      matches: ['/addorders/forward/AddOrder', '/orders/create'],
-    },
-    {
-      label: 'Forward Bulk',
-      path: '/addorders/forward/BulkOrder',
-      matches: ['/addorders/forward/BulkOrder'],
-    },
-    {
-      label: 'Reverse Single',
-      path: '/addorders/reverse/SinglePickup',
-      matches: ['/addorders/reverse/SinglePickup'],
-    },
-    {
-      label: 'Reverse Quick',
-      path: '/addorders/reverse/QuickPickup',
-      matches: ['/addorders/reverse/QuickPickup'],
-    },
-  ],
-  Shipments: [
-    {
-      label: 'Processed Orders',
-      path: '/shipment',
-      matches: ['/shipment', '/orders/list', '/orders/b2c/list', '/orders/b2b/list'],
-    },
-    { label: 'Failed Orders', path: '/shipment/failed', matches: ['/shipment/failed'] },
-  ],
-  'Channel Orders': [
-    { label: 'Channel Order', path: '/channel/pending', matches: ['/channel/pending'] },
-    { label: 'Channel', path: '/channels', matches: ['/channels', '/channel/available'] },
-    { label: 'Add Channel', path: '/channel/addchannel', matches: ['/channel/addchannel'] },
-  ],
-  Wallet: [
-    {
-      label: 'Wallet Deduction',
-      path: '/wallet/wallet_deduction',
-      matches: ['/wallet/wallet_deduction', '/billingdetail', '/billing/wallet_transactions'],
-    },
-    {
-      label: 'Recharge History',
-      path: '/wallet/rechargehistory',
-      matches: ['/wallet/rechargehistory', '/wallet/recharge-history'],
-    },
-    {
-      label: 'Add Money',
-      path: '/wallet/addmoney',
-      matches: ['/wallet/addmoney', '/wallet/add-money'],
-    },
-  ],
-  Billing: [
-    { label: 'COD', path: '/billing/cod', matches: ['/billing/cod', '/cod', '/cod-remittance'] },
-    {
-      label: 'Order Invoice',
-      path: '/billing/orderinvoice',
-      matches: ['/billing/orderinvoice', '/billing/order-invoice'],
-    },
-    {
-      label: 'Communication Invoice',
-      path: '/billing/communicationinvoice',
-      matches: ['/billing/communicationinvoice', '/billing/communication-invoice'],
-    },
-  ],
-  Communication: [
-    {
-      label: 'Credit Recharge',
-      path: '/communication/credit_recharge',
-      matches: ['/communication/credit_recharge'],
-    },
-    {
-      label: 'Recharge History',
-      path: '/communication/recharge_history',
-      matches: ['/communication/recharge_history'],
-    },
-    {
-      label: 'Notification Setting',
-      path: '/communication/notificationsetting',
-      matches: ['/communication/notificationsetting'],
-    },
-    {
-      label: 'Notification History',
-      path: '/communication/notification-history',
-      matches: ['/communication/notification-history'],
-    },
-    { label: 'Ledger', path: '/communication/ladger', matches: ['/communication/ladger'] },
-    { label: 'NDR', path: '/communication/ndr', matches: ['/communication/ndr'] },
-    {
-      label: 'Channels and Price',
-      path: '/communication/channelpricing',
-      matches: ['/communication/channelpricing'],
-    },
-  ],
-  Utilities: [
-    {
-      label: 'Rate Calculator',
-      path: '/utility/ratecalculator',
-      matches: ['/utility/ratecalculator', '/tools/rate_calculator'],
-    },
-    { label: 'Pincode Servicability', path: '/utility/pincode', matches: ['/utility/pincode'] },
-    {
-      label: 'Rate Card',
-      path: '/utility/ratecard',
-      matches: ['/utility/ratecard', '/tools/rate_card'],
-    },
-  ],
-  Settings: [
-    {
-      label: 'Label Setting',
-      path: '/setting/labelsetting',
-      matches: ['/setting/labelsetting', '/settings/label_config'],
-    },
-    {
-      label: 'Secure Your Shipment',
-      path: '/setting/secureshipment',
-      matches: ['/setting/secureshipment'],
-    },
-    {
-      label: 'Manage Team',
-      path: '/setting/manageteam',
-      matches: ['/setting/manageteam', '/settings/users_management'],
-    },
-    {
-      label: 'Invoice Settings',
-      path: '/setting/invoicepage',
-      matches: ['/setting/invoicepage', '/settings/invoice_preferences'],
-    },
-    {
-      label: 'API Docs',
-      path: '/setting/apidocs',
-      matches: ['/setting/apidocs', '/settings/api-docs'],
-    },
-    {
-      label: 'Unique QR Code',
-      path: '/setting/uniqueqr',
-      matches: ['/setting/uniqueqr'],
-    },
-  ],
-}
-
-const topMeta = (pathname: string) =>
-  MAIN_NAV.find((item) => matchesPath(pathname, item.matches)) ?? MAIN_NAV[0]
 
 export default function Navbar({ handleDrawerToggle }: NavbarProps) {
-  const theme = useTheme()
-  const location = useLocation()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const isCompact = useMediaQuery(theme.breakpoints.down('lg'))
-  const { walletBalance, setWalletBalance } = useAuth()
+  const navigate = useNavigate()
+  const { walletBalance, user, logout } = useAuth()
   const { data } = useWalletBalance(true)
   const [walletDialogOpen, setWalletDialogOpen] = useState(false)
-
-  const activeMain = useMemo(() => topMeta(location.pathname), [location.pathname])
-  const activeTabs = SUB_NAV[activeMain.label] ?? []
+  const [helplineOpen, setHelplineOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
+  const profileMenuRef = useRef<HTMLLIElement | null>(null)
 
   const liveBalance = useMemo(() => {
     const value =
@@ -277,223 +48,194 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
     return Number.isFinite(value) ? value : walletBalance ?? 0
   }, [data, walletBalance])
 
+  const resolvedFullName = user.name || localStorage.getItem('fullname') || ''
+  const initials = getInitials(resolvedFullName)
+  const email = localStorage.getItem('username') || 'support@shiporbit.com'
+
+  const profileActions = [
+    { label: 'Profile Settings', icon: <FiUser size={18} />, onClick: () => navigate('/profile/user_profile') },
+    { label: 'DC Address', icon: <FiHome size={18} />, onClick: () => navigate('/settings/manage_pickups') },
+    { label: 'KYC', icon: <FiCheckCircle size={18} />, onClick: () => navigate('/profile/kyc_details') },
+    { label: 'Change Password', icon: <FiSettings size={18} />, onClick: () => navigate('/profile/password') },
+    {
+      label: 'Term & Conditions',
+      icon: <FiFileText size={18} />,
+      onClick: () => navigate('/policies/terms_of_service'),
+    },
+    { label: 'Support', icon: <FiLifeBuoy size={18} />, onClick: () => navigate('/support/tickets') },
+    { label: 'Log out', icon: <FiLogOut size={18} />, onClick: () => void logout(), danger: true },
+  ] as const
+
   useEffect(() => {
-    if (liveBalance !== walletBalance && Number.isFinite(liveBalance)) {
-      setWalletBalance(liveBalance)
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as Node | null
+      if (profileMenuRef.current && target && !profileMenuRef.current.contains(target)) {
+        setProfileOpen(false)
+      }
     }
-  }, [liveBalance, setWalletBalance, walletBalance])
+
+    document.addEventListener('click', handleOutsideClick)
+    return () => document.removeEventListener('click', handleOutsideClick)
+  }, [])
 
   return (
     <>
-      <BrandTopBar
-        sx={{
-          px: 0,
-          backgroundColor: '#FFFFFF',
-          borderBottom: `1px solid ${alpha('#dfe3ea', 0.9)}`,
-        }}
-        innerSx={{
-          px: { xs: 1.2, md: 2.2 },
-          py: 0,
-          background: '#FFFFFF',
-        }}
-      >
-        <Stack spacing={0}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{
-              minHeight: 42,
-              borderBottom: `1px solid ${alpha(brand.line, 0.85)}`,
-              color: alpha(brand.ink, 0.74),
-              fontSize: '0.76rem',
-            }}
-          >
-            <Stack direction="row" alignItems="center" spacing={1.2} sx={{ minWidth: 0 }}>
-              {isMobile ? (
-                <Button
-                  onClick={handleDrawerToggle}
-                  startIcon={<HiMenuAlt2 size={16} />}
-                  sx={{
-                    color: brand.ink,
-                    textTransform: 'none',
-                    fontSize: '0.76rem',
-                    fontWeight: 700,
-                    minWidth: 'auto',
-                    px: 0.8,
-                  }}
-                >
-                  Menu
-                </Button>
-              ) : (
-                <Button
-                  variant="contained"
-                  sx={{
-                    minWidth: 'auto',
-                    px: 1.2,
-                    py: 0.5,
-                    borderRadius: 1.4,
-                    background: brand.accent,
-                    boxShadow: 'none',
-                    textTransform: 'none',
-                    fontSize: '0.74rem',
-                    fontWeight: 800,
-                  }}
-                >
-                  Helpline
-                </Button>
-              )}
-              <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                Full Truck Load
-              </Typography>
-              {!isCompact && (
-                <>
-                  <Typography sx={{ color: alpha(brand.ink, 0.34) }}>|</Typography>
-                  <MuiLink
-                    component={NavLink}
-                    to="/tickets"
-                    sx={{ ...navLinkSx, fontSize: '0.78rem', fontWeight: 700 }}
-                  >
-                    Tickets
-                  </MuiLink>
-                </>
-              )}
-            </Stack>
-
-            <Stack direction="row" alignItems="center" spacing={1}>
-              <Typography
-                sx={{
-                  fontSize: '0.76rem',
-                  fontWeight: 700,
-                  color: alpha(brand.ink, 0.72),
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                PX Wallet :
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: '0.86rem',
-                  fontWeight: 900,
-                  color: brand.ink,
-                  letterSpacing: '-0.02em',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                Rs. {liveBalance.toFixed(2)}
-              </Typography>
-              <Button
-                onClick={() => setWalletDialogOpen(true)}
-                sx={{
-                  minWidth: 'auto',
-                  px: 0.5,
-                  color: brand.accent,
-                  textTransform: 'none',
-                  fontWeight: 800,
-                  fontSize: '0.76rem',
-                }}
-              >
-                Recharge Wallet
-              </Button>
-              <UserMenu />
-            </Stack>
-          </Stack>
-
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            spacing={2}
-            sx={{ minHeight: 68, py: 1.2 }}
-          >
-            <BrandLogo sx={{ width: { xs: 124, md: 164 } }} />
-
-            {!isMobile && (
-              <Stack
-                direction="row"
-                alignItems="center"
-                spacing={0.15}
-                sx={{
-                  flex: 1,
-                  minWidth: 0,
-                  overflowX: 'auto',
-                  '&::-webkit-scrollbar': { display: 'none' },
-                  scrollbarWidth: 'none',
-                }}
-              >
-                {MAIN_NAV.map((item) => {
-                  const active = item.label === activeMain.label
-                  return (
-                    <Box key={item.label} sx={{ flexShrink: 0 }}>
-                      <MuiLink
-                        component={NavLink}
-                        to={item.path}
-                        sx={{
-                          ...navLinkSx,
-                          px: 1.2,
-                          py: 0.9,
-                          borderRadius: 1.4,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          color: active ? brand.accent : alpha(brand.ink, 0.76),
-                          backgroundColor: active ? alpha(brand.accent, 0.08) : 'transparent',
-                          fontSize: '0.82rem',
-                          fontWeight: active ? 800 : 700,
-                          whiteSpace: 'nowrap',
-                        }}
+      <div className="header___nav">
+        <div className="container-fluid h-100">
+          <div className="row h-100">
+            <div className="col-md-12 h-100 p-0 thenavbarwidhts10">
+              <nav className="navbar navbar-expand-lg navbar-light">
+                <div className="container-fluid p-0">
+                  <div className="nav-left-controls">
+                    <Link className="top-navbar-logo" to="/dashboard" aria-label="ShipOrbit dashboard">
+                      <img src={SHIPORBIT_LOGO} alt="ShipOrbit logo" />
+                    </Link>
+                    <button type="button" onClick={handleDrawerToggle} className="sidebar-responsive">
+                      <HiOutlineMenuAlt3 />
+                    </button>
+                    <div className={`dropdown ${helplineOpen ? 'open' : ''}`}>
+                      <button
+                        className="helpline-btn dropdown-toggle"
+                        type="button"
+                        onClick={() => setHelplineOpen((value) => !value)}
                       >
-                        {item.label}
-                      </MuiLink>
-                    </Box>
-                  )
-                })}
-              </Stack>
-            )}
-          </Stack>
+                        <h3>
+                          <FiHeadphones size={22} />
+                          <span>ShipOrbit Help</span>
+                        </h3>
+                      </button>
+                      {helplineOpen ? (
+                        <ul className="dropdown-menu customer-dropdown">
+                          <li>
+                            <div className="helpline-box">
+                              <FiPhoneCall size={32} className="mb-2" />
+                              <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>
+                                ShipOrbit Support
+                              </h2>
+                              <p style={{ fontSize: '14px', fontWeight: 400, marginBottom: '14px' }}>
+                                For urgent shipment issues or operational support, contact the ShipOrbit
+                                helpline. Timings: Mon-Sat | 10:30 AM - 6:30 PM
+                              </p>
+                              <a href="tel:9311936818">
+                                <FiPhoneCall /> 9311936818
+                              </a>
+                            </div>
+                          </li>
+                        </ul>
+                      ) : null}
+                    </div>
+                  </div>
 
-          {activeTabs.length > 0 && (
-            <Stack
-              direction="row"
-              spacing={0.65}
-              sx={{
-                minHeight: 48,
-                pt: 0.25,
-                overflowX: 'auto',
-                '&::-webkit-scrollbar': { display: 'none' },
-                scrollbarWidth: 'none',
-              }}
-            >
-              {activeTabs.map((tab) => {
-                const active = matchesPath(location.pathname, tab.matches)
-                return (
-                  <Box key={tab.label} sx={{ flexShrink: 0 }}>
-                    <MuiLink
-                      component={NavLink}
-                      to={tab.path}
-                      sx={{
-                        ...navLinkSx,
-                        px: { xs: 1.05, md: 1.2 },
-                        py: 0.95,
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        borderBottom: active
-                          ? `3px solid ${brand.accent}`
-                          : '3px solid transparent',
-                        color: active ? brand.accent : alpha(brand.ink, 0.68),
-                        fontSize: '0.8rem',
-                        fontWeight: active ? 800 : 700,
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {tab.label}
-                    </MuiLink>
-                  </Box>
-                )
-              })}
-            </Stack>
-          )}
-        </Stack>
-      </BrandTopBar>
+                  <div className="s__llii0099 ms-auto">
+                    <div className="nav-flex">
+                      <div className="wallet__cash s__0144114414 full__trockk" role="button" tabIndex={0}>
+                        <h3>
+                          <span className="s__114414">
+                            <FiTruck size={22} />
+                          </span>
+                          <span>Full Truck Load</span>
+                        </h3>
+                      </div>
+                      <div
+                        className="wallet__cash s__0144114414 loa__dedd"
+                        onClick={() => navigate('/support/tickets')}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <h3>
+                          <span className="s__114414">
+                            <TbTicket size={18} />
+                          </span>
+                          <span>Tickets</span>
+                        </h3>
+                      </div>
+                      <div className="wallet__cash therechareapps" onClick={() => setWalletDialogOpen(true)}>
+                        <h3>
+                          ShipOrbit <span className="d-responsive ms-1">Wallet</span> :{' '}
+                          <span className="s__4774747">₹ {liveBalance.toFixed(2)}</span>
+                        </h3>
+                        <span className="s__114414">
+                          <Link to="/wallet/addmoney" onClick={(event) => event.preventDefault()}>
+                            Recharge <span className="d-responsive ms-1">Wallet</span>
+                          </Link>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="side__menuusd notification-card">
+                      <ul className="nav">
+                        <li className="s11777 nav-s11777">
+                          <button type="button" aria-label="Notifications">
+                            <span className="iocns__00 c__114411 notification-wrapper">
+                              <FiBell />
+                            </span>
+                          </button>
+                        </li>
+                        <li className="s11777">
+                          <button type="button" aria-label="Downloads">
+                            <span className="iocns__00 c__114411">
+                              <FiDownload />
+                            </span>
+                          </button>
+                        </li>
+                        <li className="s11777">
+                          <button type="button" aria-label="Support" onClick={() => navigate('/support')}>
+                            <span className="iocns__00 c__114411">
+                              <FiHeadphones />
+                            </span>
+                          </button>
+                        </li>
+                        <li className="s_user_09 position-relative" ref={profileMenuRef}>
+                          <button
+                            type="button"
+                            className="profile__0244"
+                            aria-expanded={profileOpen}
+                            aria-haspopup="menu"
+                            onClick={(event) => {
+                              event.stopPropagation()
+                              setProfileOpen((value) => !value)
+                            }}
+                          >
+                            <span className="profiledropdown">
+                              <span className="userprofile_0">{initials}</span>
+                              <span>
+                                <HiChevronDown className="drop012" />
+                              </span>
+                            </span>
+                          </button>
+                          {profileOpen ? (
+                            <div className="chakra-menu__menu-list profile-menu" onClick={(event) => event.stopPropagation()}>
+                              <div className="profile-menu-header">
+                                <strong>{resolvedFullName || 'ShipOrbit User'}</strong>
+                                <p>{email}</p>
+                              </div>
+                              {profileActions.map((item) => (
+                                <button
+                                  key={item.label}
+                                  type="button"
+                                  className={`chakra-menu__menuitem profile-settings${item.danger ? ' logout-button' : ''}`}
+                                  onClick={() => {
+                                    setProfileOpen(false)
+                                    item.onClick()
+                                  }}
+                                >
+                                  <p className="chakra-text css-197xc22">
+                                    <span style={{ marginLeft: 8 }}>{item.label}</span>
+                                    <span aria-hidden="true">{item.icon}</span>
+                                  </p>
+                                </button>
+                              ))}
+                            </div>
+                          ) : null}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <AddMoneyDialog currentBalance={liveBalance} open={walletDialogOpen} setOpen={setWalletDialogOpen} />
     </>

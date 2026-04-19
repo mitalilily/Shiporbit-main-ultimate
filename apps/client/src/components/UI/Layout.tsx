@@ -1,101 +1,85 @@
-import { Box, Container, Drawer, Stack, useMediaQuery, useTheme } from '@mui/material'
-import { Suspense, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import { DRAWER_WIDTH } from '../../utils/constants'
 import Navbar from '../Navbar/Navbar'
-import KeyboardShortcuts from './keyboard/KeyboardShortcuts'
 import FullScreenLoader from './loader/FullScreenLoader'
-import ParcelXDesktopRail from './ParcelXDesktopRail'
-import Sidebar from './Sidebar'
+import Sidebar, { COLLAPSED_WIDTH, EXPANDED_WIDTH } from './Sidebar'
 
 export default function Layout() {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [hovered, setHovered] = useState(false)
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return window.innerWidth > 767
+  })
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
+  const [sidebarHovered, setSidebarHovered] = useState(false)
+  const effectiveDesktopCollapsed = collapsed && !sidebarHovered
+  const effectiveSidebarWidth = effectiveDesktopCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH
 
-  const handleDrawerToggle = () => {
-    if (isMobile) setMobileOpen(!mobileOpen)
+  useEffect(() => {
+    const target = document.getElementById('main-page')
+    if (!target) return
+    target.classList.toggle('sidebar-collapsed', effectiveDesktopCollapsed)
+    target.classList.toggle('sidebar-hover-open', collapsed && sidebarHovered)
+    target.classList.toggle('sidebar-active', mobileSidebarOpen)
+    target.style.setProperty('--parcelx-sidebar-width', `${effectiveSidebarWidth}px`)
+  }, [collapsed, effectiveDesktopCollapsed, effectiveSidebarWidth, mobileSidebarOpen, sidebarHovered])
+
+  useEffect(() => {
+    const preloadRoutes = () => {
+      void import('../../pages/dashboard/Dashboard')
+      void import('../../pages/orders/Orders')
+      void import('../../components/orders/CreateOrderWrapper')
+      void import('../../pages/channels/ChannelOrders')
+      void import('../../pages/reports/Reports')
+      void import('../../pages/support/SupportTicketsPage')
+    }
+
+    const win = window as Window & {
+      requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number
+      cancelIdleCallback?: (id: number) => void
+    }
+
+    let idleId: number | undefined
+    let timeoutId: number | undefined
+
+    if (typeof win.requestIdleCallback === 'function') {
+      idleId = win.requestIdleCallback(() => preloadRoutes(), { timeout: 1400 })
+    } else {
+      timeoutId = window.setTimeout(preloadRoutes, 600)
+    }
+
+    return () => {
+      if (idleId !== undefined && typeof win.cancelIdleCallback === 'function') {
+        win.cancelIdleCallback(idleId)
+      }
+      if (timeoutId !== undefined) {
+        window.clearTimeout(timeoutId)
+      }
+    }
+  }, [])
+
+  const toggleSidebar = () => {
+    if (window.innerWidth <= 767) {
+      setMobileSidebarOpen((value) => !value)
+      return
+    }
+    setCollapsed((value) => !value)
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        width: '100%',
-        minHeight: '100vh',
-        overflow: 'hidden',
-        backgroundColor: '#F5F7FA',
-      }}
-    >
-      <KeyboardShortcuts />
-      <ParcelXDesktopRail />
-
-      {isMobile ? (
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={() => setMobileOpen(false)}
-          ModalProps={{ keepMounted: true }}
-          sx={{
-            '& .MuiDrawer-paper': {
-              width: DRAWER_WIDTH,
-              bgcolor: '#ffffff',
-              color: '#171310',
-              borderRight: '1px solid #ece9f1',
-            },
-          }}
-        >
-          <Sidebar
-            hovered={hovered}
-            setHovered={setHovered}
-            pinned
-            handleDrawerToggle={handleDrawerToggle}
-          />
-        </Drawer>
-      ) : null}
-
-      <Stack
-        sx={{
-          flexGrow: 1,
-          minWidth: 0,
-          position: 'relative',
-          minHeight: '100vh',
-          overflowX: 'hidden',
-          bgcolor: 'transparent',
-        }}
-      >
-        <Stack sx={{ flexGrow: 1, minHeight: 0, bgcolor: 'transparent' }}>
-          <Navbar handleDrawerToggle={handleDrawerToggle} pinned={false} />
-
-          <Box
-            component="main"
-            sx={{
-              flexGrow: 1,
-              overflowY: 'auto',
-              overflowX: 'hidden',
-              bgcolor: 'transparent',
-              px: { xs: 0.7, md: 1.4 },
-              pb: { xs: 1.6, md: 2.2 },
-              minHeight: 0,
-            }}
-          >
-            <Container
-              maxWidth="xl"
-              sx={{
-                bgcolor: 'transparent',
-                pt: 1.2,
-                px: { xs: 0.2, md: 0.3 },
-                overflowX: 'hidden',
-              }}
-            >
-              <Suspense fallback={<FullScreenLoader />}>
-                <Outlet />
-              </Suspense>
-            </Container>
-          </Box>
-        </Stack>
-      </Stack>
-    </Box>
+    <div id="main-page" className="main__section parcelx" style={{ ['--parcelx-sidebar-width' as string]: `${effectiveSidebarWidth}px` }}>
+      <Sidebar
+        collapsed={effectiveDesktopCollapsed}
+        onToggle={toggleSidebar}
+        onHoverChange={setSidebarHovered}
+      />
+      <div className="main__panel">
+        <Navbar handleDrawerToggle={toggleSidebar} collapsed={collapsed} />
+        <main className="warpperzz parcelx-main-content">
+          <Suspense fallback={<FullScreenLoader />}>
+            <Outlet />
+          </Suspense>
+        </main>
+      </div>
+    </div>
   )
 }

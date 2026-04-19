@@ -9,7 +9,9 @@ export function resolveDatabaseSsl(databaseUrl?: string): SslConfig {
   const normalizedUrl = databaseUrl || ''
   const isRailwayInternal = /railway\.internal/i.test(normalizedUrl)
   const needsHostedSsl =
-    /render\.com|railway\.app|supabase\.co|neon\.tech|amazonaws\.com/i.test(normalizedUrl)
+    /render\.com|railway\.app|rlwy\.net|supabase\.co|neon\.tech|amazonaws\.com/i.test(
+      normalizedUrl,
+    )
 
   if (SSL_DISABLED_VALUES.has(sslMode)) return false
   if (SSL_REQUIRED_VALUES.has(sslMode)) return { rejectUnauthorized: false }

@@ -1,120 +1,138 @@
-﻿import {
-  Box,
-  Chip,
-  Divider,
-  Link,
-  Paper,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material'
-import { FiClock, FiMail, FiMapPin, FiPhone } from 'react-icons/fi'
-import PageHeading from '../../components/UI/heading/PageHeading'
-import MapViewer from '../../components/UI/map/MapViewer'
+import { Box, Link, Typography } from '@mui/material'
+import supportBoxIcon from '../../assets/support/parcel-box.jpg'
 
-const CompanyDetails = () => {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const coords = { lat: 28.6279, lng: 79.8046 }
+const supportCards = [
+  {
+    title: 'Helpline Team',
+    phone: '+91-9311936818',
+    phoneHref: 'tel:+919311936818',
+    email: 'help@parcelx.in',
+    emailHref: 'mailto:help@parcelx.in',
+  },
+  {
+    title: 'Pickup Team',
+    phone: '+91-9811399452',
+    phoneHref: 'tel:+919811399452',
+    email: 'pickups@parcelx.in',
+    emailHref: 'mailto:pickups@parcelx.in',
+  },
+  {
+    title: 'Weight Team',
+    email: 'weight@parcelx.in',
+    emailHref: 'mailto:weight@parcelx.in',
+  },
+  {
+    title: 'Finance Team',
+    email: 'finance@parcelx.in',
+    emailHref: 'mailto:finance@parcelx.in',
+  },
+]
 
+export default function CompanyDetails() {
   return (
-    <Stack mt={2} gap={5}>
-      <PageHeading
-        title="Contact Us"
-        subtitle="Weâ€™re here to help with bookings, account support, and courier operations. Reach out to ShipOrbit whenever you need assistance."
-      />
-
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          gap: 5,
-        }}
-      >
-        <Paper
-          elevation={4}
-          sx={{
-            flex: 1,
-            p: 4,
-            borderRadius: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 3,
-            bgcolor: theme.palette.background.paper,
-            border: '1px solid',
-            borderColor: 'divider',
-          }}
-        >
-          <Typography variant="h6" fontWeight="bold" color="secondary" gutterBottom>
-            ShipOrbit
+    <Box sx={{ p: '18px 18px 28px', fontFamily: 'Instrument Sans, sans-serif' }}>
+      <Box sx={{ background: '#fff', border: '1px solid #ece9f1', borderRadius: '14px', p: '18px 18px 22px' }}>
+        <Box className="top____heading d-block" sx={{ mb: 2.25 }}>
+          <Typography sx={{ fontSize: '1.42rem', fontWeight: 700, color: '#20262d', mb: 0.8 }}>
+            Need Help? We’re Here for You
           </Typography>
+          <Typography sx={{ fontSize: '0.92rem', color: '#5d6775', lineHeight: 1.65 }}>
+            Reach out to our support team and we’ll make sure you get the assistance you need.
+          </Typography>
+        </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-            <FiMapPin size={22} color={theme.palette.primary.main} />
-            <Typography fontSize="1rem">Chhatri Chauraha, Nai Basti, Pilibhit - 262001</Typography>
-          </Box>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <FiMail size={22} color={theme.palette.primary.main} />
-            <Chip
-              clickable
-              component={Link}
-              href="mailto:support@shiporbit.com"
-              label="Support Email"
-              color="primary"
-              variant="filled"
-              icon={<FiMail size={16} />}
-            />
-          </Box>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <FiPhone size={22} color={theme.palette.primary.main} />
-            <Chip
-              clickable
-              component={Link}
-              href="tel:+919217553934"
-              label="+91 9217553934"
-              color="success"
-              variant="filled"
-              icon={<FiPhone size={16} />}
-            />
-          </Box>
-
-          <Divider sx={{ my: 2 }} />
-
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-            <FiClock size={22} color={theme.palette.primary.main} />
-            <Box>
-              <Typography fontSize="1rem">Monday â€“ Saturday: 10:00 AM â€“ 7:00 PM</Typography>
-              <Typography fontSize="1rem">Sunday: Closed</Typography>
-            </Box>
-          </Box>
-        </Paper>
-
-        <Paper
-          elevation={4}
+        <Box
           sx={{
-            flex: 1,
-            borderRadius: 3,
-            overflow: 'hidden',
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', xl: 'repeat(3, minmax(0, 1fr))' },
+            gap: 1.5,
           }}
         >
-          <MapViewer
-            coords={coords}
-            height={isMobile ? '280px' : '400px'}
-            width="100%"
-            draggable={false}
-            zoom={16}
-            popupText="ShipOrbit"
-            currentLocation={false}
-          />
-        </Paper>
+          {supportCards.map((card) => (
+            <Box
+              key={card.title}
+              sx={{
+                borderRadius: '18px',
+                border: '1px solid #ece9f1',
+                background: 'linear-gradient(180deg, #ffffff 0%, #fffaf6 100%)',
+                overflow: 'hidden',
+                minHeight: 206,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Box sx={{ p: '18px 18px 14px' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.1 }}>
+                  <Box
+                    sx={{
+                      width: 52,
+                      height: 52,
+                      borderRadius: '14px',
+                      background: '#fff3ea',
+                      display: 'grid',
+                      placeItems: 'center',
+                      border: '1px solid #ffe1cc',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={supportBoxIcon}
+                      alt={card.title}
+                      sx={{ width: 30, height: 30, objectFit: 'contain' }}
+                    />
+                  </Box>
+                  <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: '#ff6600' }}>
+                    {card.title}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ borderTop: '1px solid #f1e4da', p: '14px 18px 16px', display: 'grid', gap: 1 }}>
+                {card.phone ? (
+                  <Link
+                    href={card.phoneHref}
+                    underline="none"
+                    sx={{
+                      color: '#20262d',
+                      fontSize: '0.9rem',
+                      fontWeight: 500,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                    }}
+                  >
+                    <span>📞</span>
+                    {card.phone}
+                  </Link>
+                ) : null}
+
+                {card.phone && card.email ? (
+                  <Box sx={{ width: '100%', height: 1, background: '#f1e4da' }} />
+                ) : null}
+
+                <Link
+                  href={card.emailHref}
+                  underline="none"
+                  sx={{
+                    color: '#20262d',
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  <span>✉</span>
+                  {card.email}
+                </Link>
+              </Box>
+            </Box>
+          ))}
+        </Box>
       </Box>
-    </Stack>
+    </Box>
   )
 }
-
-export default CompanyDetails
-
-

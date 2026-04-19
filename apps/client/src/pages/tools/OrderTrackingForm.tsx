@@ -1,420 +1,385 @@
-'use client'
-
 import {
-  alpha,
   Box,
   Button,
-  Card,
-  CardContent,
-  Chip,
-  CircularProgress,
-  Divider,
-  FormControl,
-  FormHelperText,
-  Grid,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
+  Checkbox,
+  MenuItem,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material'
-import { Fragment, useEffect, useMemo, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useState } from 'react'
 import {
-  FaBoxOpen,
-  FaEnvelopeOpenText,
-  FaHashtag,
-  FaPhoneAlt,
-  FaReceipt,
-  FaSearch,
-} from 'react-icons/fa'
-import { MdLocationOn, MdSchedule } from 'react-icons/md'
-import type { TrackingHistory } from '../../api/tracking.service'
-import PageHeading from '../../components/UI/heading/PageHeading'
-import CustomInput from '../../components/UI/inputs/CustomInput'
-import { SmartTabs } from '../../components/UI/tab/Tabs'
-import { useTracking } from '../../hooks/Orders/useTracking'
+  FiChevronDown,
+  FiEye,
+  FiImage,
+  FiPlus,
+  FiSave,
+  FiUploadCloud,
+} from 'react-icons/fi'
 import { brand } from '../../theme/brand'
-import { cardStyles } from './RateCalculator'
 
-type FormValues = {
-  awb: string
-  orderNumber: string
-  contact: string
+const fieldSx = {
+  '& .MuiOutlinedInput-root': {
+    minHeight: 42,
+    borderRadius: '8px',
+    backgroundColor: '#fff',
+    fontFamily: 'Instrument Sans, sans-serif',
+    fontSize: '0.82rem',
+    '& fieldset': { borderColor: '#e6eaef' },
+  },
+  '& .MuiInputBase-input': {
+    fontFamily: 'Instrument Sans, sans-serif',
+    fontSize: '0.82rem',
+    py: 1.1,
+  },
 }
 
+const sectionCardSx = {
+  background: '#fff',
+  border: '1px solid #ece9f1',
+  borderRadius: '14px',
+  boxShadow: 'none',
+}
+
+const uploadCardSx = {
+  border: '1px dashed #d8dce3',
+  borderRadius: '14px',
+  minHeight: 172,
+  display: 'grid',
+  placeItems: 'center',
+  background: '#fbfcfd',
+  transition: 'all 180ms ease',
+  cursor: 'pointer',
+  '&:hover': {
+    borderColor: brand.accent,
+    background: '#fff8f2',
+  },
+}
+
+const themeOptions = [{ label: 'Theme 1', image: '/reference/parcelx-login-bg.png' }]
+
+const socialFields = [
+  'Instagram',
+  'Facebook',
+  'YouTube',
+  'LinkedIn',
+  'WhatsApp',
+  'Twitter',
+]
+
 export default function OrderTrackingForm() {
-  const [mode, setMode] = useState<'awb' | 'order'>('awb')
-  const [error, setError] = useState<string>('')
-  const [queryParams, setQueryParams] = useState<{
-    awb?: string
-    orderNumber?: string
-    contact?: string
-  } | null>(null)
+  const [selectedTheme, setSelectedTheme] = useState('Theme 1')
+  const [trackingChoices, setTrackingChoices] = useState<string[]>([])
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    watch,
-    formState: { errors },
-  } = useForm<FormValues>({
-    defaultValues: {
-      awb: '',
-      orderNumber: '',
-      contact: '',
-    },
-  })
-
-  const formValues = watch()
-
-  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.contact)
-  const isPhone = /^[0-9+\-\s()]{7,}$/.test(formValues.contact)
-  const isContactValid = !formValues.contact || isEmail || isPhone
-
-  const {
-    data: tracking,
-    isFetching: trackingLoading,
-    isError: trackingError,
-    error: trackingErrorObj,
-    isSuccess,
-  } = useTracking(
-    queryParams?.awb ?? null,
-    queryParams?.orderNumber ?? null,
-    queryParams?.contact ?? null,
-  )
-
-  useEffect(() => {
-    if (trackingError) {
-      setError(
-        trackingErrorObj instanceof Error ? trackingErrorObj.message : 'Failed to fetch tracking',
-      )
-    } else if (isSuccess) {
-      setError('')
-    }
-  }, [trackingError, trackingErrorObj, isSuccess])
-
-  const canSubmit =
-    mode === 'awb'
-      ? formValues.awb.trim().length > 3
-      : formValues.orderNumber.trim().length > 2 &&
-        formValues.contact.trim().length > 3 &&
-        isContactValid
-
-  const onSubmit = (data: FormValues) => {
-    if (!canSubmit) return
-    setError('')
-
-    if (mode === 'awb') {
-      setQueryParams({ awb: data.awb.trim() })
-    } else {
-      setQueryParams({
-        orderNumber: data.orderNumber.trim(),
-        contact: data.contact.trim(),
-      })
-    }
-  }
-
-  const sortedHistory = useMemo<TrackingHistory[]>(() => {
-    if (!tracking?.history) return []
-    return [...tracking.history].sort(
-      (a, b) => new Date(b.event_time).getTime() - new Date(a.event_time).getTime(),
+  const toggleChoice = (value: string) => {
+    setTrackingChoices((prev) =>
+      prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value],
     )
-  }, [tracking])
-
-  const resetResults = () => {
-    setQueryParams(null)
-    setError('')
   }
 
   return (
-    <Stack sx={{ py: { xs: 2, md: 3 } }}>
-      <PageHeading
-        eyebrow="Tools Panel"
-        title="Track Order"
-        subtitle="Track by AWB or order details, review shipment timelines, and keep the utility view aligned with the rest of the panel."
-      />
-      <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ p: { xs: 2, md: 3 }, mt: 2, ...cardStyles }}>
-        {/* Header */}
-        <Typography variant="h5" fontWeight={700} gutterBottom>
-          Track Your <span style={{ color: brand.accent }}>Order</span>
-        </Typography>
-        <Typography variant="body2" sx={{ color: brand.inkSoft }} mb={3}>
-          Enter your AWB number or order details to track shipment.
-        </Typography>
+    <Box sx={{ p: '18px 18px 28px', fontFamily: 'Instrument Sans, sans-serif' }}>
+      <Box sx={{ ...sectionCardSx, p: '16px 18px 18px' }}>
+        <Stack spacing={2}>
+          <Stack
+            direction={{ xs: 'column', lg: 'row' }}
+            justifyContent="space-between"
+            alignItems={{ xs: 'flex-start', lg: 'center' }}
+            spacing={1.25}
+          >
+            <Typography sx={{ fontSize: '1.28rem', fontWeight: 600, color: '#232b34' }}>
+              Custom Tracking Page
+            </Typography>
 
-        {/* Tabs */}
-        <SmartTabs
-          onChange={(v) => {
-            setMode(v)
-            reset()
-            setError('')
-            resetResults()
-          }}
-          tabs={[
-            { label: 'Track By AWB', value: 'awb' },
-            { label: 'Track By Order ID', value: 'order' },
-          ]}
-          value={mode}
-        />
+            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+              <Button
+                startIcon={<FiEye size={16} />}
+                sx={{
+                  minHeight: 40,
+                  px: 1.8,
+                  borderRadius: '8px',
+                  border: '1px solid #ece9f1',
+                  color: '#27303f',
+                  background: '#fff',
+                  textTransform: 'none',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                }}
+              >
+                Preview
+              </Button>
+              <Button
+                startIcon={<FiSave size={16} />}
+                sx={{
+                  minHeight: 40,
+                  px: 1.9,
+                  borderRadius: '8px',
+                  background: brand.accent,
+                  color: '#fff',
+                  textTransform: 'none',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                }}
+              >
+                Submit
+              </Button>
+            </Stack>
+          </Stack>
 
-        {/* Form Fields */}
-        {mode === 'awb' ? (
-          <FormControl fullWidth sx={{ mb: 3 }}>
-            <Controller
-              name="awb"
-              control={control}
-              render={({ field }) => (
-                <CustomInput
-                  {...field}
-                  id="awb"
-                  placeholder="e.g. 1234567890"
-                  prefix={<FaHashtag />}
-                  error={!!errors.awb}
-                  label="AWB Number"
-                />
-              )}
-              rules={{ required: 'AWB number is required' }}
-            />
-            {errors.awb && <FormHelperText error>{errors.awb.message}</FormHelperText>}
-          </FormControl>
-        ) : (
-          <>
-            <FormControl fullWidth sx={{ mb: 3 }}>
-              <Controller
-                name="orderNumber"
-                control={control}
-                render={({ field }) => (
-                  <CustomInput
-                    {...field}
-                    id="orderNumber"
-                    placeholder="e.g. ORD-2025-0001"
-                    prefix={<FaReceipt />}
-                    error={!!errors.orderNumber}
-                    label="Order ID"
-                  />
-                )}
-                rules={{ required: 'Order ID is required' }}
-              />
-              {errors.orderNumber && (
-                <FormHelperText error>{errors.orderNumber.message}</FormHelperText>
-              )}
-            </FormControl>
-
-            <FormControl fullWidth sx={{ mb: 3 }}>
-              <Controller
-                name="contact"
-                control={control}
-                render={({ field }) => (
-                  <CustomInput
-                    {...field}
-                    id="contact"
-                    placeholder="you@example.com or +91 98765 43210"
-                    prefix={isEmail ? <FaEnvelopeOpenText /> : <FaPhoneAlt />}
-                    error={!isContactValid}
-                    label="Email or Phone"
-                  />
-                )}
-                rules={{ required: 'Email or Phone is required' }}
-              />
-              {!isContactValid && (
-                <FormHelperText error>Enter a valid email or phone number</FormHelperText>
-              )}
-            </FormControl>
-          </>
-        )}
-
-        {/* Error */}
-        {error && (
-          <Typography color="error" variant="body2" mb={2}>
-            {error}
-          </Typography>
-        )}
-
-        {/* Buttons */}
-        <Box display="flex" gap={2} alignItems="center">
-          <Button
-            type="submit"
-            variant="contained"
-            startIcon={trackingLoading ? <CircularProgress size={18} /> : <FaSearch />}
-            disabled={!canSubmit || trackingLoading}
+          <Box
             sx={{
-              minWidth: 160,
-              borderRadius: '10px',
-              backgroundColor: brand.accent,
-              color: '#ffffff',
-              '&:hover': {
-                backgroundColor: '#E75D00',
-              },
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(12, minmax(0, 1fr))' },
+              gap: 1.5,
             }}
           >
-            {trackingLoading ? 'Tracking…' : 'Track Order'}
-          </Button>
-          <Button
-            type="button"
-            variant="text"
-            color="inherit"
-            onClick={() => {
-              reset()
-              resetResults()
-            }}
-            sx={{ color: brand.ink }}
-          >
-            Reset
-          </Button>
-        </Box>
-      </Box>
+            <Box sx={{ gridColumn: { md: 'span 4' } }}>
+              <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, mb: 0.55 }}>Subdomain</Typography>
+              <TextField fullWidth placeholder="Enter your subdomain" sx={fieldSx} />
+            </Box>
+            <Box sx={{ gridColumn: { md: 'span 4' } }}>
+              <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, mb: 0.55 }}>Domain</Typography>
+              <TextField
+                select
+                fullWidth
+                value="trackorder.live"
+                sx={fieldSx}
+                SelectProps={{ IconComponent: FiChevronDown }}
+              >
+                <MenuItem value="trackorder.live">trackorder.live</MenuItem>
+              </TextField>
+            </Box>
+            <Box sx={{ gridColumn: { md: 'span 4' }, display: 'flex', alignItems: 'flex-end' }}>
+              <Button
+                sx={{
+                  minHeight: 42,
+                  px: 2.1,
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  border: '1px dashed #cfd5de',
+                  color: '#27303f',
+                  background: '#fff',
+                }}
+              >
+                Check Availability
+              </Button>
+            </Box>
 
-      {isSuccess && tracking && queryParams && (
-        <Stack spacing={3} mt={4}>
-          <Card sx={{ ...cardStyles }}>
-            <CardContent>
-              <Typography variant="h6" fontWeight={700} gutterBottom>
-                Shipment Overview
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, md: 4 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    AWB Number
-                  </Typography>
-                  <Typography fontWeight={600}>{tracking.awb_number || '—'}</Typography>
-                </Grid>
-                <Grid size={{ xs: 12, md: 4 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    Order Number
-                  </Typography>
-                  <Typography fontWeight={600}>{tracking.order_number || '—'}</Typography>
-                </Grid>
-                <Grid size={{ xs: 12, md: 4 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    Courier
-                  </Typography>
-                  <Typography fontWeight={600}>{tracking.courier_name || '—'}</Typography>
-                </Grid>
-                <Grid size={{ xs: 12, md: 4 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    Status
-                  </Typography>
-                  <Chip
-                    label={tracking.status || 'Unknown'}
-                    size="small"
+            <Box sx={{ gridColumn: { md: 'span 4' } }}>
+              <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, mb: 0.55 }}>Website Title</Typography>
+              <TextField fullWidth placeholder="Enter Website Title" sx={fieldSx} />
+            </Box>
+            <Box sx={{ gridColumn: { md: 'span 4' } }}>
+              <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, mb: 0.55 }}>Website URL</Typography>
+              <TextField fullWidth placeholder="Enter Website URL" sx={fieldSx} />
+            </Box>
+          </Box>
+
+          <Box>
+            <Typography sx={{ fontSize: '0.86rem', fontWeight: 700, color: '#232b34', mb: 1.1 }}>
+              Website Theme
+            </Typography>
+            <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
+              {themeOptions.map((theme) => {
+                const active = selectedTheme === theme.label
+                return (
+                  <Box
+                    key={theme.label}
+                    onClick={() => setSelectedTheme(theme.label)}
                     sx={{
-                      bgcolor: (() => {
-                        const normalized = (tracking.status || '').toLowerCase()
-                        if (normalized.includes('deliver')) return alpha(brand.success, 0.12)
-                        if (normalized.includes('transit')) return alpha(brand.accent, 0.12)
-                        if (normalized.includes('cancel')) return alpha(brand.danger, 0.12)
-                        if (normalized.includes('rto')) return alpha(brand.warning, 0.14)
-                        return alpha(brand.ink, 0.08)
-                      })(),
-                      color: (() => {
-                        const normalized = (tracking.status || '').toLowerCase()
-                        if (normalized.includes('deliver')) return brand.success
-                        if (normalized.includes('transit')) return brand.accent
-                        if (normalized.includes('cancel')) return brand.danger
-                        if (normalized.includes('rto')) return brand.warning
-                        return brand.ink
-                      })(),
-                      fontWeight: 700,
+                      width: 154,
+                      borderRadius: '12px',
+                      border: active ? `2px solid ${brand.accent}` : '1px solid #ece9f1',
+                      overflow: 'hidden',
+                      background: '#fff',
+                      cursor: 'pointer',
+                      transition: 'all 180ms ease',
                     }}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, md: 4 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    Payment Type
-                  </Typography>
-                  <Typography fontWeight={600} textTransform="uppercase">
-                    {tracking.payment_type || '—'}
-                  </Typography>
-                </Grid>
-                <Grid size={{ xs: 12, md: 4 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    Estimated Delivery
-                  </Typography>
-                  <Typography fontWeight={600}>
-                    {tracking.edd ? new Date(tracking.edd).toLocaleDateString() : '—'}
-                  </Typography>
-                </Grid>
-              </Grid>
-              {tracking.shipment_info && (
-                <Box mt={3}>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Shipment Info
-                  </Typography>
-                  <Typography fontSize={14}>{tracking.shipment_info}</Typography>
-                </Box>
-              )}
-            </CardContent>
-          </Card>
+                  >
+                    <Box
+                      component="img"
+                      src={theme.image}
+                      alt={theme.label}
+                      sx={{ width: '100%', height: 92, objectFit: 'cover', display: 'block' }}
+                    />
+                    <Typography sx={{ px: 1.2, py: 1, fontSize: '0.76rem', fontWeight: 600 }}>
+                      {theme.label}
+                    </Typography>
+                  </Box>
+                )
+              })}
+            </Stack>
+          </Box>
 
-          <Card sx={{ ...cardStyles }}>
-            <CardContent>
-              <Typography variant="h6" fontWeight={700} gutterBottom>
-                Tracking Timeline
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', lg: 'repeat(2, minmax(0, 1fr))' },
+              gap: 1.5,
+            }}
+          >
+            <Box>
+              <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, mb: 0.75 }}>
+                Display Logo (png, jpg, jpeg) <span style={{ color: brand.accent }}>*</span>
               </Typography>
-              {sortedHistory.length === 0 ? (
-                <Typography color="text.secondary">No tracking events available yet.</Typography>
-              ) : (
-                <List>
-                  {sortedHistory.map((event, idx) => (
-                    <Fragment key={`${event.event_time}-${idx}`}>
-                      <ListItem alignItems="flex-start" sx={{ px: 0 }}>
-                        <ListItemIcon sx={{ minWidth: 36 }}>
-                          {idx === 0 ? (
-                            <FaBoxOpen color={brand.accent} size={20} />
-                          ) : (
-                            <MdLocationOn color={brand.inkSoft} size={20} />
-                          )}
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={
-                            <Stack direction="row" spacing={1} alignItems="center">
-                              <Typography fontWeight={600}>
-                                {event.message || event.status_code}
-                              </Typography>
-                              <Chip
-                                size="small"
-                                label={event.status_code}
-                                sx={{
-                                  bgcolor: idx === 0 ? alpha(brand.accent, 0.12) : alpha(brand.ink, 0.08),
-                                  color: idx === 0 ? brand.accent : brand.ink,
-                                  fontWeight: 700,
-                                }}
-                              />
-                            </Stack>
-                          }
-                          secondary={
-                            <Stack
-                              direction={{ xs: 'column', sm: 'row' }}
-                              spacing={1}
-                              mt={0.5}
-                              alignItems={{ sm: 'center' }}
-                            >
-                              <Stack direction="row" spacing={0.5} alignItems="center">
-                                <MdSchedule size={16} />
-                                <Typography variant="caption">
-                                  {new Date(event.event_time).toLocaleString()}
-                                </Typography>
-                              </Stack>
-                              {event.location && (
-                                <Typography variant="caption" color="text.secondary">
-                                  {event.location}
-                                </Typography>
-                              )}
-                            </Stack>
-                          }
-                        />
-                      </ListItem>
-                      {idx !== sortedHistory.length - 1 && <Divider component="li" />}
-                    </Fragment>
-                  ))}
-                </List>
-              )}
-            </CardContent>
-          </Card>
+              <Box sx={uploadCardSx}>
+                <Stack alignItems="center" spacing={0.8}>
+                  <FiImage size={42} color="#7d8896" />
+                  <Typography sx={{ fontSize: '0.86rem', fontWeight: 600, color: '#2d3748' }}>
+                    Upload or Drop Image
+                  </Typography>
+                </Stack>
+              </Box>
+            </Box>
+
+            <Box>
+              <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, mb: 0.75 }}>
+                Display Banner (png, jpg, jpeg) <span style={{ color: brand.accent }}>*</span>
+              </Typography>
+              <Box sx={uploadCardSx}>
+                <Stack alignItems="center" spacing={0.8}>
+                  <FiUploadCloud size={42} color="#7d8896" />
+                  <Typography sx={{ fontSize: '0.86rem', fontWeight: 600, color: '#2d3748' }}>
+                    Upload or Drop Image
+                  </Typography>
+                </Stack>
+              </Box>
+            </Box>
+          </Box>
+
+          <Box sx={{ pt: 0.5 }}>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              justifyContent="space-between"
+              alignItems={{ sm: 'center' }}
+              spacing={1}
+            >
+              <Typography sx={{ fontSize: '0.86rem', fontWeight: 700, color: '#232b34' }}>
+                Header Menus
+              </Typography>
+              <Button
+                startIcon={<FiPlus size={16} />}
+                sx={{
+                  minHeight: 38,
+                  px: 1.65,
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  border: '1px solid #ece9f1',
+                  color: '#27303f',
+                  background: '#fff',
+                }}
+              >
+                Add Menu
+              </Button>
+            </Stack>
+          </Box>
+
+          <Box>
+            <Typography sx={{ fontSize: '0.86rem', fontWeight: 700, color: '#232b34', mb: 0.75 }}>
+              Notification Feed
+            </Typography>
+            <TextField multiline minRows={4} fullWidth placeholder="Enter Notification Feed" sx={fieldSx} />
+          </Box>
+
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(12, minmax(0, 1fr))' },
+              gap: 1.5,
+            }}
+          >
+            <Box sx={{ gridColumn: { md: 'span 4' } }}>
+              <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, mb: 0.55 }}>Youtube Video Link</Typography>
+              <TextField fullWidth placeholder="Enter Youtube Link" sx={fieldSx} />
+            </Box>
+            <Box sx={{ gridColumn: { md: 'span 4' } }}>
+              <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, mb: 0.55 }}>Support Phone Number</Typography>
+              <TextField fullWidth placeholder="Enter Phone Number" sx={fieldSx} />
+            </Box>
+            <Box sx={{ gridColumn: { md: 'span 4' } }}>
+              <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, mb: 0.55 }}>Support Email</Typography>
+              <TextField fullWidth placeholder="Enter Support Email" sx={fieldSx} />
+            </Box>
+          </Box>
+
+          <Box>
+            <Typography sx={{ fontSize: '0.86rem', fontWeight: 700, color: '#232b34', mb: 0.65 }}>
+              Track Your Choice:
+            </Typography>
+            <Stack direction="row" spacing={2.2} flexWrap="wrap" useFlexGap>
+              {['Waybill Number', 'Channel Order ID', 'Mobile Number'].map((choice) => (
+                <Box key={choice} sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Checkbox
+                    checked={trackingChoices.includes(choice)}
+                    onChange={() => toggleChoice(choice)}
+                    sx={{ p: 0.5, mr: 0.8 }}
+                  />
+                  <Typography sx={{ fontSize: '0.82rem', fontWeight: 500, color: '#2f3946' }}>
+                    {choice}
+                  </Typography>
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+
+          <Box>
+            <Typography sx={{ fontSize: '0.92rem', fontWeight: 700, color: '#232b34', mb: 1.1 }}>
+              Add Social Links
+            </Typography>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))', xl: 'repeat(3, minmax(0, 1fr))' },
+                gap: 1.5,
+              }}
+            >
+              {socialFields.map((field) => (
+                <Box key={field}>
+                  <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, mb: 0.55 }}>{field}</Typography>
+                  <TextField
+                    fullWidth
+                    placeholder={`Enter ${field} ${field === 'WhatsApp' ? 'Number' : 'Link'}`}
+                    sx={fieldSx}
+                  />
+                </Box>
+              ))}
+            </Box>
+          </Box>
+
+          <Box sx={{ pt: 0.4 }}>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              justifyContent="space-between"
+              alignItems={{ sm: 'center' }}
+              spacing={1}
+            >
+              <Typography sx={{ fontSize: '0.86rem', fontWeight: 700, color: '#232b34', visibility: 'hidden' }}>
+                Products
+              </Typography>
+              <Button
+                startIcon={<FiPlus size={16} />}
+                sx={{
+                  minHeight: 38,
+                  px: 1.65,
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  border: '1px solid #ece9f1',
+                  color: '#27303f',
+                  background: '#fff',
+                }}
+              >
+                Add Product
+              </Button>
+            </Stack>
+          </Box>
         </Stack>
-      )}
-    </Stack>
+      </Box>
+    </Box>
   )
 }

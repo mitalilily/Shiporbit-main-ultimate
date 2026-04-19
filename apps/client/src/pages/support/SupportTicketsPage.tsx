@@ -1,180 +1,367 @@
-import { Button, Skeleton, Stack, useMediaQuery, useTheme } from '@mui/material'
-import { useState } from 'react'
-import { FaWhatsapp } from 'react-icons/fa'
-import { FiPlus } from 'react-icons/fi'
-import { FilterBar, type FilterField } from '../../components/FilterBar'
+import {
+  Box,
+  Button,
+  MenuItem,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from '@mui/material'
+import { useMemo, useState } from 'react'
+import { FiChevronDown, FiPlus, FiRefreshCw, FiSearch } from 'react-icons/fi'
 import CustomDrawer from '../../components/UI/drawer/CustomDrawer'
-import PageHeading from '../../components/UI/heading/PageHeading'
-import TableSkeleton from '../../components/UI/table/TableSkeleton'
 import { SupportTicketForm } from '../../components/support/SupportTicketForm'
-import SupportTicketList from '../../components/support/SupportTicketList'
-import TicketStatusSummaryCard from '../../components/support/TicketStatusSummaryCard'
 import { useMyTickets } from '../../hooks/User/useSupport'
+import { brand } from '../../theme/brand'
 
-const supportTicketFilterFields: FilterField[] = [
-  {
-    name: 'sortBy',
-    label: 'Sort By',
-    type: 'select',
-    options: [
-      { label: 'Latest First', value: 'latest' },
-      { label: 'Oldest First', value: 'oldest' },
-      { label: 'Due Soon', value: 'dueSoon' },
-      { label: 'Due Latest', value: 'dueLatest' },
-    ],
-    placeholder: 'Select sort order',
+const fieldSx = {
+  '& .MuiOutlinedInput-root': {
+    minHeight: 40,
+    borderRadius: '8px',
+    backgroundColor: '#fff',
+    fontFamily: 'Instrument Sans, sans-serif',
+    fontSize: '0.82rem',
+    '& fieldset': { borderColor: '#e6eaef' },
   },
-  {
-    name: 'subject',
-    label: 'Subject',
-    type: 'text',
-    placeholder: 'Search by subject',
+  '& .MuiInputBase-input': {
+    fontFamily: 'Instrument Sans, sans-serif',
+    fontSize: '0.82rem',
+    py: 1.05,
   },
-  {
-    name: 'awbNumber',
-    label: 'AWB Number',
-    type: 'text',
-    placeholder: 'Search by AWB',
-    isAdvanced: true,
-  },
-  {
-    name: 'category',
-    label: 'Category',
-    type: 'select',
-    options: [
-      { label: 'All', value: '' },
-      { label: 'Shipment Issues', value: 'shipment_issues' },
-      { label: 'AWB & Label Issues', value: 'awb_issues' },
-      { label: 'Payments & Refunds', value: 'payment_refund' },
-      { label: 'Courier Partner Issues', value: 'courier_partner' },
-      { label: 'Returns & RTOs', value: 'returns_rto' },
-      { label: 'KYC & Onboarding', value: 'kyc_onboarding' },
-      { label: 'Platform Issues', value: 'platform_issue' },
-      { label: 'Other / General Query', value: 'other' },
-    ],
-    placeholder: 'Select category',
-  },
-  {
-    name: 'status',
-    label: 'Status',
-    type: 'select',
-    options: [
-      { label: 'All', value: '' },
-      { label: 'Open', value: 'open' },
-      { label: 'In Progress', value: 'in_progress' },
-      { label: 'Resolved', value: 'resolved' },
-      { label: 'Closed', value: 'closed' },
-    ],
-    placeholder: 'Select status',
-    isAdvanced: true,
-  },
-  {
-    name: 'subcategory',
-    label: 'Subcategory',
-    type: 'text',
-    isAdvanced: true,
-    placeholder: 'Search by subcategory',
-  },
-]
-
-const initialFilterValues = {
-  sortBy: 'latest',
-  subject: '',
-  awbNumber: '',
-  category: '',
-  status: '',
-  subcategory: '',
 }
 
-export const SupportTicketsPage = () => {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const [filters, setFilters] = useState(initialFilterValues)
-  const [page, setPage] = useState(1)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
+const cardSx = {
+  background: '#fff',
+  border: '1px solid #ece9f1',
+  borderRadius: '14px',
+  boxShadow: 'none',
+}
 
-  const { data: tickets, isLoading } = useMyTickets({
-    page,
-    limit: rowsPerPage,
-    filters: filters,
+const ticketTabs = ['Open (0)', 'Resolved (0)', 'Pending (0)', 'Reopen (0)', 'Closed (0)', 'All (0)']
+
+export const SupportTicketsPage = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [dateType, setDateType] = useState('Created Date')
+  const [priority, setPriority] = useState('')
+  const [aging, setAging] = useState('')
+  const [searchType, setSearchType] = useState('')
+  const [searchValue, setSearchValue] = useState('')
+  const [activeTab, setActiveTab] = useState(ticketTabs[0])
+
+  const { data: tickets } = useMyTickets({
+    page: 1,
+    limit: 50,
+    filters: {},
   })
 
-  const appliedCount = Object.entries(filters).filter(
-    ([key, value]) => key !== 'sortBy' && Boolean(value),
-  ).length
+  const rows = useMemo(() => tickets?.data ?? [], [tickets])
 
   return (
-    <Stack spacing={3}>
-      <PageHeading
-        eyebrow="Support Panel"
-        title="Support"
-        subtitle="Manage issue resolution, ticket queues, and seller support requests from a support panel."
-      />
-      {isLoading ? (
-        <Skeleton />
-      ) : (
-        <TicketStatusSummaryCard
-          counts={tickets?.statusCounts ?? { closed: 0, in_progress: 0, open: 0, resolved: 0 }}
-        />
-      )}
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        {' '}
-        <FilterBar
-          fields={supportTicketFilterFields}
-          defaultValues={initialFilterValues}
-          onApply={(newFilters) => {
-            setFilters(newFilters)
-            setPage(0) // reset to first page on filter change
-          }}
-          bgOverlayImg="/images/filters-bg.png"
-          appliedCount={appliedCount}
-        />
-        <Button
-          sx={{ ml: !isMobile ? '50px' : 0 }}
-          size="small"
-          variant="contained"
-          startIcon={<FiPlus size={18} />}
-          onClick={() => setDrawerOpen(true)}
-        >
-          Create Ticket
-        </Button>
-      </Stack>
-      {!isLoading && (
-        <Stack direction="row" justifyContent="flex-end">
+    <Box sx={{ p: '18px 18px 28px', fontFamily: 'Instrument Sans, sans-serif' }}>
+      <Stack spacing={1.6}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" spacing={1.2}>
+          <Typography sx={{ fontSize: '1.05rem', fontWeight: 600, color: '#232b34' }}>
+            Facing an issue? Raise a ticket.
+          </Typography>
           <Button
-            href="https://wa.me/919217553934?text=Hi%2C%20I%27m%20a%20seller%20and%20I%20need%20some%20assistance.%20Can%20you%20please%20help%3F"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="outlined"
-            color="success"
-            startIcon={<FaWhatsapp />}
+            onClick={() => setDrawerOpen(true)}
+            startIcon={<FiPlus />}
             sx={{
+              alignSelf: { xs: 'flex-start', sm: 'center' },
+              minHeight: 38,
+              px: 2.2,
+              borderRadius: '6px',
               textTransform: 'none',
-              mt: 1,
-              color: 'green',
+              fontSize: '0.82rem',
+              fontWeight: 700,
+              background: brand.accent,
+              color: '#fff',
             }}
           >
-            Get Help on WhatsApp
+            Add Ticket
           </Button>
         </Stack>
-      )}
 
-      {isLoading ? (
-        <TableSkeleton />
-      ) : (
-        <SupportTicketList
-          rows={tickets?.data ?? []}
-          currentPage={page}
-          rowsPerPage={rowsPerPage}
-          totalCount={tickets?.totalCount ?? 0}
-          onPageChange={(newPage) => setPage(newPage)}
-          onRowsPerPageChange={(rows) => {
-            setRowsPerPage(rows)
-            setPage(1)
-          }}
-        />
-      )}
+        <Box sx={{ ...cardSx, p: '14px 16px 16px' }}>
+          <Stack
+            className="wrapperdz-filtz mb-3"
+            direction={{ xs: 'column', xl: 'row' }}
+            spacing={1.25}
+            flexWrap="wrap"
+            useFlexGap
+            alignItems={{ xl: 'flex-end' }}
+          >
+            <Box sx={{ minWidth: 170 }}>
+              <Typography sx={{ fontSize: '0.77rem', fontWeight: 500, color: '#111', mb: 0.55 }}>
+                Date Type
+              </Typography>
+              <TextField
+                select
+                value={dateType}
+                onChange={(e) => setDateType(e.target.value)}
+                sx={fieldSx}
+                SelectProps={{ IconComponent: FiChevronDown }}
+              >
+                {['Created Date', 'Updated Date', 'Closed Date'].map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+
+            <Box sx={{ minWidth: 320 }}>
+              <Typography sx={{ fontSize: '0.77rem', fontWeight: 500, color: '#111', mb: 0.55 }}>
+                Select Date
+              </Typography>
+              <TextField
+                value="17 Mar, 2026 12:00 am - 17 Apr, 2026 10:28 am"
+                sx={fieldSx}
+                InputProps={{ readOnly: true }}
+              />
+            </Box>
+
+            <Box sx={{ minWidth: 150 }}>
+              <Typography sx={{ fontSize: '0.77rem', fontWeight: 500, color: '#111', mb: 0.55 }}>
+                Priority
+              </Typography>
+              <TextField
+                select
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+                sx={fieldSx}
+                SelectProps={{ IconComponent: FiChevronDown }}
+              >
+                <MenuItem value="">Select</MenuItem>
+                <MenuItem value="High">High</MenuItem>
+                <MenuItem value="Medium">Medium</MenuItem>
+                <MenuItem value="Low">Low</MenuItem>
+              </TextField>
+            </Box>
+
+            <Box sx={{ minWidth: 150 }}>
+              <Typography sx={{ fontSize: '0.77rem', fontWeight: 500, color: '#111', mb: 0.55 }}>
+                Ticket Aging
+              </Typography>
+              <TextField
+                select
+                value={aging}
+                onChange={(e) => setAging(e.target.value)}
+                sx={fieldSx}
+                SelectProps={{ IconComponent: FiChevronDown }}
+              >
+                <MenuItem value="">Select</MenuItem>
+                <MenuItem value="0-24h">0-24h</MenuItem>
+                <MenuItem value="1-3d">1-3 days</MenuItem>
+                <MenuItem value="3d+">3+ days</MenuItem>
+              </TextField>
+            </Box>
+
+            <Box sx={{ minWidth: 320, flex: 1 }}>
+              <Typography sx={{ fontSize: '0.77rem', fontWeight: 500, color: '#111', mb: 0.55 }}>
+                Search Type
+              </Typography>
+              <Stack direction="row" spacing={0}>
+                <TextField
+                  select
+                  value={searchType}
+                  onChange={(e) => setSearchType(e.target.value)}
+                  sx={{
+                    ...fieldSx,
+                    minWidth: 120,
+                    '& .MuiOutlinedInput-root': {
+                      ...fieldSx['& .MuiOutlinedInput-root'],
+                      borderRadius: '8px 0 0 8px',
+                    },
+                  }}
+                  SelectProps={{ IconComponent: FiChevronDown }}
+                >
+                  <MenuItem value="">Select</MenuItem>
+                  <MenuItem value="Ticket ID">Ticket ID</MenuItem>
+                  <MenuItem value="Order ID">Order ID</MenuItem>
+                  <MenuItem value="Subject">Subject</MenuItem>
+                </TextField>
+                <TextField
+                  multiline
+                  minRows={1}
+                  maxRows={1}
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  placeholder="Enter your input"
+                  sx={{
+                    ...fieldSx,
+                    flex: 1,
+                    '& .MuiOutlinedInput-root': {
+                      ...fieldSx['& .MuiOutlinedInput-root'],
+                      borderRadius: '0 8px 8px 0',
+                    },
+                  }}
+                />
+              </Stack>
+            </Box>
+
+            <Stack direction="row" spacing={1}>
+              <Button
+                startIcon={<FiSearch />}
+                sx={{
+                  minHeight: 40,
+                  borderRadius: '8px',
+                  px: 1.8,
+                  textTransform: 'none',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  background: brand.accent,
+                  color: '#fff',
+                }}
+              >
+                Search
+              </Button>
+              <Button
+                startIcon={<FiRefreshCw />}
+                onClick={() => {
+                  setPriority('')
+                  setAging('')
+                  setSearchType('')
+                  setSearchValue('')
+                }}
+                sx={{
+                  minHeight: 40,
+                  borderRadius: '8px',
+                  px: 1.8,
+                  textTransform: 'none',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  border: '1px solid #ece9f1',
+                  color: '#27303f',
+                  background: '#fff',
+                }}
+              >
+                Reset
+              </Button>
+            </Stack>
+          </Stack>
+
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {ticketTabs.map((tab, index) => {
+              const active = activeTab === tab || (!activeTab && index === 0)
+              return (
+                <Box
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  sx={{
+                    minHeight: 40,
+                    px: 2.1,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    borderRadius: '999px',
+                    fontSize: '0.81rem',
+                    fontWeight: active ? 700 : 600,
+                    color: active ? '#fff' : '#425062',
+                    background: active ? '#111' : '#f5f7fa',
+                    cursor: 'pointer',
+                    transition: 'all 180ms ease',
+                  }}
+                >
+                  {tab}
+                </Box>
+              )
+            })}
+          </Box>
+        </Box>
+
+        <Box sx={{ ...cardSx, overflow: 'hidden' }}>
+          <Box className="warpper___001565 summary-actions" sx={{ px: 2.25, pt: 2, pb: 1.25 }}>
+            <Typography sx={{ fontSize: '1.2rem', fontWeight: 600, color: '#222a33' }}>
+              All Tickets
+            </Typography>
+          </Box>
+
+          <Box sx={{ px: 2.25, pb: 1.2 }}>
+            <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={1}>
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Typography sx={{ fontSize: '0.82rem', color: '#232c39' }}>Items Per Page:</Typography>
+                <TextField
+                  select
+                  value="50"
+                  sx={{ ...fieldSx, width: 78 }}
+                  SelectProps={{ IconComponent: FiChevronDown }}
+                >
+                  <MenuItem value="50">50</MenuItem>
+                </TextField>
+              </Stack>
+              <Typography sx={{ fontSize: '0.81rem', color: '#8a93a1' }}>1</Typography>
+            </Stack>
+          </Box>
+
+          <TableContainer sx={{ background: '#f8fafc' }}>
+            <Table sx={{ minWidth: 1050 }}>
+              <TableHead>
+                <TableRow sx={{ background: '#fff' }}>
+                  {['S.No.', 'Ticket ID', 'Created On', 'Order Details', 'Subject', 'Remarks', 'Aging', 'Last Update', 'Action'].map((column) => (
+                    <TableCell
+                      key={column}
+                      sx={{
+                        py: 1.55,
+                        px: 1.8,
+                        borderBottom: '1px solid #edf0f4',
+                        color: '#2d3748',
+                        fontSize: '0.82rem',
+                        fontWeight: 700,
+                        fontFamily: 'Instrument Sans, sans-serif',
+                        textAlign: column === 'S.No.' || column === 'Action' ? 'center' : 'left',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {column}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.length === 0 ? (
+                  <TableRow sx={{ background: '#fff' }}>
+                    <TableCell
+                      colSpan={9}
+                      sx={{
+                        py: 5,
+                        textAlign: 'center',
+                        color: '#6e7784',
+                        fontSize: '0.88rem',
+                        fontFamily: 'Instrument Sans, sans-serif',
+                        borderBottom: 'none',
+                      }}
+                    >
+                      No data
+                    </TableCell>
+                  </TableRow>
+                ) : null}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <Box sx={{ px: 2.25, py: 1.5 }}>
+            <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={1}>
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Typography sx={{ fontSize: '0.82rem', color: '#232c39' }}>Items Per Page:</Typography>
+                <TextField
+                  select
+                  value="50"
+                  sx={{ ...fieldSx, width: 78 }}
+                  SelectProps={{ IconComponent: FiChevronDown }}
+                >
+                  <MenuItem value="50">50</MenuItem>
+                </TextField>
+              </Stack>
+              <Typography sx={{ fontSize: '0.81rem', color: '#8a93a1' }}>1</Typography>
+            </Stack>
+          </Box>
+        </Box>
+      </Stack>
 
       <CustomDrawer
         title="Create Support Ticket"
@@ -191,6 +378,8 @@ export const SupportTicketsPage = () => {
           />
         </Stack>
       </CustomDrawer>
-    </Stack>
+    </Box>
   )
 }
+
+export default SupportTicketsPage

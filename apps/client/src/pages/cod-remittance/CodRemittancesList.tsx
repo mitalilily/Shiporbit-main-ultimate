@@ -1,34 +1,34 @@
-import { alpha, Box, Button, MenuItem, Stack, TextField, Typography } from '@mui/material'
-import { HiOutlineDownload, HiOutlineUpload } from 'react-icons/hi'
+import { Box, Button, MenuItem, Stack, TextField, Typography } from '@mui/material'
+import { FiCalendar, FiDownload, FiUpload } from 'react-icons/fi'
 import { NavLink, useLocation } from 'react-router-dom'
 import { brand } from '../../theme/brand'
 
 const panelSx = {
   bgcolor: '#FFFFFF',
-  border: '1px solid #e7ebf0',
-  borderRadius: '10px',
-  boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+  border: '1px solid #e5e7eb',
+  borderRadius: '14px',
+  boxShadow: '0 2px 6px rgba(15, 23, 42, 0.04)',
 }
 
 const topTabs = [
-  { label: 'COD', path: '/billing/cod' },
+  { label: "COD's", path: '/billing/cod' },
   { label: 'Order Invoice', path: '/billing/orderinvoice' },
   { label: 'Communication Invoice', path: '/billing/communicationinvoice' },
 ]
 
-const miniFieldSx = {
+const fieldSx = {
   '& .MuiOutlinedInput-root': {
-    borderRadius: '4px',
-    minHeight: 32,
-    fontSize: '0.71rem',
-    '& fieldset': { borderColor: '#eceff4' },
+    minHeight: 42,
+    borderRadius: '10px',
+    fontSize: '0.9rem',
+    '& fieldset': { borderColor: '#e5e7eb' },
   },
 }
 
 const chartLegend = [
-  { label: 'Remitted', color: '#71c96a' },
-  { label: 'Accruing', color: '#f4d575' },
-  { label: 'Generated', color: '#a5bdf8' },
+  { label: 'Remitted', color: '#16a34a' },
+  { label: 'Accruing', color: '#d97706' },
+  { label: 'Generated', color: '#2563eb' },
 ]
 
 const isPath = (pathname: string, path: string) => pathname === path || pathname.startsWith(`${path}/`)
@@ -37,10 +37,15 @@ export default function CodRemittancesList() {
   const location = useLocation()
 
   return (
-    <Box sx={{ pb: 2 }}>
-      <Stack spacing={1.15}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Stack direction="row" spacing={0.45}>
+    <Box sx={{ p: '18px 18px 26px', fontFamily: 'Instrument Sans, sans-serif' }}>
+      <Stack spacing={2}>
+        <Stack
+          direction={{ xs: 'column', xl: 'row' }}
+          alignItems={{ xl: 'center' }}
+          justifyContent="space-between"
+          sx={{ ...panelSx, p: 1.25, gap: 1.2 }}
+        >
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             {topTabs.map((tab) => {
               const active = isPath(location.pathname, tab.path)
               return (
@@ -49,15 +54,15 @@ export default function CodRemittancesList() {
                   component={NavLink}
                   to={tab.path}
                   sx={{
-                    minHeight: 26,
-                    px: 1.05,
-                    borderRadius: '4px',
+                    minHeight: 40,
+                    px: 2,
+                    borderRadius: '10px',
                     textTransform: 'none',
-                    fontSize: '0.63rem',
+                    fontSize: '0.9rem',
                     fontWeight: 700,
-                    color: active ? '#FFFFFF' : '#525a66',
-                    bgcolor: active ? '#111111' : '#f6f7f9',
-                    border: active ? '1px solid #111111' : '1px solid #eceff4',
+                    color: active ? '#FFFFFF' : '#4b5563',
+                    bgcolor: active ? '#111827' : '#f5f7fb',
+                    border: active ? '1px solid #111827' : '1px solid #e5e7eb',
                   }}
                 >
                   {tab.label}
@@ -66,45 +71,44 @@ export default function CodRemittancesList() {
             })}
           </Stack>
 
-          <Stack direction="row" spacing={0.65}>
-            <TextField select value="AWB" sx={{ ...miniFieldSx, width: 72 }}>
-              <MenuItem value="AWB">AWB</MenuItem>
-            </TextField>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             <Button
-              startIcon={<HiOutlineDownload size={12} />}
+              startIcon={<FiDownload size={16} />}
               sx={{
-                minHeight: 32,
-                px: 1,
-                borderRadius: '4px',
+                minHeight: 40,
+                px: 1.6,
+                borderRadius: '10px',
                 textTransform: 'none',
-                fontSize: '0.66rem',
-                color: '#6b7280',
-                border: '1px solid #eceff4',
+                fontSize: '0.85rem',
+                color: '#374151',
+                border: '1px solid #e5e7eb',
               }}
             >
               Download Sample File
             </Button>
             <Button
-              startIcon={<HiOutlineUpload size={12} />}
+              component="label"
+              startIcon={<FiUpload size={16} />}
               sx={{
-                minHeight: 32,
-                px: 1,
-                borderRadius: '4px',
+                minHeight: 40,
+                px: 1.6,
+                borderRadius: '10px',
                 textTransform: 'none',
-                fontSize: '0.66rem',
-                color: '#6b7280',
-                border: '1px solid #eceff4',
+                fontSize: '0.85rem',
+                color: '#374151',
+                border: '1px solid #e5e7eb',
               }}
             >
-              Choose CSV File
+              Upload
+              <input type="file" accept=".csv" hidden />
             </Button>
             <Button
               sx={{
-                minHeight: 32,
-                px: 1.15,
-                borderRadius: '4px',
+                minHeight: 40,
+                px: 2.2,
+                borderRadius: '10px',
                 textTransform: 'none',
-                fontSize: '0.68rem',
+                fontSize: '0.86rem',
                 fontWeight: 700,
                 color: '#FFFFFF',
                 bgcolor: brand.accent,
@@ -115,18 +119,28 @@ export default function CodRemittancesList() {
           </Stack>
         </Stack>
 
-        <Stack direction="row" spacing={0.8} alignItems="center">
-          <TextField select value="COD Date" sx={{ ...miniFieldSx, width: 116 }}>
+        <Stack
+          direction={{ xs: 'column', lg: 'row' }}
+          spacing={1.25}
+          alignItems={{ lg: 'center' }}
+          sx={{ ...panelSx, p: 1.25 }}
+        >
+          <TextField select value="COD Date" sx={{ ...fieldSx, minWidth: 150 }}>
             <MenuItem value="COD Date">COD Date</MenuItem>
           </TextField>
-          <TextField value="18 Mar 2026 12:00 am - 16 Apr 2026 09:31 pm" sx={{ ...miniFieldSx, width: 248 }} />
+          <TextField
+            value="18 Mar, 2026 12:00 am - 16 Apr, 2026 09:31 pm"
+            sx={{ ...fieldSx, flex: 1 }}
+            InputProps={{ endAdornment: <FiCalendar size={16} color="#6b7280" /> }}
+          />
           <Button
             sx={{
-              minHeight: 32,
-              px: 1.2,
-              borderRadius: '4px',
+              minHeight: 42,
+              px: 2.2,
+              borderRadius: '10px',
               textTransform: 'none',
-              fontSize: '0.68rem',
+              fontSize: '0.86rem',
+              fontWeight: 700,
               color: '#FFFFFF',
               bgcolor: brand.accent,
             }}
@@ -135,13 +149,14 @@ export default function CodRemittancesList() {
           </Button>
           <Button
             sx={{
-              minHeight: 32,
-              px: 1.1,
-              borderRadius: '4px',
+              minHeight: 42,
+              px: 2,
+              borderRadius: '10px',
               textTransform: 'none',
-              fontSize: '0.68rem',
-              color: '#6b7280',
-              border: '1px solid #eceff4',
+              fontSize: '0.86rem',
+              fontWeight: 700,
+              color: '#4b5563',
+              border: '1px solid #e5e7eb',
             }}
           >
             Reset
@@ -151,55 +166,32 @@ export default function CodRemittancesList() {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: '0.72fr 2.1fr',
-            gap: 1,
+            gridTemplateColumns: { xs: '1fr', lg: '0.9fr 2.1fr' },
+            gap: 1.5,
           }}
         >
           <Box
-            sx={{
-              ...panelSx,
-              minHeight: 188,
-              display: 'grid',
-              placeItems: 'center',
-            }}
+            sx={{ ...panelSx, minHeight: 250, display: 'grid', placeItems: 'center', color: '#9ca3af', fontSize: '0.96rem' }}
           >
-            <Stack alignItems="center" spacing={0.6}>
-              <Box
-                sx={{
-                  width: 52,
-                  height: 40,
-                  borderRadius: 2,
-                  bgcolor: '#f6f7f9',
-                  display: 'grid',
-                  placeItems: 'center',
-                  color: '#c5ccd6',
-                  fontSize: 24,
-                }}
-              >
-                □
-              </Box>
-              <Typography sx={{ fontSize: '0.66rem', color: '#a0a8b4' }}>No data available</Typography>
-            </Stack>
+            No data available
           </Box>
 
-          <Box sx={{ ...panelSx, p: 1.1, minHeight: 188 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1.1}>
-              <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: '#2f343c' }}>
-                COD Remitted
-              </Typography>
-              <Stack direction="row" spacing={0.65}>
+          <Box sx={{ ...panelSx, p: 2, minHeight: 250 }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography sx={{ fontSize: '1.2rem', fontWeight: 700, color: '#111827' }}>COD Remitted</Typography>
+              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                 {chartLegend.map((item) => (
                   <Box
                     key={item.label}
                     sx={{
-                      px: 1.05,
-                      py: 0.5,
-                      borderRadius: 999,
-                      bgcolor: alpha(item.color, 0.16),
-                      color: item.color,
-                      border: `1px solid ${alpha(item.color, 0.34)}`,
-                      fontSize: '0.62rem',
+                      px: 1.5,
+                      py: 0.55,
+                      borderRadius: '999px',
+                      fontSize: '0.78rem',
                       fontWeight: 700,
+                      color: item.color,
+                      border: `1px solid ${item.color}33`,
+                      background: `${item.color}14`,
                     }}
                   >
                     {item.label}
@@ -208,9 +200,9 @@ export default function CodRemittancesList() {
               </Stack>
             </Stack>
 
-            <Stack spacing={1.05}>
-              {['₹10,000', '₹8,000', '₹6,000', '₹4,000', '₹2,000', '₹0'].map((label) => (
-                <Typography key={label} sx={{ fontSize: '0.62rem', color: '#b1b8c2' }}>
+            <Stack spacing={1.1} sx={{ color: '#9ca3af', fontSize: '0.84rem' }}>
+              {['Rs 10,000', 'Rs 8,000', 'Rs 6,000', 'Rs 4,000', 'Rs 2,000', 'Rs 0'].map((label) => (
+                <Typography key={label} sx={{ fontSize: '0.84rem' }}>
                   {label}
                 </Typography>
               ))}
@@ -218,67 +210,45 @@ export default function CodRemittancesList() {
           </Box>
         </Box>
 
-        <Box sx={{ ...panelSx, p: 1.1 }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1.1}>
-            <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: '#2f343c' }}>
-              View COD History
-            </Typography>
-            <Stack direction="row" spacing={0.55}>
+        <Box sx={{ ...panelSx, p: 2 }}>
+          <Stack direction={{ xs: 'column', lg: 'row' }} justifyContent="space-between" spacing={1.2} mb={1.4}>
+            <Typography sx={{ fontSize: '1.05rem', fontWeight: 700, color: '#111827' }}>View COD History</Typography>
+            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
               <Button
-                startIcon={<HiOutlineDownload size={12} />}
-                sx={{
-                  minHeight: 28,
-                  px: 1,
-                  borderRadius: '4px',
-                  textTransform: 'none',
-                  fontSize: '0.66rem',
-                  color: '#6b7280',
-                  border: '1px solid #eceff4',
-                }}
+                startIcon={<FiDownload size={16} />}
+                sx={{ minHeight: 40, px: 1.8, borderRadius: '10px', textTransform: 'none', fontSize: '0.84rem', color: '#374151', border: '1px solid #e5e7eb' }}
               >
                 All COD Export at AWB Level
               </Button>
               <Button
-                sx={{
-                  minHeight: 28,
-                  px: 1,
-                  borderRadius: '4px',
-                  textTransform: 'none',
-                  fontSize: '0.66rem',
-                  color: '#6b7280',
-                  border: '1px solid #eceff4',
-                }}
+                sx={{ minHeight: 40, px: 1.8, borderRadius: '10px', textTransform: 'none', fontSize: '0.84rem', color: '#374151', border: '1px solid #e5e7eb' }}
               >
                 TRN COD Export
               </Button>
             </Stack>
           </Stack>
 
-          <Stack direction="row" justifyContent="space-between" alignItems="center" mb={0.8}>
-            <TextField select value="Item Per Page 100" sx={{ ...miniFieldSx, width: 120 }}>
-              <MenuItem value="Item Per Page 100">Item Per Page 100</MenuItem>
-            </TextField>
-            <Stack direction="row" spacing={0.4}>
-              <Button sx={{ minWidth: 24, minHeight: 24, border: '1px solid #eceff4', borderRadius: '4px' }}>‹</Button>
-              <Button sx={{ minWidth: 24, minHeight: 24, border: '1px solid #eceff4', borderRadius: '4px' }}>1</Button>
-              <Button sx={{ minWidth: 24, minHeight: 24, border: '1px solid #eceff4', borderRadius: '4px' }}>›</Button>
+          <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={1.2} mb={1.2}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography sx={{ fontSize: '0.82rem', color: '#111827' }}>Item Per Page:</Typography>
+              <TextField select value="100" sx={{ ...fieldSx, minWidth: 90 }}>
+                <MenuItem value="100">100</MenuItem>
+              </TextField>
             </Stack>
+            <Typography sx={{ fontSize: '0.84rem', color: '#6b7280' }}>Page 1 of 1</Typography>
           </Stack>
 
-          <Box sx={{ overflowX: 'auto' }}>
+          <Box sx={{ overflowX: 'auto', border: '1px solid #e5e7eb', borderRadius: '10px', background: '#fff' }}>
             <Box
               sx={{
-                minWidth: 980,
+                minWidth: 1240,
                 display: 'grid',
-                gridTemplateColumns:
-                  '34px repeat(9, minmax(78px, 1fr)) 70px',
+                gridTemplateColumns: '50px repeat(10, minmax(98px, 1fr))',
                 alignItems: 'center',
-                borderTop: '1px solid #eef1f5',
-                borderBottom: '1px solid #eef1f5',
               }}
             >
-              <Box sx={{ py: 1.05, px: 0.6 }}>
-                <Box sx={{ width: 12, height: 12, border: '1px solid #d5dbe4', borderRadius: '2px' }} />
+              <Box sx={{ py: 1.25, px: 1 }}>
+                <Box sx={{ width: 14, height: 14, border: '1px solid #d1d5db', borderRadius: '3px' }} />
               </Box>
               {[
                 'COD ID / TRN',
@@ -288,62 +258,23 @@ export default function CodRemittancesList() {
                 'Refund',
                 'Delivered to RTO Reversal',
                 'Adjust in Wallet',
-                'Advance Paid/ Excess Paid',
+                'Advance Paid / Excess Paid',
                 'Invoice Adjust',
                 'Action',
               ].map((header) => (
                 <Typography
                   key={header}
-                  sx={{
-                    py: 1.05,
-                    px: 0.55,
-                    fontSize: '0.6rem',
-                    fontWeight: 700,
-                    color: '#5d6673',
-                  }}
+                  sx={{ py: 1.25, px: 0.9, fontSize: '0.82rem', fontWeight: 700, color: '#374151' }}
                 >
                   {header}
                 </Typography>
               ))}
             </Box>
-          </Box>
 
-          <Box
-            sx={{
-              minHeight: 182,
-              display: 'grid',
-              placeItems: 'center',
-            }}
-          >
-            <Stack alignItems="center" spacing={0.6}>
-              <Box
-                sx={{
-                  width: 44,
-                  height: 34,
-                  borderRadius: 2,
-                  bgcolor: '#f6f7f9',
-                  display: 'grid',
-                  placeItems: 'center',
-                  color: '#d0d6de',
-                  fontSize: 22,
-                }}
-              >
-                ▭
-              </Box>
-              <Typography sx={{ fontSize: '0.66rem', color: '#a0a8b4' }}>No data</Typography>
-            </Stack>
+            <Box sx={{ minHeight: 220, display: 'grid', placeItems: 'center', color: '#9ca3af', fontSize: '0.92rem' }}>
+              No data
+            </Box>
           </Box>
-
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <TextField select value="Item Per Page 100" sx={{ ...miniFieldSx, width: 120 }}>
-              <MenuItem value="Item Per Page 100">Item Per Page 100</MenuItem>
-            </TextField>
-            <Stack direction="row" spacing={0.4}>
-              <Button sx={{ minWidth: 24, minHeight: 24, border: '1px solid #eceff4', borderRadius: '4px' }}>‹</Button>
-              <Button sx={{ minWidth: 24, minHeight: 24, border: '1px solid #eceff4', borderRadius: '4px' }}>1</Button>
-              <Button sx={{ minWidth: 24, minHeight: 24, border: '1px solid #eceff4', borderRadius: '4px' }}>›</Button>
-            </Stack>
-          </Stack>
         </Box>
       </Stack>
     </Box>

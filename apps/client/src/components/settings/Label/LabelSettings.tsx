@@ -23,9 +23,9 @@ export type LabelSettingsForm = {
 
 const panelSx = {
   bgcolor: '#FFFFFF',
-  border: '1px solid #e7ebf0',
-  borderRadius: '10px',
-  boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+  border: '1px solid #ece9f1',
+  borderRadius: '14px',
+  boxShadow: 'none',
 }
 
 const tabs = [
@@ -57,9 +57,9 @@ const isPath = (pathname: string, path: string) => pathname === path || pathname
 const previewLabel = {
   company: 'Kailash Company',
   barcode: '347846332613',
-  shipTo: ['Kailash', '9876543211', 'noida, noida', 'Noida, Uttar pradeshPin - 201304'],
+  shipTo: ['Kailash', '9876543211', 'noida, noida', 'Noida, Uttar pradesh', 'Pin - 201304'],
   orderId: '10879389',
-  refInvoice: '5838799345922',
+  refInvoice: '5938799345922',
   orderNumber: '1001',
   date: '01-01-1970',
   invoiceValue: 'Rs',
@@ -85,9 +85,9 @@ export default function LabelSettingsPage() {
   const toggleRow = (key: string) => setToggles((prev) => ({ ...prev, [key]: !prev[key] }))
 
   return (
-    <Box sx={{ pb: 2 }}>
-      <Stack spacing={1.15}>
-        <Stack direction="row" spacing={0.45} sx={{ flexWrap: 'wrap' }}>
+    <Box sx={{ p: '18px 18px 28px', fontFamily: 'Instrument Sans, sans-serif' }}>
+      <Stack spacing={1.6}>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
           {tabs.map((tab) => {
             const active = activeTab === tab.path
             return (
@@ -96,15 +96,15 @@ export default function LabelSettingsPage() {
                 component={NavLink}
                 to={tab.path}
                 sx={{
-                  minHeight: 26,
-                  px: 1.05,
-                  borderRadius: '4px',
+                  minHeight: 38,
+                  px: 1.55,
+                  borderRadius: '999px',
                   textTransform: 'none',
-                  fontSize: '0.63rem',
-                  fontWeight: 700,
+                  fontSize: '0.8rem',
+                  fontWeight: active ? 700 : 600,
                   color: active ? '#FFFFFF' : '#6b7280',
-                  bgcolor: active ? '#111111' : '#f6f7f9',
-                  border: active ? '1px solid #111111' : '1px solid #eceff4',
+                  bgcolor: active ? '#111111' : '#f5f7fa',
+                  border: '1px solid #ece9f1',
                 }}
               >
                 {tab.label}
@@ -113,10 +113,16 @@ export default function LabelSettingsPage() {
           })}
         </Stack>
 
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack
+          direction={{ xs: 'column', xl: 'row' }}
+          justifyContent="space-between"
+          alignItems={{ xl: 'center' }}
+          spacing={1.6}
+          sx={{ ...panelSx, p: '16px 18px' }}
+        >
           <Stack spacing={0.8}>
-            <Stack direction="row" spacing={1.4} alignItems="center">
-              <Typography sx={{ fontSize: '0.66rem', fontWeight: 700, color: '#4b5563' }}>
+            <Stack direction={{ xs: 'column', lg: 'row' }} spacing={1.4} alignItems={{ lg: 'center' }}>
+              <Typography sx={{ fontSize: '0.9rem', fontWeight: 700, color: '#374151', minWidth: 86 }}>
                 Label Size:
               </Typography>
               {['Old Format', '4 x 4', '4.5 x 6.25', '4 x 6', 'Product Symmetric', 'Hsn Label'].map((option) => {
@@ -132,22 +138,22 @@ export default function LabelSettingsPage() {
                       minWidth: 'auto',
                       p: 0,
                       textTransform: 'none',
-                      fontSize: '0.63rem',
+                      fontSize: '0.82rem',
                       color: active ? brand.accent : '#7b8390',
                     }}
                   >
                     <Box
                       sx={{
-                        width: 9,
-                        height: 9,
+                        width: 16,
+                        height: 16,
                         borderRadius: 999,
-                        border: `1px solid ${active ? brand.accent : '#c7ccd6'}`,
-                        mr: 0.45,
+                        border: `1.5px solid ${active ? brand.accent : '#c7ccd6'}`,
+                        mr: 0.8,
                         display: 'inline-grid',
                         placeItems: 'center',
                       }}
                     >
-                      {active ? <Box sx={{ width: 5, height: 5, borderRadius: 999, bgcolor: brand.accent }} /> : null}
+                      {active ? <Box sx={{ width: 8, height: 8, borderRadius: 999, bgcolor: brand.accent }} /> : null}
                     </Box>
                     {option}
                   </Button>
@@ -155,8 +161,8 @@ export default function LabelSettingsPage() {
               })}
             </Stack>
 
-            <Stack direction="row" spacing={1.4} alignItems="center">
-              <Typography sx={{ fontSize: '0.66rem', fontWeight: 700, color: '#4b5563' }}>
+            <Stack direction={{ xs: 'column', lg: 'row' }} spacing={1.4} alignItems={{ lg: 'center' }}>
+              <Typography sx={{ fontSize: '0.9rem', fontWeight: 700, color: '#374151', minWidth: 86 }}>
                 File Type:
               </Typography>
               {['HTML', 'PDF'].map((option) => {
@@ -169,22 +175,22 @@ export default function LabelSettingsPage() {
                       minWidth: 'auto',
                       p: 0,
                       textTransform: 'none',
-                      fontSize: '0.63rem',
+                      fontSize: '0.82rem',
                       color: active ? brand.accent : '#7b8390',
                     }}
                   >
                     <Box
                       sx={{
-                        width: 9,
-                        height: 9,
+                        width: 16,
+                        height: 16,
                         borderRadius: 999,
-                        border: `1px solid ${active ? brand.accent : '#c7ccd6'}`,
-                        mr: 0.45,
+                        border: `1.5px solid ${active ? brand.accent : '#c7ccd6'}`,
+                        mr: 0.8,
                         display: 'inline-grid',
                         placeItems: 'center',
                       }}
                     >
-                      {active ? <Box sx={{ width: 5, height: 5, borderRadius: 999, bgcolor: brand.accent }} /> : null}
+                      {active ? <Box sx={{ width: 8, height: 8, borderRadius: 999, bgcolor: brand.accent }} /> : null}
                     </Box>
                     {option}
                   </Button>
@@ -196,11 +202,11 @@ export default function LabelSettingsPage() {
           <Button
             startIcon={<HiOutlineSave size={12} />}
             sx={{
-              minHeight: 30,
-              px: 1.25,
-              borderRadius: '4px',
+              minHeight: 40,
+              px: 2,
+              borderRadius: '10px',
               textTransform: 'none',
-              fontSize: '0.68rem',
+              fontSize: '0.84rem',
               fontWeight: 700,
               color: '#FFFFFF',
               bgcolor: brand.accent,
@@ -213,12 +219,12 @@ export default function LabelSettingsPage() {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: '1.02fr 1fr',
-            gap: 1,
+            gridTemplateColumns: { xs: '1fr', xl: '1.08fr 0.92fr' },
+            gap: 1.5,
           }}
         >
-          <Box sx={{ ...panelSx, p: 1.1 }}>
-            <Stack direction="row" spacing={0.8} alignItems="center" mb={1}>
+          <Box sx={{ ...panelSx, p: '16px 18px' }}>
+            <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.1} alignItems={{ md: 'flex-end' }} mb={1.4}>
               <TextField
                 label="Display Name"
                 value={displayName}
@@ -226,12 +232,12 @@ export default function LabelSettingsPage() {
                 sx={{
                   flex: 1,
                   '& .MuiOutlinedInput-root': {
-                    minHeight: 34,
-                    fontSize: '0.72rem',
-                    borderRadius: '4px',
-                    '& fieldset': { borderColor: '#eceff4' },
+                    minHeight: 42,
+                    fontSize: '0.84rem',
+                    borderRadius: '8px',
+                    '& fieldset': { borderColor: '#e7ebf0' },
                   },
-                  '& .MuiInputLabel-root': { fontSize: '0.72rem' },
+                  '& .MuiInputLabel-root': { fontSize: '0.78rem' },
                 }}
               />
               <TextField
@@ -241,34 +247,35 @@ export default function LabelSettingsPage() {
                 sx={{
                   flex: 1,
                   '& .MuiOutlinedInput-root': {
-                    minHeight: 34,
-                    fontSize: '0.72rem',
-                    borderRadius: '4px',
-                    '& fieldset': { borderColor: '#eceff4' },
+                    minHeight: 42,
+                    fontSize: '0.84rem',
+                    borderRadius: '8px',
+                    '& fieldset': { borderColor: '#e7ebf0' },
                   },
-                  '& .MuiInputLabel-root': { fontSize: '0.72rem' },
+                  '& .MuiInputLabel-root': { fontSize: '0.78rem' },
                 }}
               />
               <Button
                 sx={{
-                  minHeight: 34,
-                  px: 1.25,
-                  borderRadius: '4px',
+                  minHeight: 42,
+                  px: 1.8,
+                  borderRadius: '8px',
                   textTransform: 'none',
-                  fontSize: '0.66rem',
-                  color: '#6b7280',
-                  border: '1px solid #eceff4',
+                  fontSize: '0.82rem',
+                  color: '#20262d',
+                  border: '1px solid #e7ebf0',
                 }}
               >
                 Choose file
               </Button>
               <Button
                 sx={{
-                  minHeight: 34,
-                  px: 1.25,
-                  borderRadius: '4px',
+                  minHeight: 42,
+                  px: 2,
+                  borderRadius: '8px',
                   textTransform: 'none',
-                  fontSize: '0.66rem',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
                   color: '#FFFFFF',
                   bgcolor: brand.accent,
                 }}
@@ -277,11 +284,11 @@ export default function LabelSettingsPage() {
               </Button>
             </Stack>
 
-            <Box sx={{ border: '1px solid #eef1f5', borderRadius: '8px', overflow: 'hidden' }}>
+            <Box sx={{ border: '1px solid #eef1f5', borderRadius: '12px', overflow: 'hidden' }}>
               <Box
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: '38px 1.1fr 1.1fr 78px',
+                  gridTemplateColumns: '54px 1.3fr 1.3fr 96px',
                   bgcolor: '#fafbfc',
                   borderBottom: '1px solid #eef1f5',
                 }}
@@ -290,9 +297,9 @@ export default function LabelSettingsPage() {
                   <Typography
                     key={header}
                     sx={{
-                      px: 1,
-                      py: 0.9,
-                      fontSize: '0.6rem',
+                      px: 2,
+                      py: 1.15,
+                      fontSize: '0.78rem',
                       fontWeight: 700,
                       color: '#5d6673',
                     }}
@@ -307,21 +314,21 @@ export default function LabelSettingsPage() {
                   key={row}
                   sx={{
                     display: 'grid',
-                    gridTemplateColumns: '38px 1.1fr 1.1fr 78px',
+                    gridTemplateColumns: '54px 1.3fr 1.3fr 96px',
                     alignItems: 'center',
                     borderBottom: index === labelRows.length - 1 ? 'none' : '1px solid #f1f4f7',
                   }}
                 >
-                  <Typography sx={{ px: 1, py: 0.85, fontSize: '0.63rem', color: '#5d6673' }}>
+                  <Typography sx={{ px: 2, py: 1.15, fontSize: '0.79rem', color: '#5d6673' }}>
                     {index + 1}
                   </Typography>
-                  <Typography sx={{ px: 1, py: 0.85, fontSize: '0.63rem', color: '#2f343c' }}>
+                  <Typography sx={{ px: 2, py: 1.15, fontSize: '0.8rem', color: '#2f343c', fontWeight: 600 }}>
                     {row}
                   </Typography>
-                  <Typography sx={{ px: 1, py: 0.85, fontSize: '0.63rem', color: '#7b8390' }}>
-                    {row}
+                  <Typography sx={{ px: 2, py: 1.15, fontSize: '0.79rem', color: '#7b8390' }}>
+                    {row === 'Hide Express Type (Air/Surface)' ? 'Hide Express Type (Air/Surface)' : row}
                   </Typography>
-                  <Box sx={{ px: 1, py: 0.4 }}>
+                  <Box sx={{ px: 2, py: 0.4 }}>
                     <Switch
                       checked={toggles[row]}
                       onChange={() => toggleRow(row)}

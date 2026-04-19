@@ -1,298 +1,360 @@
-// src/pages/client/RateCard.tsx
-
 import {
-  Avatar,
-  Button,
-  Card,
-  CardContent,
+  Box,
   Stack,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from '@mui/material'
 import Papa from 'papaparse'
-import { useState } from 'react'
-import { MdCalculate, MdDownload } from 'react-icons/md'
-import { useNavigate } from 'react-router-dom'
-import { FilterBar, type FilterField } from '../../components/FilterBar'
+import { useMemo, useState } from 'react'
+import { FiDownload } from 'react-icons/fi'
+import { NavLink, useLocation } from 'react-router-dom'
 import PageHeading from '../../components/UI/heading/PageHeading'
-import { SmartTabs } from '../../components/UI/tab/Tabs'
-import type { Column } from '../../components/UI/table/DataTable'
-import DataTable from '../../components/UI/table/DataTable'
-import TableSkeleton from '../../components/UI/table/TableSkeleton'
-import { useAllCouriers, useShippingRates } from '../../hooks/Integrations/useCouriers'
+import { useShippingRates } from '../../hooks/Integrations/useCouriers'
 import { useZones } from '../../hooks/useZones'
-import { courierLogos, defaultLogo } from '../../utils/constants'
+import { brand } from '../../theme/brand'
 
-interface ShippingRate {
+type ShippingRate = {
   id: string | number
   courier_name: string
   mode: string
   min_weight: number
   cod_charges?: number | string
   cod_percent?: number | string
-  other_charges?: number | string
-  rates: {
-    [zone: string]: {
+  rates: Record<
+    string,
+    {
       forward?: number | string
       rto?: number | string
-      description?: string
       forward_per_kg?: number | string
       rto_per_kg?: number | string
       min_weight?: number
     }
+  >
+}
+
+type ZoneItem = {
+  code: string
+  description?: string
+  name: string
+}
+
+const utilityTabs = [
+  { label: 'Rate Calculator', path: '/utility/ratecalculator' },
+  { label: 'Pincode Servicability', path: '/utility/pincode' },
+  { label: 'Rate Card', path: '/utility/ratecard' },
+]
+
+const weightSlabs = ['0.50', '2.00', '5.00', '10.00', '20.00']
+
+const formatCurrency = (value: unknown) => {
+  const numeric = Number(value)
+  return Number.isFinite(numeric) ? `Rs. ${numeric.toFixed(2)}` : 'Rs. NA'
+}
+
+const getZoneRates = (
+  rate: ShippingRate,
+  zone: ZoneItem,
+  shipmentType: 'Forward' | 'RTO',
+): { primary: unknown; additional: unknown } => {
+  const zoneValues = rate.rates?.[zone.name] || {}
+  if (shipmentType === 'RTO') {
+    return {
+      primary: zoneValues.rto ?? zoneValues.rto_per_kg,
+      additional: zoneValues.rto_per_kg ?? zoneValues.rto,
+    }
+  }
+  return {
+    primary: zoneValues.forward ?? zoneValues.forward_per_kg,
+    additional: zoneValues.forward_per_kg ?? zoneValues.forward,
   }
 }
 
-// --- B2C Table ---
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const B2CClientTable = ({ data, zones }: { data: ShippingRate[]; zones: any[] }) => {
-  const columns: Column<ShippingRate>[] = [
-    {
-      id: 'courier_name',
-      label: 'Courier',
-      render: (_, row) => {
-        const logoSrc =
-          Object.entries(courierLogos)?.find(([key]) =>
-            row?.courier_name?.toLowerCase().includes(key.toLowerCase()),
-          )?.[1] ?? defaultLogo
-        return (
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <Avatar
-              src={logoSrc || defaultLogo}
-              alt={row.courier_name}
-              sx={{ width: 24, height: 24 }}
-            />
-            <Typography fontWeight={500}>{row.courier_name}</Typography>
-          </Stack>
-        )
-      },
-    },
-    { id: 'min_weight', label: 'Min Weight (kg)' },
-    ...zones.map(
-      (zone: { code: string; description: string; name: string }) =>
-        ({
-          id: zone.code,
-          label: `${zone.name} (F | RTO)`,
-          label_desc: zone?.description,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          render: (_: any, row: any) => {
-            const rates = row.rates?.[zone.name] || {}
-
-            const forward = rates.forward ?? 'NA'
-            const rto = rates.rto ?? 'NA'
-
-            return `Forward: ₹${forward} | RTO: ₹${rto}`
-          },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } as any),
-    ),
-
-    {
-      id: 'cod',
-      label: 'COD (Charges | %)',
-      render: (_, row) => `₹${row.cod_charges ?? '0'} | ${row.cod_percent ?? '0'}%`,
-    },
-    {
-      id: 'other',
-      label: 'Other Charges',
-      render: (_, row) => `₹${row.other_charges ?? '0'}`,
-    },
-  ]
-
-  return (
-    <DataTable
-      rows={data}
-      columns={columns}
-      title="Shipping Rate Card - B2C"
-      totalCount={data.length}
-    />
-  )
-}
-
-// --- B2B Table ---
-const B2BClientTable = ({
-  data,
-  zones,
-}: {
-  data: ShippingRate[]
-  zones: { code: string; id: string; description: string; name: string }[]
-}) => {
-  if (!data?.length) {
-    return <Typography>No B2B rates available</Typography>
-  }
-
-  return (
-    <Stack spacing={3}>
-      {data.map((courier) => (
-        <Card key={courier.courier_name} sx={{ p: 2 }}>
-          <CardContent>
-            <Stack spacing={1}>
-              <Typography variant="h6">{courier.courier_name}</Typography>
-              <Typography variant="body2">Min Weight: {courier.min_weight} kg</Typography>
-              <Typography variant="body2">
-                COD: ₹{courier.cod_charges ?? '0'} | {courier.cod_percent ?? '0'}%
-              </Typography>
-              <Typography variant="body2">Other: ₹{courier.other_charges ?? '0'}</Typography>
-            </Stack>
-
-            <Table size="small" sx={{ mt: 2 }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Zone</TableCell>
-                  <TableCell>Forward (Per Kg)</TableCell>
-                  <TableCell>RTO (Per Kg)</TableCell>
-                  <TableCell>Min Weight</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {zones.map((zone) => {
-                  const rates = courier.rates?.[zone.name] || {}
-                  return (
-                    <TableRow key={zone.code}>
-                      <TableCell>{zone.name}</TableCell>
-                      <TableCell>₹{rates.forward_per_kg ?? 'NA'}</TableCell>
-                      <TableCell>₹{rates.rto_per_kg ?? 'NA'}</TableCell>
-                      <TableCell>{rates.min_weight ?? courier.min_weight ?? 'NA'} kg</TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      ))}
-    </Stack>
-  )
-}
-
-// --- Main Component ---
 const RateCard = () => {
-  const navigate = useNavigate()
-  const [businessType, setBusinessType] = useState<'b2c' | 'b2b'>('b2c') // 0 = B2C, 1 = B2B
-  const [filters, setFilters] = useState({
-    courier: [] as string[],
-    min_weight: '',
+  const location = useLocation()
+  const isUtilityRoute = location.pathname.startsWith('/utility/')
+  const [mode, setMode] = useState<'surface' | 'air'>('surface')
+  const [shipmentType, setShipmentType] = useState<'Forward' | 'RTO'>('Forward')
+  const [weightSlab, setWeightSlab] = useState('0.50')
+  const { zones: zonesRaw } = useZones('b2c')
+  const zones = useMemo(() => ((zonesRaw as ZoneItem[]) || []).slice(0, 6), [zonesRaw])
+  const { data, isLoading } = useShippingRates({
+    businessType: 'b2c',
+    mode,
+    min_weight: Number(weightSlab),
   })
-
-  const { zones } = useZones(businessType)
-  const { data: couriers } = useAllCouriers()
-  const { data, isLoading, isError } = useShippingRates({ ...filters, businessType: businessType })
 
   const rates: ShippingRate[] = data || []
 
-  console.log('rates', rates)
-
-  // CSV export
-  const handleExportCSV = (): void => {
-    const csvData = rates.map((r) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const base: Record<string, any> = {
-        Courier: r.courier_name,
-        Mode: r.mode,
-        'Min Weight': r.min_weight,
+  const handleExportCSV = () => {
+    const csvData = rates.map((rate) => {
+      const row: Record<string, string | number> = {
+        Courier: rate.courier_name,
       }
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      zones.forEach((zone: any) => {
-        // NOTE: UI tables use `zone.name` as the key into `rates`, so CSV export
-        // should use the same to avoid returning NA for all values.
-        const zoneRates = r.rates?.[zone.name] || {}
-        if (businessType === 'b2b') {
-          base[`${zone.name} (Per Kg)`] = `F: ₹${zoneRates.forward_per_kg ?? 'NA'} | RTO: ₹${
-            zoneRates.rto_per_kg ?? 'NA'
-          }`
-        } else {
-          base[`${zone.name} (F | RTO)`] = `F: ₹${zoneRates.forward ?? 'NA'} | RTO: ₹${
-            zoneRates.rto ?? 'NA'
-          }`
-        }
+      zones.forEach((zone) => {
+        const zoneRate = getZoneRates(rate, zone, shipmentType)
+        row[zone.name] = `${formatCurrency(zoneRate.primary)} | ${Number(zoneRate.additional) || 0}`
       })
-
-      base['COD Charges'] = r.cod_charges ?? 'N/A'
-      base['COD %'] = r.cod_percent ?? 'N/A'
-      base['Other Charges'] = r.other_charges ?? 'N/A'
-
-      return base
+      row['COD Charges'] = rate.cod_charges ?? 'NA'
+      row['COD %'] = rate.cod_percent ?? 'NA'
+      return row
     })
-
     const csv = Papa.unparse(csvData)
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
     const link = document.createElement('a')
     link.href = URL.createObjectURL(blob)
-    link.setAttribute('download', `rate_card_${businessType}.csv`)
+    link.setAttribute('download', `rate_card_${mode}_${shipmentType.toLowerCase()}.csv`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
   }
 
-  // Filter fields (courier + min_weight only, business type comes from tab)
-  const filterFields: FilterField[] = [
-    {
-      name: 'courier',
-      label: 'Courier',
-      type: 'multiselect',
-      options: couriers?.map((c: string) => ({ label: c, value: c })) || [],
-    },
-    { name: 'min_weight', label: 'Min Weight (kg)', type: 'text', placeholder: 'Enter min weight' },
-  ]
+  const content = (
+    <Stack gap={2}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 1,
+        }}
+      >
+        {utilityTabs.map((tab) => {
+          const active = location.pathname === tab.path
+          return (
+            <Box
+              key={tab.path}
+              component={NavLink}
+              to={tab.path}
+              sx={{
+                px: 1.8,
+                py: 1,
+                borderRadius: '999px',
+                textDecoration: 'none',
+                fontSize: '0.84rem',
+                fontWeight: 700,
+                color: active ? '#FFFFFF' : '#475467',
+                bgcolor: active ? '#121212' : '#f4f6f8',
+                border: '1px solid #e7ebf0',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {tab.label}
+            </Box>
+          )
+        })}
+      </Box>
+
+      <Box
+        sx={{
+          border: '1px solid #eceff3',
+          background: '#fff',
+          borderRadius: '20px',
+          p: { xs: 2, md: 2.5 },
+          boxShadow: '0 12px 30px rgba(16, 24, 40, 0.04)',
+        }}
+      >
+        <Stack direction={{ xs: 'column', xl: 'row' }} spacing={2} alignItems={{ xl: 'center' }}>
+          <Box sx={{ minWidth: 230 }}>
+            <Typography sx={{ fontSize: '0.82rem', fontWeight: 700, color: '#111827', mb: 0.7 }}>
+              Mode <Box component="span" sx={{ color: brand.accent }}>*</Box>
+            </Typography>
+            <ToggleButtonGroup
+              exclusive
+              value={mode}
+              onChange={(_, value) => value && setMode(value)}
+              sx={{ gap: 1 }}
+            >
+              <ToggleButton
+                value="surface"
+                sx={{
+                  px: 1.5,
+                  borderRadius: '999px !important',
+                  textTransform: 'none',
+                  fontWeight: 700,
+                  '&.Mui-selected': { bgcolor: '#111111', color: '#fff' },
+                }}
+              >
+                Surface
+              </ToggleButton>
+              <ToggleButton
+                value="air"
+                sx={{
+                  px: 1.5,
+                  borderRadius: '999px !important',
+                  textTransform: 'none',
+                  fontWeight: 700,
+                  '&.Mui-selected': { bgcolor: '#111111', color: '#fff' },
+                }}
+              >
+                Air
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+
+          <Box sx={{ minWidth: 260 }}>
+            <Typography sx={{ fontSize: '0.82rem', fontWeight: 700, color: '#111827', mb: 0.7 }}>
+              Shipment Type <Box component="span" sx={{ color: brand.accent }}>*</Box>
+            </Typography>
+            <ToggleButtonGroup
+              exclusive
+              value={shipmentType}
+              onChange={(_, value) => value && setShipmentType(value)}
+              sx={{ gap: 1 }}
+            >
+              <ToggleButton
+                value="Forward"
+                sx={{
+                  px: 1.5,
+                  borderRadius: '999px !important',
+                  textTransform: 'none',
+                  fontWeight: 700,
+                  '&.Mui-selected': { bgcolor: '#111111', color: '#fff' },
+                }}
+              >
+                Forward
+              </ToggleButton>
+              <ToggleButton
+                value="RTO"
+                sx={{
+                  px: 1.5,
+                  borderRadius: '999px !important',
+                  textTransform: 'none',
+                  fontWeight: 700,
+                  '&.Mui-selected': { bgcolor: '#111111', color: '#fff' },
+                }}
+              >
+                RTO
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+
+          <Box sx={{ minWidth: 280 }}>
+            <Typography sx={{ fontSize: '0.82rem', fontWeight: 700, color: '#111827', mb: 0.7 }}>
+              Weight Slab <Box component="span" sx={{ color: brand.accent }}>*</Box>
+            </Typography>
+            <ToggleButtonGroup
+              exclusive
+              value={weightSlab}
+              onChange={(_, value) => value && setWeightSlab(value)}
+              sx={{ gap: 0.8, flexWrap: 'wrap' }}
+            >
+              {weightSlabs.map((slab) => (
+                <ToggleButton
+                  key={slab}
+                  value={slab}
+                  sx={{
+                    px: 1.2,
+                    borderRadius: '999px !important',
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    '&.Mui-selected': { bgcolor: '#111111', color: '#fff' },
+                  }}
+                >
+                  {slab} kg
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          </Box>
+
+          <Box sx={{ ml: 'auto' }}>
+            <Box
+              component="button"
+              type="button"
+              onClick={handleExportCSV}
+              style={{
+                minHeight: '40px',
+                padding: '0 14px',
+                borderRadius: '10px',
+                border: '1px solid #ece9f1',
+                background: '#fff',
+                color: '#27303f',
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                cursor: 'pointer',
+              }}
+            >
+              <FiDownload size={16} /> Download Rate Card
+            </Box>
+          </Box>
+        </Stack>
+      </Box>
+
+      <Box sx={{ border: '1px solid #eceff3', borderRadius: '20px', background: '#fff', overflow: 'hidden' }}>
+        <TableContainer sx={{ overflowX: 'auto' }}>
+          <Table sx={{ minWidth: 980 }}>
+            <TableHead>
+              <TableRow sx={{ background: '#fff' }}>
+                <TableCell sx={{ fontWeight: 700, textAlign: 'center', minWidth: 160 }}>Courier</TableCell>
+                {zones.map((zone) => (
+                  <TableCell key={zone.code} sx={{ fontWeight: 700, textAlign: 'center', minWidth: 130 }}>
+                    <Box sx={{ display: 'grid', justifyItems: 'center', gap: 0.2 }}>
+                      <Typography sx={{ fontSize: '0.9rem', fontWeight: 800 }}>{zone.name}</Typography>
+                      <Typography sx={{ fontSize: '0.72rem', color: '#667085', lineHeight: 1.4 }}>
+                        {shipmentType === 'Forward' ? 'FWD' : 'RTO'} | Add.
+                        <br />
+                        {weightSlab}KG(s) | 0.50KG(s)
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                ))}
+                <TableCell sx={{ fontWeight: 700, textAlign: 'center', minWidth: 140 }}>
+                  COD Charges <span>|</span> COD %
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {!isLoading && rates.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={zones.length + 2} sx={{ py: 5, textAlign: 'center', color: '#6e7784' }}>
+                    No data
+                  </TableCell>
+                </TableRow>
+              ) : null}
+              {rates.map((rate) => (
+                <TableRow key={rate.id}>
+                  <TableCell>
+                    <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
+                      <span>{rate.courier_name}</span>
+                    </Box>
+                  </TableCell>
+                  {zones.map((zone) => {
+                    const zoneRate = getZoneRates(rate, zone, shipmentType)
+                    return (
+                      <TableCell key={`${rate.id}-${zone.code}`} sx={{ textAlign: 'center' }}>
+                        {formatCurrency(zoneRate.primary)} | {Number(zoneRate.additional) || 0}
+                      </TableCell>
+                    )
+                  })}
+                  <TableCell sx={{ textAlign: 'center' }}>
+                    Rs. {rate.cod_charges ?? 'NA'} | {rate.cod_percent ?? 'NA'}%
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    </Stack>
+  )
+
+  if (isUtilityRoute) return content
 
   return (
-    <Stack gap={3}>
+    <Stack gap={2.4}>
       <PageHeading
         eyebrow="Tools Panel"
         title="Rate Card"
-        subtitle="Review B2C and B2B rate slabs, filter courier pricing, and export the latest commercial matrix from one utility workspace."
+        subtitle="Review courier zone-wise rates and COD configuration in one place."
       />
-
-      {/* Tabs for B2C / B2B */}
-      <SmartTabs
-        tabs={[
-          { label: 'B2C', value: 'b2c' },
-          { label: 'B2B', value: 'b2b' },
-        ]}
-        value={businessType}
-        onChange={(value) => setBusinessType(value)}
-      />
-
-      <FilterBar
-        fields={filterFields}
-        defaultValues={filters}
-        onApply={(applied) => {
-          setFilters((prev) => ({
-            ...prev,
-            ...applied,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            courier: applied?.courier?.map((cour) => (cour as any)?.value),
-          }))
-        }}
-      />
-
-      <Stack justifyContent="flex-end" gap={2.5} alignItems="center" direction="row">
-        <Button
-          startIcon={<MdCalculate />}
-          variant="contained"
-          onClick={() => navigate('/tools/rate_calculator')}
-        >
-          Calculate Rates
-        </Button>
-        <Button startIcon={<MdDownload />} variant="contained" onClick={handleExportCSV}>
-          Download Rate Card
-        </Button>
-      </Stack>
-
-      {isLoading ? (
-        <TableSkeleton />
-      ) : isError ? (
-        <Typography color="error">Error loading shipping rates</Typography>
-      ) : businessType === 'b2b' ? (
-        <B2BClientTable zones={zones} data={rates} />
-      ) : (
-        <B2CClientTable data={rates} zones={zones} />
-      )}
+      {content}
     </Stack>
   )
 }

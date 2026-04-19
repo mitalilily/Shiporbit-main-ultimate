@@ -70,7 +70,12 @@ const isManifestEligible = (order: Order) => {
   return order.type === 'b2c' ? isB2CManifestEligible(order) : false
 }
 
-const AllOrders = () => {
+interface AllOrdersProps {
+  lockedStatus?: string
+  onSelectedOrdersChange?: (orders: Order[]) => void
+}
+
+const AllOrders = ({ lockedStatus, onSelectedOrdersChange }: AllOrdersProps = {}) => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const location = useLocation()
@@ -112,6 +117,18 @@ const AllOrders = () => {
       setBulkFeedback(null)
     }
   }, [searchParams, filters.status])
+
+  useEffect(() => {
+    if (!lockedStatus) return
+    if (filters.status === lockedStatus) return
+    setFilters((prev) => ({
+      ...prev,
+      status: lockedStatus,
+    }))
+    setPage(1)
+    clearSelection()
+    setBulkFeedback(null)
+  }, [lockedStatus, filters.status])
 
   const allOrdersQuery = useAllOrders(
     {
@@ -170,6 +187,10 @@ const AllOrders = () => {
   const orders: Order[] = normalizedOrders
   const totalCount = activeQuery.data?.totalCount ?? 0
   const selectedOrders: Order[] = orders.filter((order) => selectedOrderIds.includes(order.id))
+
+  useEffect(() => {
+    onSelectedOrdersChange?.(selectedOrders)
+  }, [selectedOrders, onSelectedOrdersChange])
   const manifestValidationMessage =
     selectedOrders.length === 0
       ? 'Select orders to start a bulk action.'

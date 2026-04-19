@@ -1,482 +1,233 @@
-import {
-  alpha,
-  Box,
-  ButtonBase,
-  Chip,
-  Container,
-  Grid,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material'
+import { Box, Button, Divider, Stack, Typography } from '@mui/material'
 import type { ReactNode } from 'react'
-import { FaBuilding, FaFileInvoice, FaTruck, FaUsers } from 'react-icons/fa'
-import { FaLink } from 'react-icons/fa6'
-import { IoDocumentTextOutline } from 'react-icons/io5'
+import { HiOutlineChevronRight } from 'react-icons/hi'
 import {
-  MdOutlineRequestQuote,
-  MdPriorityHigh,
-  MdSecurity,
-  MdTune,
+  MdApps,
+  MdBusiness,
+  MdLocalShipping,
+  MdOutlineRateReview,
+  MdPassword,
+  MdPeopleAlt,
 } from 'react-icons/md'
-import { PiPassword } from 'react-icons/pi'
-import { RiBankFill } from 'react-icons/ri'
-import { TbArrowRight, TbChecklist, TbPlugConnected, TbShieldCog } from 'react-icons/tb'
+import { RiBankFill, RiSettings3Fill } from 'react-icons/ri'
+import { TbFileInvoice, TbFileSettings, TbReceiptRupee, TbShieldCheck } from 'react-icons/tb'
 import { useNavigate } from 'react-router-dom'
-import CustomSelectSearchable from '../../components/UI/inputs/CustomSelectSearchable'
+import { brand } from '../../theme/brand'
 
 type SettingItem = {
   title: string
   description: string
-  key: string
+  path: string
   icon: ReactNode
 }
 
-type Section = {
+type SettingGroup = {
   title: string
-  badge: string
-  summary: string
-  tone: string
-  icon: ReactNode
   items: SettingItem[]
 }
 
-const INK = '#171310'
-const CLAY = '#D97943'
-const TEAL = '#2D7A63'
-const TEXT_MUTED = '#74685D'
-const SURFACE = '#FFFDF8'
+const panelSx = {
+  bgcolor: '#FFFFFF',
+  border: '1px solid #e7ebf0',
+  borderRadius: '10px',
+  boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+}
 
-const sections: Section[] = [
+const groups: SettingGroup[] = [
   {
-    title: 'Account Control',
-    badge: 'Identity',
-    summary: 'Business profile, access credentials, KYC, payout accounts, and team permissions.',
-    tone: INK,
-    icon: <TbShieldCog size={20} />,
+    title: 'Account',
     items: [
       {
         title: 'Company Details',
-        description: 'Manage business profile and brand identity',
-        key: '/profile/company',
-        icon: <FaBuilding />,
+        description: 'Update business information and profile details.',
+        path: '/profile/company',
+        icon: <MdBusiness size={18} />,
       },
       {
         title: 'Change Password',
-        description: 'Update your login credentials securely',
-        key: '/profile/password',
-        icon: <PiPassword />,
+        description: 'Manage your login password and access security.',
+        path: '/profile/password',
+        icon: <MdPassword size={18} />,
       },
       {
         title: 'KYC Details',
-        description: 'Review verification status and submitted documents',
-        key: '/profile/kyc_details',
-        icon: <MdSecurity />,
+        description: 'Review verification documents and compliance status.',
+        path: '/profile/kyc_details',
+        icon: <TbShieldCheck size={18} />,
       },
       {
-        title: 'Bank Accounts',
-        description: 'Manage payout and settlement bank accounts',
-        key: '/profile/bank_details',
-        icon: <RiBankFill />,
+        title: 'Bank Details',
+        description: 'Maintain settlement and payout account details.',
+        path: '/profile/bank_details',
+        icon: <RiBankFill size={18} />,
       },
       {
-        title: 'Manage Users',
-        description: 'Create team access and control user permissions',
-        key: '/settings/users_management',
-        icon: <FaUsers />,
+        title: 'Manage Team',
+        description: 'Create and manage team members and permissions.',
+        path: '/settings/users_management',
+        icon: <MdPeopleAlt size={18} />,
       },
     ],
   },
   {
-    title: 'Shipping Operations',
-    badge: 'Execution',
-    summary: 'Pickup network, billing logic, invoice output, and shipping label configuration.',
-    tone: CLAY,
-    icon: <TbChecklist size={20} />,
+    title: 'Shipping',
     items: [
       {
         title: 'Pickup Addresses',
-        description: 'Add and manage all pickup locations',
-        key: '/settings/manage_pickups',
-        icon: <FaTruck />,
+        description: 'Add, edit, and organize pickup locations.',
+        path: '/settings/manage_pickups',
+        icon: <MdLocalShipping size={18} />,
       },
       {
-        title: 'Invoice Preferences',
-        description: 'Configure invoice branding and output preferences',
-        key: '/settings/invoice_preferences',
-        icon: <FaFileInvoice />,
+        title: 'Invoice Settings',
+        description: 'Configure invoice preferences and communication invoices.',
+        path: '/settings/invoice_preferences',
+        icon: <TbFileInvoice size={18} />,
       },
       {
         title: 'Billing Preferences',
-        description: 'Set billing cycles and automation preferences',
-        key: '/settings/billing_preferences',
-        icon: <MdOutlineRequestQuote />,
+        description: 'Adjust billing rules, recharge, and account preferences.',
+        path: '/settings/billing_preferences',
+        icon: <TbReceiptRupee size={18} />,
       },
       {
         title: 'Label Settings',
-        description: 'Customize label fields with live preview',
-        key: '/settings/label_config',
-        icon: <IoDocumentTextOutline />,
+        description: 'Customize labels, printing layout, and shipment settings.',
+        path: '/settings/label_config',
+        icon: <TbFileSettings size={18} />,
       },
     ],
   },
   {
-    title: 'Integrations And Routing',
-    badge: 'Connectivity',
-    summary: 'Sales channels, courier priority rules, API keys, and webhook connectivity.',
-    tone: TEAL,
-    icon: <TbPlugConnected size={20} />,
+    title: 'Integration',
     items: [
       {
-        title: 'Connected Channels',
-        description: 'View, manage, and update linked sales channels',
-        key: '/channels/connected',
-        icon: <FaLink />,
-      },
-      {
         title: 'Courier Priority',
-        description: 'Set courier preference rules by speed or cost',
-        key: '/settings/courier_priority',
-        icon: <MdPriorityHigh />,
+        description: 'Set routing preferences for courier allocation.',
+        path: '/settings/courier-priority',
+        icon: <MdOutlineRateReview size={18} />,
       },
       {
         title: 'API Integration',
-        description: 'Manage API keys, webhooks, and external access',
-        key: '/settings/api-integration',
-        icon: <FaLink />,
+        description: 'Manage keys, integrations, and connected channels.',
+        path: '/settings/api-integration',
+        icon: <MdApps size={18} />,
+      },
+      {
+        title: 'API Docs',
+        description: 'Open developer documentation and integration references.',
+        path: '/settings/api-docs',
+        icon: <RiSettings3Fill size={18} />,
       },
     ],
   },
 ]
 
-const heroStats = [
-  {
-    label: 'Settings domains',
-    value: String(sections.length),
-    tone: INK,
-  },
-  {
-    label: 'Config modules',
-    value: String(sections.reduce((sum, section) => sum + section.items.length, 0)),
-    tone: CLAY,
-  },
-  {
-    label: 'Ops focus',
-    value: 'Account + Shipping + Integrations',
-    tone: TEAL,
-  },
-]
-
-const SettingCard = ({ item, tone }: { item: SettingItem; tone: string }) => {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-
-  return (
-    <ButtonBase sx={{ width: '100%', height: '100%', borderRadius: 4 }}>
+const SettingRow = ({ item, onClick }: { item: SettingItem; onClick: () => void }) => (
+  <Button
+    onClick={onClick}
+    sx={{
+      width: '100%',
+      minHeight: 64,
+      px: 1.25,
+      py: 1.1,
+      justifyContent: 'space-between',
+      textTransform: 'none',
+      color: '#232a34',
+      borderRadius: '6px',
+      '&:hover': {
+        bgcolor: '#f7f8fb',
+      },
+    }}
+  >
+    <Stack direction="row" spacing={1.15} alignItems="center" sx={{ minWidth: 0, textAlign: 'left' }}>
       <Box
         sx={{
-          p: isMobile ? 2 : 2.25,
-          borderRadius: 4,
-          bgcolor: alpha('#ffffff', 0.94),
-          border: `1px solid ${alpha(INK, 0.08)}`,
-          boxShadow: `0 14px 28px ${alpha(INK, 0.05)}`,
-          height: '100%',
-          width: '100%',
-          minHeight: isMobile ? 146 : 162,
-          transition: 'all .22s ease',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          textAlign: 'left',
-          '&:hover': {
-            transform: 'translateY(-4px)',
-            boxShadow: `0 22px 38px ${alpha(INK, 0.08)}`,
-            borderColor: alpha(tone, 0.32),
-          },
+          width: 34,
+          height: 34,
+          borderRadius: '8px',
+          display: 'grid',
+          placeItems: 'center',
+          color: brand.accent,
+          bgcolor: 'rgba(255,102,0,0.08)',
+          border: '1px solid rgba(255,102,0,0.12)',
+          flexShrink: 0,
         }}
       >
-        <Stack direction="row" alignItems="flex-start" justifyContent="space-between" gap={1.5}>
-          <Box
-            sx={{
-              borderRadius: 3,
-              width: isMobile ? 40 : 44,
-              height: isMobile ? 40 : 44,
-              display: 'grid',
-              placeItems: 'center',
-              fontSize: isMobile ? 18 : 19,
-              color: tone,
-              bgcolor: alpha(tone, 0.12),
-              border: `1px solid ${alpha(tone, 0.18)}`,
-              flexShrink: 0,
-            }}
-          >
-            {item.icon}
-          </Box>
+        {item.icon}
+      </Box>
+      <Box sx={{ minWidth: 0 }}>
+        <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: '#1f2937' }}>
+          {item.title}
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: '0.68rem',
+            color: '#7c8593',
+            lineHeight: 1.45,
+            whiteSpace: 'normal',
+          }}
+        >
+          {item.description}
+        </Typography>
+      </Box>
+    </Stack>
+    <HiOutlineChevronRight size={16} color="#a0a7b4" />
+  </Button>
+)
 
-          <Box
-            sx={{
-              width: 28,
-              height: 28,
-              borderRadius: 999,
-              display: 'grid',
-              placeItems: 'center',
-              bgcolor: alpha(tone, 0.08),
-              color: tone,
-              flexShrink: 0,
-            }}
-          >
-            <TbArrowRight size={15} />
+export default function SettingsPage() {
+  const navigate = useNavigate()
+
+  return (
+    <Box sx={{ pb: 2 }}>
+      <Stack spacing={1.15}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Box>
+            <Typography sx={{ fontSize: '0.92rem', fontWeight: 700, color: '#1f2937' }}>
+              Settings
+            </Typography>
+            <Typography sx={{ fontSize: '0.66rem', color: '#8a93a2', mt: 0.2 }}>
+              Manage account, shipping, invoice, and integration options.
+            </Typography>
           </Box>
         </Stack>
 
-        <Box>
-          <Typography fontWeight={800} fontSize={isMobile ? '14px' : '15px'} color={INK} mb={0.7}>
-            {item.title}
-          </Typography>
-
-          <Typography
-            variant="body2"
-            color={TEXT_MUTED}
-            fontSize={isMobile ? '13px' : '13.5px'}
-            lineHeight={1.55}
+        <Box sx={{ ...panelSx, p: 1.1 }}>
+          <Stack
+            direction={{ xs: 'column', lg: 'row' }}
+            divider={<Divider orientation="vertical" flexItem sx={{ borderColor: '#eef1f5', display: { xs: 'none', lg: 'block' } }} />}
+            spacing={{ xs: 1.1, lg: 0 }}
           >
-            {item.description}
-          </Typography>
-        </Box>
-      </Box>
-    </ButtonBase>
-  )
-}
-
-export default function SettingsPage() {
-  const theme = useTheme()
-  const navigate = useNavigate()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-
-  const flattenedItems = sections.flatMap((section) =>
-    section.items.map((item) => ({
-      key: item.key,
-      label: item.title,
-      description: item.description,
-      icon: item.icon,
-      section: section.title,
-    })),
-  )
-
-  return (
-    <Box sx={{ minHeight: '100%', py: { xs: 2.2, md: 3 } }}>
-      <Container maxWidth="xl">
-        <Stack spacing={3}>
-          <Box
-            sx={{
-              p: { xs: 2.3, md: 3.1 },
-              borderRadius: 5,
-              border: `1px solid ${alpha(INK, 0.08)}`,
-              background: `
-                radial-gradient(circle at 14% 18%, ${alpha(CLAY, 0.16)} 0%, transparent 24%),
-                radial-gradient(circle at 82% 14%, ${alpha(TEAL, 0.1)} 0%, transparent 20%),
-                linear-gradient(135deg, #fffdf8 0%, #f7efe5 100%)
-              `,
-              boxShadow: `0 22px 44px ${alpha(INK, 0.08)}`,
-            }}
-          >
-            <Stack spacing={2.4}>
-              <Stack
-                direction={{ xs: 'column', lg: 'row' }}
-                justifyContent="space-between"
-                alignItems={{ xs: 'flex-start', lg: 'center' }}
-                gap={2}
-              >
-                <Box sx={{ maxWidth: 760 }}>
-                  <Stack direction="row" spacing={1} alignItems="center" mb={1.1}>
-                    <Box
-                      sx={{
-                        width: 38,
-                        height: 38,
-                        borderRadius: 3,
-                        display: 'grid',
-                        placeItems: 'center',
-                        bgcolor: alpha(INK, 0.08),
-                        color: INK,
-                      }}
-                    >
-                      <MdTune size={20} />
-                    </Box>
-                    <Chip
-                      label="Control Center"
-                      sx={{
-                        bgcolor: alpha(INK, 0.08),
-                        color: INK,
-                        border: `1px solid ${alpha(INK, 0.1)}`,
-                        fontWeight: 800,
-                      }}
-                    />
-                  </Stack>
-
-                  <Typography
-                    sx={{
-                      fontSize: { xs: '2rem', md: '3rem' },
-                      lineHeight: 0.98,
-                      fontWeight: 800,
-                      letterSpacing: '-0.05em',
-                      color: INK,
-                    }}
-                  >
-                    Settings built like an operations workspace, not a flat menu.
-                  </Typography>
-
-                  <Typography
-                    sx={{
-                      mt: 1.2,
-                      fontSize: '1rem',
-                      color: TEXT_MUTED,
-                      lineHeight: 1.7,
-                      maxWidth: 680,
-                    }}
-                  >
-                    Manage account controls, shipping configuration, payout logic, and integrations from
-                    a single professional admin surface.
+            {groups.map((group, index) => (
+              <Box key={group.title} sx={{ flex: 1, minWidth: 0 }}>
+                <Box sx={{ px: 1.2, py: 0.85 }}>
+                  <Typography sx={{ fontSize: '0.72rem', fontWeight: 800, color: '#4b5563', letterSpacing: '0.04em' }}>
+                    {group.title.toUpperCase()}
                   </Typography>
                 </Box>
 
-                <Box sx={{ width: { xs: '100%', lg: 360 } }}>
-                  <CustomSelectSearchable
-                    label="Jump To Setting"
-                    items={flattenedItems}
-                    onSelect={(key) => navigate(key)}
-                    placeholder="Search settings..."
-                  />
-                </Box>
-              </Stack>
+                <Divider sx={{ borderColor: '#eef1f5' }} />
 
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' },
-                  gap: 1.4,
-                }}
-              >
-                {heroStats.map((stat) => (
-                  <Box
-                    key={stat.label}
-                    sx={{
-                      p: 2,
-                      borderRadius: 4,
-                      bgcolor: alpha('#ffffff', 0.86),
-                      border: `1px solid ${alpha(INK, 0.08)}`,
-                      boxShadow: `0 10px 22px ${alpha(INK, 0.04)}`,
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: '0.76rem',
-                        fontWeight: 800,
-                        letterSpacing: '0.1em',
-                        textTransform: 'uppercase',
-                        color: alpha(INK, 0.46),
-                        mb: 0.7,
-                      }}
-                    >
-                      {stat.label}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontSize: { xs: '1.1rem', md: '1.28rem' },
-                        fontWeight: 900,
-                        color: stat.tone,
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {stat.value}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
-            </Stack>
-          </Box>
-
-          <Stack spacing={2.5}>
-            {sections.map((section) => (
-              <Box
-                key={section.title}
-                sx={{
-                  p: { xs: 1.7, md: 2.2 },
-                  borderRadius: 5,
-                  bgcolor: alpha(SURFACE, 0.98),
-                  border: `1px solid ${alpha(INK, 0.08)}`,
-                  boxShadow: `0 16px 30px ${alpha(INK, 0.05)}`,
-                }}
-              >
-                <Stack
-                  direction={{ xs: 'column', md: 'row' }}
-                  justifyContent="space-between"
-                  alignItems={{ xs: 'flex-start', md: 'center' }}
-                  gap={1.5}
-                  mb={2.1}
-                >
-                  <Stack direction="row" spacing={1.4} alignItems="flex-start">
-                    <Box
-                      sx={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 3,
-                        display: 'grid',
-                        placeItems: 'center',
-                        bgcolor: alpha(section.tone, 0.12),
-                        color: section.tone,
-                        border: `1px solid ${alpha(section.tone, 0.16)}`,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {section.icon}
+                <Stack spacing={0.3} sx={{ p: 0.55 }}>
+                  {group.items.map((item, itemIndex) => (
+                    <Box key={item.path}>
+                      <SettingRow item={item} onClick={() => navigate(item.path)} />
+                      {itemIndex < group.items.length - 1 ? (
+                        <Divider sx={{ borderColor: '#f1f4f8', ml: 1.25, mr: 1.25 }} />
+                      ) : null}
                     </Box>
-
-                    <Box>
-                      <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
-                        <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={800} color={INK}>
-                          {section.title}
-                        </Typography>
-                        <Chip
-                          label={section.badge}
-                          sx={{
-                            bgcolor: alpha(section.tone, 0.1),
-                            color: section.tone,
-                            border: `1px solid ${alpha(section.tone, 0.18)}`,
-                            fontWeight: 800,
-                            fontSize: '11px',
-                            height: 26,
-                          }}
-                        />
-                      </Stack>
-
-                      <Typography sx={{ mt: 0.6, color: TEXT_MUTED, fontSize: '0.92rem', lineHeight: 1.6 }}>
-                        {section.summary}
-                      </Typography>
-                    </Box>
-                  </Stack>
-
-                  <Typography sx={{ fontSize: '0.84rem', color: alpha(INK, 0.56), fontWeight: 700 }}>
-                    {section.items.length} modules
-                  </Typography>
+                  ))}
                 </Stack>
 
-                <Grid container spacing={2}>
-                  {section.items.map((item) => (
-                    <Grid
-                      onClick={() => navigate(item.key)}
-                      size={{ xs: 12, md: 6, xl: 4 }}
-                      key={item.title}
-                    >
-                      <SettingCard item={item} tone={section.tone} />
-                    </Grid>
-                  ))}
-                </Grid>
+                {index < groups.length - 1 ? (
+                  <Divider sx={{ borderColor: '#eef1f5', display: { xs: 'block', lg: 'none' } }} />
+                ) : null}
               </Box>
             ))}
           </Stack>
-        </Stack>
-      </Container>
+        </Box>
+      </Stack>
     </Box>
   )
 }

@@ -1,9 +1,8 @@
 import { alpha, Box, Button, Chip, Grid, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import { TbBolt, TbChartArcs3, TbMapPinBolt, TbRoute, TbSparkles, TbTruckDelivery } from 'react-icons/tb'
-import Sidebar, { COLLAPSED_WIDTH } from '../../components/UI/Sidebar'
+import Sidebar, { COLLAPSED_WIDTH, EXPANDED_WIDTH } from '../../components/UI/Sidebar'
 import { brand, brandFonts, brandGradients } from '../../theme/brand'
-import { DRAWER_WIDTH } from '../../utils/constants'
 
 const PLUM = brand.ink
 const TEXT = brand.ink
@@ -34,9 +33,8 @@ const focusCards = [
 ]
 
 export default function ClientPreview() {
-  const [hovered, setHovered] = useState(false)
-  const pinned = true
-  const sidebarWidth = pinned ? DRAWER_WIDTH : COLLAPSED_WIDTH
+  const [collapsed, setCollapsed] = useState(false)
+  const sidebarWidth = collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH
 
   return (
     <Box
@@ -47,10 +45,8 @@ export default function ClientPreview() {
       }}
     >
       <Sidebar
-        pinned={pinned}
-        hovered={hovered}
-        setHovered={setHovered}
-        handleDrawerToggle={() => undefined}
+        collapsed={collapsed}
+        onToggle={() => setCollapsed((value) => !value)}
       />
 
       <Box

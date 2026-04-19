@@ -8,10 +8,10 @@ export default function BrandLogo({ compact = false, sx, ...rest }: BrandLogoPro
   return (
     <Box
       component="img"
-      src={compact ? '/logo/shiporbit-mark.svg' : '/logo/shiporbit-logo.jpeg'}
+      src="/logo/shiporbit-logo.jpeg"
       alt="ShipOrbit"
       sx={{
-        width: compact ? 44 : { xs: 156, sm: 182 },
+        width: compact ? 52 : { xs: 156, sm: 182 },
         height: 'auto',
         objectFit: 'contain',
         display: 'block',

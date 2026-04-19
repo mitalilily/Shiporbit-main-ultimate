@@ -2,10 +2,12 @@
 import { Alert, Button, Chip, Divider, IconButton, Stack, Typography } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { FaCheckCircle, FaExclamationTriangle, FaFileCsv, FaFilePdf } from 'react-icons/fa'
 import { FaListUl, FaReceipt } from 'react-icons/fa6'
 import type { BillingInvoice, InvoiceStatement } from '../../api/invoice.api'
 import { getInvoiceStatement } from '../../api/invoice.api'
+import BillingInvoiceShell from './BillingInvoiceShell'
 import { FilterBar } from '../../components/FilterBar'
 import CustomInput from '../../components/UI/inputs/CustomInput'
 import CustomDialog from '../../components/UI/modal/CustomModal'
@@ -38,6 +40,17 @@ const statusColor = (s?: string): 'success' | 'warning' | 'error' | 'info' | 'de
 const isHttpUrl = (s?: string) => !!s && /^https?:\/\//i.test(s)
 
 const Invoices = () => {
+  const location = useLocation()
+  const isOrderInvoicePage =
+    location.pathname === '/billing/orderinvoice' || location.pathname === '/billing/order-invoice'
+  const isCommunicationInvoicePage =
+    location.pathname === '/billing/communicationinvoice' ||
+    location.pathname === '/billing/communication-invoice'
+
+  if (isOrderInvoicePage || isCommunicationInvoicePage) {
+    return <BillingInvoiceShell variant={isOrderInvoicePage ? 'order' : 'communication'} />
+  }
+
   const [page, setPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [filters, setFilters] = useState({})

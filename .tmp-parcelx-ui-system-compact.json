@@ -1,0 +1,1315 @@
+{
+  "typography": {
+    "fontFamily": [
+      "\"Instrument Sans\"",
+      "\"Instrument Sans\", sans-serif",
+      "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+      "Epilogue, sans-serif",
+      "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", \"Noto Sans\", \"Liberation Sans\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\""
+    ],
+    "fontSize": [
+      "0px",
+      "11px",
+      "12px",
+      "13px",
+      "14px",
+      "16px",
+      "17px",
+      "18px",
+      "20px",
+      "22px",
+      "24px"
+    ],
+    "fontWeight": [
+      "400",
+      "500",
+      "600",
+      "700",
+      "900"
+    ],
+    "lineHeight": [
+      "0px",
+      "12px",
+      "14px",
+      "14.4px",
+      "16px",
+      "16.5px",
+      "17.2857px",
+      "18px",
+      "18.4px",
+      "18.8571px",
+      "19.2px",
+      "19.5px",
+      "20px",
+      "21px",
+      "21.6px",
+      "22px",
+      "24px",
+      "26.4px",
+      "27px",
+      "28px",
+      "28.2857px",
+      "30px",
+      "31.4286px",
+      "34px",
+      "36px",
+      "normal"
+    ],
+    "letterSpacing": [
+      "0.1px",
+      "0.2px",
+      "0.3px",
+      "2px",
+      "normal"
+    ],
+    "combinations": [
+      {
+        "fontFamily": "Epilogue, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "18.4px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "18.4px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", \"Noto Sans\", \"Liberation Sans\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "22px",
+        "fontWeight": "600",
+        "lineHeight": "26.4px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "21px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "lineHeight": "20px",
+        "letterSpacing": "0.1px"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "lineHeight": "20px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "12px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "lineHeight": "12px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "400",
+        "lineHeight": "27px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "18px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "19.2px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "500",
+        "lineHeight": "24px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "500",
+        "lineHeight": "24px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "14.4px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "400",
+        "lineHeight": "21.6px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "24px",
+        "fontWeight": "400",
+        "lineHeight": "36px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "700",
+        "lineHeight": "14.4px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\"",
+        "fontSize": "14px",
+        "fontWeight": "700",
+        "lineHeight": "21px",
+        "letterSpacing": "0.2px"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "700",
+        "lineHeight": "21px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "0px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "17px",
+        "fontWeight": "400",
+        "lineHeight": "0px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "17px",
+        "fontWeight": "400",
+        "lineHeight": "28px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "400",
+        "lineHeight": "28px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "lineHeight": "0px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "0px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "500",
+        "lineHeight": "20px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "lineHeight": "20px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "16px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "16px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "500",
+        "lineHeight": "18px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "11px",
+        "fontWeight": "400",
+        "lineHeight": "17.2857px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "18px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "lineHeight": "19.5px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "700",
+        "lineHeight": "19.5px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "11px",
+        "fontWeight": "400",
+        "lineHeight": "16.5px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "normal",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "lineHeight": "18px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "14px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "14px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "fontSize": "0px",
+        "fontWeight": "400",
+        "lineHeight": "0px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "20px",
+        "fontWeight": "400",
+        "lineHeight": "31.4286px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "22px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "24px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "lineHeight": "22px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "lineHeight": "18.8571px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "30px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "18px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "18.8571px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "18.8571px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "400",
+        "lineHeight": "28.2857px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "22px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "0px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "22px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\"",
+        "fontSize": "12px",
+        "fontWeight": "500",
+        "lineHeight": "30px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "400",
+        "lineHeight": "18px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "24px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "12px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\"",
+        "fontSize": "12px",
+        "fontWeight": "500",
+        "lineHeight": "12px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "lineHeight": "21px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "27px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "700",
+        "lineHeight": "20px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "fontSize": "0px",
+        "fontWeight": "700",
+        "lineHeight": "0px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "22px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "21px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "500",
+        "lineHeight": "27px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "21px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "400",
+        "lineHeight": "0px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "21px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "500",
+        "lineHeight": "18.8571px",
+        "letterSpacing": "0.3px"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "500",
+        "lineHeight": "18.8571px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "22px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "34px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "17px",
+        "fontWeight": "700",
+        "lineHeight": "21px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px",
+        "letterSpacing": "2px"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "20px",
+        "fontWeight": "600",
+        "lineHeight": "34px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "700",
+        "lineHeight": "24px",
+        "letterSpacing": "normal"
+      },
+      {
+        "fontFamily": "\"Instrument Sans\", sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "900",
+        "lineHeight": "24px",
+        "letterSpacing": "normal"
+      }
+    ]
+  },
+  "colorSystem": [
+    "none",
+    "rgb(0, 0, 0)",
+    "rgb(0, 136, 204)",
+    "rgb(0, 86, 255)",
+    "rgb(101, 116, 155)",
+    "rgb(102, 112, 133)",
+    "rgb(118, 118, 118)",
+    "rgb(128, 128, 128)",
+    "rgb(153, 153, 153)",
+    "rgb(16, 24, 40)",
+    "rgb(174, 184, 194)",
+    "rgb(18, 188, 0)",
+    "rgb(19, 175, 40)",
+    "rgb(204, 204, 204)",
+    "rgb(213, 219, 229)",
+    "rgb(217, 217, 217)",
+    "rgb(219, 219, 219)",
+    "rgb(22, 119, 255)",
+    "rgb(22, 22, 23)",
+    "rgb(220, 224, 230)",
+    "rgb(225, 225, 225)",
+    "rgb(235, 244, 248)",
+    "rgb(236, 233, 241)",
+    "rgb(238, 238, 238)",
+    "rgb(240, 240, 240)",
+    "rgb(245, 245, 245)",
+    "rgb(245, 245, 247)",
+    "rgb(246, 246, 246)",
+    "rgb(250, 250, 250)",
+    "rgb(251, 251, 251)",
+    "rgb(252, 252, 253)",
+    "rgb(255, 102, 0)",
+    "rgb(255, 107, 0)",
+    "rgb(255, 255, 255)",
+    "rgb(33, 37, 41)",
+    "rgb(38, 38, 38)",
+    "rgb(51, 51, 51)",
+    "rgb(52, 64, 84)",
+    "rgb(53, 122, 189)",
+    "rgb(85, 85, 85)",
+    "rgba(0, 0, 0, 0.14)",
+    "rgba(0, 0, 0, 0.15)",
+    "rgba(0, 0, 0, 0.19)",
+    "rgba(0, 0, 0, 0.23)",
+    "rgba(0, 0, 0, 0.25)",
+    "rgba(0, 0, 0, 0.45)",
+    "rgba(0, 0, 0, 0.49)",
+    "rgba(0, 0, 0, 0.65)",
+    "rgba(0, 0, 0, 0.83)",
+    "rgba(0, 0, 0, 0.88)",
+    "rgba(255, 255, 255, 0)",
+    "url(\"#linearGradient-1\")"
+  ],
+  "spacingScale": {
+    "padding": [
+      "0px",
+      "1px",
+      "0px 0px 2px",
+      "2px",
+      "0px 4px",
+      "4px",
+      "0px 0px 5px",
+      "5px",
+      "0px 6px",
+      "0px 0px 8px",
+      "0px 8px",
+      "8px",
+      "9px",
+      "10px",
+      "0px 0px 0px 12px",
+      "0px 12px",
+      "0px 0px 0px 15px",
+      "0px 0px 0px 16px",
+      "0px 16px",
+      "16px",
+      "0px 18px",
+      "20px",
+      "0px 0px 24px",
+      "0px 24px",
+      "0px 0px 32px",
+      "0px 0px 40px",
+      "4px 0px",
+      "4px 8px",
+      "5px 8px",
+      "6px 4px",
+      "0px 7px 2px",
+      "0px 7px 9px",
+      "8px 0px",
+      "1px 0px 0px",
+      "11px 0px",
+      "16px 0px",
+      "2px 8px 0px",
+      "3px 12px",
+      "5px 10px",
+      "8px 12px",
+      "8px 16px",
+      "0px 10px 0px 0px",
+      "10px 15px",
+      "10px 16px",
+      "0px 12px 0px 0px",
+      "13px 8px 0px",
+      "0px 14px 0px 0px",
+      "16px 0px 0px",
+      "0px 16px 8px 0px",
+      "0px 18px 0px 0px",
+      "0px 30px 0px 0px",
+      "6px 12px 8px",
+      "0px 9px 0px 24px",
+      "12px 0px 16px",
+      "16px 16px 8px",
+      "24px 16px 0px",
+      "10px 12px 0px 10px",
+      "11px 0px 11px 12px"
+    ],
+    "margin": [
+      "-29px 0px 0px 6px",
+      "-15px 0px 17px",
+      "-22px 0px 0px",
+      "-10px 0px 0px",
+      "-5px 0px 0px",
+      "-2px 0px 0px",
+      "-6px -10px 0px 0px",
+      "0px",
+      "0px -12px",
+      "0px 0px 0px -16px",
+      "0px 0px 0px -1px",
+      "0px 0px 0px -2px",
+      "0px 2px",
+      "0px 0px 0px 4px",
+      "0px 0px 4px",
+      "4px",
+      "0px 0px 5px",
+      "0px 0px 0px 8px",
+      "0px 0px 8px",
+      "8px",
+      "0px 0px 13px",
+      "0px 0px 14px",
+      "0px 0px 16px",
+      "0px 0px 0px 20px",
+      "0px 0px 20px",
+      "2px 0px",
+      "0px 0px 0px 24px",
+      "0px 0px 24px",
+      "5px 0.5px 0px 10px",
+      "0px 56.6719px 5px",
+      "0px 79px",
+      "0px 0px 0px 80px",
+      "1px 0px 0px",
+      "0px 2px 0px 0px",
+      "20px 0px",
+      "2px 0px 0px",
+      "0px 237px",
+      "3px 0px 0px",
+      "3px 0px 0px -20px",
+      "0px 37px 0px -37px",
+      "0px 4px 0px 0px",
+      "4px 4px 8px",
+      "0px 0px 0px 464.344px",
+      "0px 5px 0px 0px",
+      "0px 6px 0px 0px",
+      "0px 8px 0px 0px",
+      "10px 13px",
+      "11px 0px 0px",
+      "13px 0px 0px",
+      "15px 5px 5px",
+      "20px 0px 0px",
+      "24px 8px 0px",
+      "26px 0px 0px",
+      "3px 0px 0px 2px",
+      "85px 0px 0px",
+      "90px 0px 0px",
+      "100px 0px 0px",
+      "20px 0px 24px",
+      "90px 10px 0px 0px"
+    ],
+    "gap": [
+      "0px",
+      "5px",
+      "5px normal",
+      "6px",
+      "8px",
+      "10px",
+      "normal"
+    ],
+    "paddingSides": {
+      "top": [
+        "0px",
+        "1px",
+        "2px",
+        "3px",
+        "4px",
+        "5px",
+        "6px",
+        "8px",
+        "9px",
+        "10px",
+        "11px",
+        "12px",
+        "13px",
+        "16px",
+        "20px",
+        "24px"
+      ],
+      "right": [
+        "0px",
+        "1px",
+        "2px",
+        "4px",
+        "5px",
+        "6px",
+        "7px",
+        "8px",
+        "9px",
+        "10px",
+        "12px",
+        "14px",
+        "15px",
+        "16px",
+        "18px",
+        "20px",
+        "24px",
+        "30px"
+      ],
+      "bottom": [
+        "0px",
+        "1px",
+        "2px",
+        "3px",
+        "4px",
+        "5px",
+        "6px",
+        "8px",
+        "9px",
+        "10px",
+        "11px",
+        "16px",
+        "20px",
+        "24px",
+        "32px",
+        "40px"
+      ],
+      "left": [
+        "0px",
+        "1px",
+        "2px",
+        "4px",
+        "5px",
+        "6px",
+        "7px",
+        "8px",
+        "9px",
+        "10px",
+        "12px",
+        "15px",
+        "16px",
+        "18px",
+        "20px",
+        "24px"
+      ]
+    },
+    "marginSides": {
+      "top": [
+        "-29px",
+        "-22px",
+        "-15px",
+        "-10px",
+        "-6px",
+        "-5px",
+        "-2px",
+        "0px",
+        "1px",
+        "2px",
+        "3px",
+        "4px",
+        "5px",
+        "8px",
+        "10px",
+        "11px",
+        "13px",
+        "15px",
+        "20px",
+        "24px",
+        "26px",
+        "85px",
+        "90px",
+        "100px"
+      ],
+      "right": [
+        "-12px",
+        "-10px",
+        "0px",
+        "0.5px",
+        "2px",
+        "4px",
+        "5px",
+        "6px",
+        "8px",
+        "10px",
+        "13px",
+        "37px",
+        "56.6719px",
+        "79px",
+        "237px"
+      ],
+      "bottom": [
+        "0px",
+        "2px",
+        "4px",
+        "5px",
+        "8px",
+        "10px",
+        "13px",
+        "14px",
+        "16px",
+        "17px",
+        "20px",
+        "24px"
+      ],
+      "left": [
+        "-37px",
+        "-20px",
+        "-16px",
+        "-12px",
+        "-2px",
+        "-1px",
+        "0px",
+        "2px",
+        "4px",
+        "5px",
+        "6px",
+        "8px",
+        "10px",
+        "13px",
+        "20px",
+        "24px",
+        "56.6719px",
+        "79px",
+        "80px",
+        "237px",
+        "464.344px"
+      ]
+    },
+    "rowGap": [
+      "0px",
+      "5px",
+      "6px",
+      "8px",
+      "10px",
+      "normal"
+    ],
+    "columnGap": [
+      "0px",
+      "5px",
+      "6px",
+      "8px",
+      "10px",
+      "normal"
+    ]
+  },
+  "layoutSystem": {
+    "displayUsage": {
+      "flex": 292,
+      "grid": 36,
+      "block": 1634,
+      "inline": 516,
+      "inlineBlock": 98,
+      "other": {
+        "none": 291,
+        "list-item": 100,
+        "inline-flex": 28,
+        "table": 2,
+        "table-column-group": 1,
+        "table-header-group": 1,
+        "table-row": 17,
+        "table-cell": 59,
+        "table-row-group": 2
+      }
+    },
+    "containerWidths": [
+      "0px",
+      "43px",
+      "60.171875px",
+      "62.484375px",
+      "72.296875px",
+      "91.84375px",
+      "95.859375px",
+      "105.3125px",
+      "155.03125px",
+      "159.421875px",
+      "174.8125px",
+      "183.15625px",
+      "246.953125px",
+      "285px",
+      "290px",
+      "300px",
+      "460.96875px",
+      "462.328125px",
+      "470.8125px",
+      "510.078125px",
+      "629.5px",
+      "631.5px",
+      "1287px",
+      "1303px",
+      "1401px"
+    ],
+    "containerMaxWidths": [
+      "100%",
+      "none"
+    ],
+    "positionUsage": [
+      "relative",
+      "static"
+    ],
+    "gridTemplates": [
+      "none"
+    ],
+    "flexDirections": [
+      "column",
+      "row"
+    ],
+    "flexWrap": [
+      "nowrap",
+      "wrap"
+    ],
+    "justifyContent": [
+      "center",
+      "end",
+      "normal",
+      "space-between"
+    ],
+    "alignItems": [
+      "baseline",
+      "center",
+      "end",
+      "flex-end",
+      "normal"
+    ]
+  },
+  "globalComponents": {
+    "navbar": {
+      "selector": "div.header___nav",
+      "width": "1321px",
+      "height": "68px",
+      "position": "fixed",
+      "offsets": {
+        "top": "16px",
+        "left": "80px",
+        "right": "16px",
+        "bottom": "840px"
+      },
+      "zIndex": "999",
+      "padding": "0px 16px",
+      "margin": "0px",
+      "border": "1px solid rgb(238, 238, 238)",
+      "borderRadius": "8px 8px 0px 0px",
+      "backgroundColor": "rgb(255, 255, 255)",
+      "boxShadow": "none",
+      "transition": {
+        "duration": "0s",
+        "timingFunction": "ease",
+        "property": "none",
+        "transform": "none"
+      },
+      "structure": [
+        {
+          "selector": "div.container-fluid.h-100",
+          "width": "1287px",
+          "height": "66px",
+          "display": "block",
+          "position": "static",
+          "gap": "normal",
+          "padding": "0px 12px",
+          "margin": "0px",
+          "justifyContent": "normal",
+          "alignItems": "normal"
+        }
+      ],
+      "activeStates": []
+    },
+    "sidebar": {
+      "selector": "div.sidebar__menu",
+      "width": "70px",
+      "height": "924px",
+      "position": "fixed",
+      "offsets": {
+        "top": "11px",
+        "left": "0px",
+        "right": "1347px",
+        "bottom": "-11px"
+      },
+      "zIndex": "99",
+      "padding": "0px 0px 32px",
+      "margin": "0px",
+      "border": "0px none rgb(33, 37, 41)",
+      "borderRadius": "18px",
+      "backgroundColor": "rgb(251, 251, 251)",
+      "boxShadow": "none",
+      "transition": {
+        "duration": "0.4s",
+        "timingFunction": "ease-in-out",
+        "property": "all",
+        "transform": "none"
+      },
+      "structure": [
+        {
+          "selector": "div.logo__cenetr",
+          "width": "59.5px",
+          "height": "65px",
+          "display": "block",
+          "position": "relative",
+          "gap": "normal",
+          "padding": "0px",
+          "margin": "5px 0.5px 0px 10px",
+          "justifyContent": "center",
+          "alignItems": "center"
+        },
+        {
+          "selector": "div.side____bar",
+          "width": "70px",
+          "height": "670px",
+          "display": "block",
+          "position": "static",
+          "gap": "normal",
+          "padding": "16px 0px 0px",
+          "margin": "0px",
+          "justifyContent": "normal",
+          "alignItems": "normal"
+        }
+      ],
+      "activeStates": [
+        {
+          "selector": "img.menu-icon.inactive-icon",
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(255, 255, 255)",
+          "borderRadius": "0px",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "padding": "0px",
+          "margin": "0px"
+        },
+        {
+          "selector": "img.menu-icon.active-icon.d-none",
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(255, 255, 255)",
+          "borderRadius": "0px",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "padding": "0px",
+          "margin": "0px"
+        },
+        {
+          "selector": "li.NavLink.active-link.nav-item",
+          "color": "rgb(33, 37, 41)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(33, 37, 41)",
+          "borderRadius": "10px",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "padding": "0px 7px 2px",
+          "margin": "3px 0px 0px -20px"
+        },
+        {
+          "selector": "a.active-link",
+          "color": "rgb(101, 116, 155)",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "border": "1px solid rgb(236, 233, 241)",
+          "borderRadius": "10px",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "padding": "0px 7px 9px",
+          "margin": "0px 0px 0px 24px"
+        },
+        {
+          "selector": "img.menu-icon.inactive-icon.d-none",
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(255, 255, 255)",
+          "borderRadius": "0px",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "padding": "0px",
+          "margin": "0px"
+        },
+        {
+          "selector": "img.menu-icon.active-icon",
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(255, 255, 255)",
+          "borderRadius": "0px",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "padding": "0px",
+          "margin": "0px"
+        }
+      ]
+    }
+  },
+  "animationSystem": {
+    "durations": {
+      "transitionDuration": [
+        "0.15s, 0.15s",
+        "0.15s, 0.15s, 0.15s, 0.15s",
+        "0.2s",
+        "0.2s, 0.2s",
+        "0.3s",
+        "0.3s, 0s",
+        "0.4s",
+        "0.5s"
+      ],
+      "animationDuration": [
+        "8s"
+      ]
+    },
+    "easingFunctions": {
+      "transitionTimingFunction": [
+        "cubic-bezier(0.645, 0.045, 0.355, 1)",
+        "cubic-bezier(0.78, 0.14, 0.15, 0.86)",
+        "ease, ease",
+        "ease-in-out",
+        "ease-in-out, ease-in-out",
+        "ease-in-out, ease-in-out, ease-in-out, ease-in-out"
+      ],
+      "animationTimingFunction": [
+        "ease-in-out"
+      ]
+    },
+    "transforms": [
+      "matrix(0.2175, 0, 0, 0.2175, 0, -0.051)",
+      "matrix(0.8, 0, 0, 0.8, 0, 0)",
+      "matrix(0.99863, 0.052336, -0.052336, 0.99863, 0.209344, -3.99452)",
+      "matrix(1, 0, 0, 1, -305, -200)",
+      "matrix(1, 0, 0, 1, 0, -6)",
+      "matrix(1, 0, 0, 1, 0, 0)",
+      "matrix(1, 0, 0, 1, 1, 1)",
+      "matrix(1, 0, 0, 1, 13.56, 0)",
+      "matrix(1, 0, 0, 1, 149.65, 15.383)",
+      "matrix(1, 0, 0, 1, 24, 31.67)",
+      "matrix(1, 0, 0, 1, 385, 280)",
+      "matrix(1, 0, 0, 1, 79, 79)",
+      "matrix(1.04097, 0, 0, 1.04097, 407.78, 316.723)",
+      "matrix(1.14854, 0, 0, 1.14854, 396.701, 308.117)"
+    ],
+    "transitionProperties": [
+      "all, visibility",
+      "background",
+      "background, border-color",
+      "border-color, box-shadow",
+      "color",
+      "color, background-color, border-color, box-shadow",
+      "margin-inline-start, margin-inline-end",
+      "none",
+      "opacity",
+      "padding-inline-start, padding-inline-end",
+      "transform"
+    ]
+  }
+}
