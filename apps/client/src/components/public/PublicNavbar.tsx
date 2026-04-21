@@ -1,5 +1,5 @@
 import { Box, Button, Collapse, Container, IconButton, Stack, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FiMenu, FiX } from 'react-icons/fi'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import BrandLogo from '../brand/BrandLogo'
@@ -27,6 +27,10 @@ export default function PublicNavbar({
 }: PublicNavbarProps) {
   const location = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [location.pathname, location.hash])
 
   return (
     <Box
@@ -175,7 +179,7 @@ export default function PublicNavbar({
               )
             })}
 
-            <Stack direction="row" spacing={1.2} sx={{ pt: 0.8 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.2} sx={{ pt: 0.8 }}>
               <Button
                 component={RouterLink}
                 to={primaryTo}

@@ -194,14 +194,15 @@ export default function LandingPage() {
     <Box className="site-shell" sx={{ bgcolor: palette.surface }}>
       <Box
         sx={{
-          display: { xs: 'none', md: 'block' },
+          display: 'block',
           bgcolor: '#FFFFFF',
           borderBottom: '1px solid #eff2f7',
-          py: 1.05,
+          py: { xs: 0.9, md: 1.05 },
+          px: 2,
           textAlign: 'center',
         }}
       >
-        <Typography sx={{ color: palette.ink, fontSize: '0.92rem', fontWeight: 500 }}>
+        <Typography sx={{ color: palette.ink, fontSize: { xs: '0.82rem', md: '0.92rem' }, fontWeight: 500, lineHeight: 1.6 }}>
           Recharge with ₹500 &amp; get <Box component="span" sx={{ color: palette.orange, fontWeight: 700 }}>₹250 bonus</Box> credits. Start shipping smarter today with <Box component="span" sx={{ color: palette.orange, fontWeight: 700 }}>ShipOrbit</Box>.
         </Typography>
       </Box>
@@ -280,10 +281,10 @@ export default function LandingPage() {
           <Reveal>
             <Box sx={{ maxWidth: { xs: '100%', lg: 540, xl: 620 } }}>
               <Typography sx={{ color: '#FFFFFF', mb: 3, lineHeight: 1.18 }}>
-                <Box component="span" sx={{ display: 'block', fontSize: { xs: '2.65rem', md: '3.5rem' }, fontWeight: 300 }}>
+                <Box component="span" sx={{ display: 'block', fontSize: { xs: '2.2rem', sm: '2.65rem', md: '3.5rem' }, fontWeight: 300 }}>
                   Shipping is now
                 </Box>
-                <Box component="span" sx={{ display: 'block', fontSize: { xs: '2.65rem', md: '3.5rem' }, fontWeight: 300 }}>
+                <Box component="span" sx={{ display: 'block', fontSize: { xs: '2.2rem', sm: '2.65rem', md: '3.5rem' }, fontWeight: 300 }}>
                   smarter & easier
                 </Box>
               </Typography>
@@ -291,9 +292,9 @@ export default function LandingPage() {
               <Typography
                 sx={{
                   color: '#FFFFFF',
-                  fontSize: '1.125rem',
+                  fontSize: { xs: '1rem', md: '1.125rem' },
                   fontWeight: 300,
-                  lineHeight: 1.85,
+                  lineHeight: { xs: 1.75, md: 1.85 },
                   maxWidth: 620,
                 }}
               >
@@ -521,7 +522,7 @@ export default function LandingPage() {
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(4, minmax(0, 1fr))' },
+              gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(4, minmax(0, 1fr))' },
               gap: 3,
             }}
           >
@@ -561,7 +562,7 @@ export default function LandingPage() {
                 >
                   Seamless Logistics for Your E-Commerce Growth
                 </Typography>
-                <Typography sx={{ mt: 3, color: palette.muted, fontSize: '1.125rem', lineHeight: 1.9 }}>
+                <Typography sx={{ mt: 3, color: palette.muted, fontSize: { xs: '1rem', md: '1.125rem' }, lineHeight: 1.9 }}>
                   Effortlessly manage your e-commerce shipping with our reliable logistics
                   solutions. From order fulfillment to last-mile delivery, we handle everything to
                   ensure fast, secure, and cost-effective shipping across multiple channels. Scale
@@ -616,7 +617,7 @@ export default function LandingPage() {
             sx={{
               mt: 4,
               display: 'grid',
-              gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', md: 'repeat(4, minmax(0, 1fr))' },
+              gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', md: 'repeat(4, minmax(0, 1fr))' },
               gap: 2,
             }}
           >
@@ -716,7 +717,7 @@ export default function LandingPage() {
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', md: 'repeat(3, minmax(0, 1fr))' },
+              gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', md: 'repeat(3, minmax(0, 1fr))' },
               gap: 3,
             }}
           >
@@ -727,7 +728,7 @@ export default function LandingPage() {
                   alignItems="center"
                   justifyContent="center"
                   sx={{
-                    minHeight: 180,
+                    minHeight: { xs: 148, sm: 180 },
                     borderRadius: '20px',
                     border: '1px solid rgba(255,255,255,0.16)',
                     bgcolor: 'rgba(255,255,255,0.06)',
@@ -767,7 +768,7 @@ export default function LandingPage() {
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', sm: 'repeat(3, minmax(0, 1fr))', lg: 'repeat(4, minmax(0, 1fr))' },
+              gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(4, minmax(0, 1fr))' },
               gap: 2.2,
             }}
           >
@@ -775,7 +776,7 @@ export default function LandingPage() {
               <Reveal key={`client-${logo}`} delay={index * 0.03}>
                 <Box
                   sx={{
-                    height: 104,
+                    height: { xs: 88, sm: 104 },
                     borderRadius: '14px',
                     border: `1px solid ${palette.line}`,
                     bgcolor: '#FFFFFF',

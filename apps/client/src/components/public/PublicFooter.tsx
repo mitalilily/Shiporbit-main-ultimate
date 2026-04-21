@@ -34,14 +34,14 @@ const socialLinks = [
 export default function PublicFooter() {
   return (
     <Box component="footer" id="contact" sx={{ px: { xs: 2, md: 3 }, pb: 4.5, pt: 3 }}>
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" sx={{ px: { xs: 0, sm: 2, md: 3 } }}>
         <Box
           sx={{
             borderRadius: '24px',
             backgroundImage: 'url(/reference/parcelx-footer-bg.png)',
             backgroundPosition: 'top center',
             backgroundSize: 'cover',
-            p: { xs: 3, md: '64px 32px 0 55px' },
+            p: { xs: 2.5, sm: 3, md: '64px 32px 0 55px' },
             overflow: 'hidden',
           }}
         >
@@ -100,8 +100,10 @@ export default function PublicFooter() {
 
                 <Stack
                   direction={{ xs: 'column', sm: 'row' }}
-                  spacing={{ xs: 3, sm: 8, lg: 12.5 }}
+                  spacing={{ xs: 3, sm: 5, lg: 12.5 }}
                   justifyContent={{ xs: 'flex-start', lg: 'flex-end' }}
+                  flexWrap="wrap"
+                  useFlexGap
                 >
                   {[
                     { title: 'Quick Links', items: quickLinks },
@@ -131,7 +133,7 @@ export default function PublicFooter() {
                               color: '#1A1A1A',
                               fontSize: '1rem',
                               fontWeight: 400,
-                              lineHeight: 1,
+                              lineHeight: 1.3,
                               '&:hover': {
                                 color: '#FF6600',
                               },
@@ -155,7 +157,7 @@ export default function PublicFooter() {
                 pb: 1.1,
               }}
             >
-              SHIPORBIT © Copyright {new Date().getFullYear()}, All Rights Reserved
+              SHIPORBIT Copyright {new Date().getFullYear()}, All Rights Reserved
             </Typography>
           </Stack>
         </Box>
