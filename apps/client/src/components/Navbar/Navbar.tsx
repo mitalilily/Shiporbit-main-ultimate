@@ -7,6 +7,7 @@ import {
   FiPhoneCall,
   FiTruck,
 } from 'react-icons/fi'
+import { FaWallet } from 'react-icons/fa'
 import { HiOutlineMenuAlt3 } from 'react-icons/hi'
 import { useAuth } from '../../context/auth/AuthContext'
 import { useWalletBalance } from '../../hooks/useWalletBalance'
@@ -155,21 +156,27 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
                       </h3>
                     </div>
 
-                    <div className="wallet__cash therechareapps">
-                      <h3>
-                        PX <span className="d-responsive ms-1">Wallet</span> :
-                        <span className="s__4774747 ms-1">{'\u20B9'} {formattedBalance}</span>
-                      </h3>
-                      <span className="s__114414">
-                        <Link to="/wallet/addmoney">
-                          Recharge <span className="d-responsive ms-1">Wallet</span>
-                        </Link>
-                      </span>
-                    </div>
                   </div>
 
                   <div className="side__menuusd notification-card">
                     <ul className="nav">
+                      <li className="nav-item wallet-nav-item">
+                        <div className="wallet__cash therechareapps wallet-corner-card">
+                          <h3>
+                            <span className="s__114414 wallet-badge-icon">
+                              <FaWallet size={15} />
+                            </span>
+                            <span className="d-responsive">Wallet</span>
+                            <span className="s__4774747">{'\u20B9'} {formattedBalance}</span>
+                          </h3>
+                          <span className="s__114414">
+                            <Link to="/wallet/addmoney">
+                              Recharge <span className="d-responsive ms-1">Wallet</span>
+                            </Link>
+                          </span>
+                        </div>
+                      </li>
+
                       <li className="s11777 nav-s11777 nav-item" ref={notificationMenuRef}>
                         <button
                           type="button"

@@ -15,6 +15,7 @@ import {
 import { useMemo, useState } from 'react'
 import { FiChevronDown, FiPlus, FiRefreshCw, FiSearch } from 'react-icons/fi'
 import CustomDrawer from '../../components/UI/drawer/CustomDrawer'
+import ParcelXDateRangePicker, { getDefaultRange, type RangeValue } from '../../components/UI/inputs/ParcelXDateRangePicker'
 import { SupportTicketForm } from '../../components/support/SupportTicketForm'
 import { useMyTickets } from '../../hooks/User/useSupport'
 import { brand } from '../../theme/brand'
@@ -46,6 +47,7 @@ const ticketTabs = ['Open (0)', 'Resolved (0)', 'Pending (0)', 'Reopen (0)', 'Cl
 
 export const SupportTicketsPage = () => {
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [dateRange, setDateRange] = useState<RangeValue>(() => getDefaultRange())
   const [dateType, setDateType] = useState('Created Date')
   const [priority, setPriority] = useState('')
   const [aging, setAging] = useState('')
@@ -119,10 +121,12 @@ export const SupportTicketsPage = () => {
               <Typography sx={{ fontSize: '0.77rem', fontWeight: 500, color: '#111', mb: 0.55 }}>
                 Select Date
               </Typography>
-              <TextField
-                value="17 Mar, 2026 12:00 am - 17 Apr, 2026 10:28 am"
-                sx={fieldSx}
-                InputProps={{ readOnly: true }}
+              <ParcelXDateRangePicker
+                value={dateRange}
+                onApply={setDateRange}
+                placeholder="Select Date Range"
+                wrapperClassName="date-wrapper mui-date-wrapper"
+                inputClassName="custom-range-picker mui-range-picker"
               />
             </Box>
 

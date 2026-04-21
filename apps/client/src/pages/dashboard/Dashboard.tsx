@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useMerchantDashboardStats } from '../../hooks/useDashboard'
+import ParcelXDateRangePicker from '../../components/UI/inputs/ParcelXDateRangePicker'
 
 type DashboardMetricCard = {
   title: string
@@ -28,12 +29,6 @@ const metricIconStyle = { width: '1em', height: '1em' as const }
 const infoGlyph = (
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="12" height="12" viewBox="0 0 24 24">
     <path fill="currentColor" d="M11.5 16.5h1V11h-1zm.934-7.1q.182-.177.182-.439t-.178-.438T12 8.346t-.438.177t-.177.439t.181.438t.434.177t.434-.177m-.43 11.6q-1.868 0-3.511-.708q-1.643-.709-2.859-1.924t-1.925-2.856T3 12.003t.709-3.51Q4.417 6.85 5.63 5.634t2.857-1.925T11.997 3t3.51.709q1.643.708 2.859 1.922t1.925 2.857t.709 3.509t-.708 3.51t-1.924 2.859t-2.856 1.925t-3.509.709M12 20q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8" />
-  </svg>
-)
-
-const calendarGlyph = (
-  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 24 24">
-    <path fill="currentColor" d="M19 4h-2V3a1 1 0 0 0-2 0v1H9V3a1 1 0 0 0-2 0v1H5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3m1 15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-7h16Zm0-9H4V7a1 1 0 0 1 1-1h2v1a1 1 0 0 0 2 0V6h6v1a1 1 0 0 0 2 0V6h2a1 1 0 0 1 1 1Z" />
   </svg>
 )
 
@@ -356,16 +351,7 @@ export default function Dashboard() {
               <div className="thefiltercate dash dashboard-date-range">
                 <div id="DateRangePickerContainer" className="daterangepickercontainer">
                   <div id="DateRangePickerChildren">
-                    <div className="date-wrapper">
-                      <input
-                        placeholder="Select Start Date,Select End Date"
-                        readOnly
-                        className="ant-input css-1261szd ant-input-outlined custom-range-picker"
-                        type="text"
-                        value="17-Mar-2026 12:00 am - 17-Apr-2026 11:59 pm"
-                      />
-                      <span className="calender_0099">{calendarGlyph}</span>
-                    </div>
+                    <ParcelXDateRangePicker placeholder="Select Start Date,Select End Date" />
                   </div>
                 </div>
               </div>

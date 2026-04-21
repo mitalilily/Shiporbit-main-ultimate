@@ -17,6 +17,7 @@ import { TbSettings, TbTruckDelivery } from 'react-icons/tb'
 import { NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { generateManifestService } from '../../api/order.service'
 import AllOrders from '../../components/orders/AllOrders'
+import ParcelXDateRangePicker, { getDefaultRange, type RangeValue } from '../../components/UI/inputs/ParcelXDateRangePicker'
 import { toast } from '../../components/UI/Toast'
 import { brand } from '../../theme/brand'
 
@@ -59,7 +60,7 @@ export default function ChannelOrders() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [selectedStatusTab, setSelectedStatusTab] = useState('Pending')
   const [dateType, setDateType] = useState('Fetch Order Date')
-  const [dateRange, setDateRange] = useState('10 Apr, 2026 12:00 am - 17 Apr, 2026 11:59 pm')
+  const [dateRange, setDateRange] = useState<RangeValue>(() => getDefaultRange())
   const [searchType, setSearchType] = useState('Order Id')
   const [searchText, setSearchText] = useState('')
   const [advancedFilter, setAdvancedFilter] = useState('')
@@ -170,7 +171,7 @@ export default function ChannelOrders() {
 
   const resetFilters = () => {
     setDateType('Fetch Order Date')
-    setDateRange('10 Apr, 2026 12:00 am - 17 Apr, 2026 11:59 pm')
+    setDateRange(getDefaultRange())
     setSearchType('Order Id')
     setSearchText('')
     setAdvancedFilter('')
@@ -255,13 +256,18 @@ export default function ChannelOrders() {
                 ))}
               </Select>
             </FormControl>
-            <TextField
-              fullWidth
-              size="small"
-              label="Select Date"
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value)}
-            />
+            <Box sx={{ flex: 1, minWidth: 220 }}>
+              <Typography sx={{ fontSize: '0.77rem', fontWeight: 500, color: '#111', mb: 0.55 }}>
+                Select Date
+              </Typography>
+              <ParcelXDateRangePicker
+                value={dateRange}
+                onApply={setDateRange}
+                placeholder="Select Date Range"
+                wrapperClassName="date-wrapper mui-date-wrapper"
+                inputClassName="custom-range-picker mui-range-picker"
+              />
+            </Box>
             <FormControl fullWidth size="small">
               <InputLabel>Search Type</InputLabel>
               <Select value={searchType} label="Search Type" onChange={(e) => setSearchType(e.target.value)}>

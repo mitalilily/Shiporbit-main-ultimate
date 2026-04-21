@@ -1,6 +1,8 @@
 import { Box, Button, MenuItem, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material'
-import { FiCalendar, FiDownload, FiUpload } from 'react-icons/fi'
+import { useState } from 'react'
+import { FiDownload, FiUpload } from 'react-icons/fi'
 import { NavLink, useLocation } from 'react-router-dom'
+import ParcelXDateRangePicker, { getDefaultRange, type RangeValue } from '../../components/UI/inputs/ParcelXDateRangePicker'
 import { brand } from '../../theme/brand'
 
 type InvoiceVariant = 'order' | 'communication'
@@ -42,6 +44,7 @@ const tableColumns = [
 export default function BillingInvoiceShell({ variant }: BillingInvoiceShellProps) {
   const location = useLocation()
   const title = variant === 'order' ? 'Order Invoice' : 'Communication Invoice'
+  const [dateRange, setDateRange] = useState<RangeValue>(() => getDefaultRange())
 
   return (
     <Box sx={{ p: '18px 18px 26px', fontFamily: 'Instrument Sans, sans-serif' }}>
@@ -148,11 +151,15 @@ export default function BillingInvoiceShell({ variant }: BillingInvoiceShellProp
           <Typography sx={{ fontSize: '0.86rem', fontWeight: 600, color: '#111827', minWidth: 92 }}>
             Select Date
           </Typography>
-          <TextField
-            value="19 Oct, 2025 12:00 am - 19 Apr, 2026 11:59 pm"
-            sx={{ ...inputSx, flex: 1 }}
-            InputProps={{ endAdornment: <FiCalendar size={16} color="#6b7280" /> }}
-          />
+          <Box sx={{ ...inputSx, flex: 1 }}>
+            <ParcelXDateRangePicker
+              value={dateRange}
+              onApply={setDateRange}
+              placeholder="Select Date Range"
+              wrapperClassName="date-wrapper mui-date-wrapper"
+              inputClassName="custom-range-picker mui-range-picker"
+            />
+          </Box>
         </Stack>
 
         <Box

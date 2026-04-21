@@ -27,6 +27,7 @@ import {
 } from '../../api/ndr'
 import { getPresignedDownloadUrls } from '../../api/upload.api'
 import CustomInput from '../../components/UI/inputs/CustomInput'
+import ParcelXDateRangePicker, { getDefaultRange, type RangeValue } from '../../components/UI/inputs/ParcelXDateRangePicker'
 import FileUploader, { type UploadedFileInfo } from '../../components/UI/uploader/FileUploader'
 import { toast } from '../../components/UI/Toast'
 import { brand } from '../../theme/brand'
@@ -107,6 +108,7 @@ export default function NdrList() {
   const [loading, setLoading] = useState(true)
   const [page] = useState(1)
   const [rowsPerPage] = useState(50)
+  const [dateRange, setDateRange] = useState<RangeValue>(() => getDefaultRange())
   const [dateType, setDateType] = useState('First NDR Date')
   const [searchType, setSearchType] = useState('Order ID')
   const [searchValue, setSearchValue] = useState('')
@@ -228,7 +230,13 @@ export default function NdrList() {
               </div>
               <div className="mid-divcalender pendingg">
                 <label className="calendar-label padding">Select Date</label>
-                <input className="mini-input w-240" value="04/12/2026 - 04/19/2026" readOnly />
+                <ParcelXDateRangePicker
+                  value={dateRange}
+                  onApply={setDateRange}
+                  placeholder="Select Date Range"
+                  wrapperClassName="date-wrapper"
+                  inputClassName="custom-range-picker mini-input w-240"
+                />
               </div>
               <div className="channel report">
                 <label className="calendar-label padding">NDR Types</label>
@@ -369,10 +377,12 @@ export default function NdrList() {
               <Typography sx={{ fontSize: '0.77rem', fontWeight: 500, color: '#111', mb: 0.55 }}>
                 Select Date
               </Typography>
-              <TextField
-                value="16-Apr-2026 12:00 am - 17-Apr-2026 11:59 pm"
-                sx={fieldSx}
-                InputProps={{ readOnly: true }}
+              <ParcelXDateRangePicker
+                value={dateRange}
+                onApply={setDateRange}
+                placeholder="Select Date Range"
+                wrapperClassName="date-wrapper mui-date-wrapper"
+                inputClassName="custom-range-picker mui-range-picker"
               />
             </Box>
 

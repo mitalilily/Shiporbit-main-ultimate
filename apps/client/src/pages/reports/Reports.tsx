@@ -17,7 +17,6 @@ import {
 } from '@mui/material'
 import { useMemo, useRef, useState } from 'react'
 import {
-  FiCalendar,
   FiChevronDown,
   FiDownload,
   FiFilter,
@@ -26,6 +25,7 @@ import {
   FiUpload,
 } from 'react-icons/fi'
 import { downloadCustomReportCsv } from '../../api/reports.api'
+import ParcelXDateRangePicker, { getDefaultRange, type RangeValue } from '../../components/UI/inputs/ParcelXDateRangePicker'
 import { toast } from '../../components/UI/Toast'
 import { brand } from '../../theme/brand'
 
@@ -150,10 +150,8 @@ const cardSx = {
   boxShadow: 'none',
 }
 
-const formatDateRangeLabel = (from: string, to: string) =>
-  `${from.split('-').join(' ')} - ${to.split('-').join(' ')}`
-
 export default function Reports() {
+  const [dateRange, setDateRange] = useState<RangeValue>(() => getDefaultRange())
   const [dateType, setDateType] = useState('Placed')
   const [expressType, setExpressType] = useState('')
   const [shipmentType, setShipmentType] = useState('')
@@ -167,9 +165,6 @@ export default function Reports() {
   const [submitting, setSubmitting] = useState(false)
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(true)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-
-  const fromDate = '17 Apr, 2026 12:00 am'
-  const toDate = '17 Apr, 2026 10:17 am'
 
   const toggleAll = () => {
     setAllChecked((prev) => {
@@ -390,13 +385,12 @@ export default function Reports() {
                 <Typography sx={{ fontSize: '0.77rem', fontWeight: 500, color: '#111', mb: 0.55 }}>
                   Select Date
                 </Typography>
-                <TextField
-                  value={formatDateRangeLabel(fromDate, toDate)}
-                  sx={fieldSx}
-                  InputProps={{
-                    endAdornment: <FiCalendar size={18} color="#616b78" />,
-                    readOnly: true,
-                  }}
+                <ParcelXDateRangePicker
+                  value={dateRange}
+                  onApply={setDateRange}
+                  placeholder="Select Date Range"
+                  wrapperClassName="date-wrapper mui-date-wrapper"
+                  inputClassName="custom-range-picker mui-range-picker"
                 />
               </Box>
 

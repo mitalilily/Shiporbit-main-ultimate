@@ -1,6 +1,8 @@
 import { Box, Button, MenuItem, Stack, TextField, Typography } from '@mui/material'
-import { FiCalendar, FiDownload, FiUpload } from 'react-icons/fi'
+import { useState } from 'react'
+import { FiDownload, FiUpload } from 'react-icons/fi'
 import { NavLink, useLocation } from 'react-router-dom'
+import ParcelXDateRangePicker, { getDefaultRange, type RangeValue } from '../../components/UI/inputs/ParcelXDateRangePicker'
 import { brand } from '../../theme/brand'
 
 const panelSx = {
@@ -35,6 +37,7 @@ const isPath = (pathname: string, path: string) => pathname === path || pathname
 
 export default function CodRemittancesList() {
   const location = useLocation()
+  const [dateRange, setDateRange] = useState<RangeValue>(() => getDefaultRange())
 
   return (
     <Box sx={{ p: '18px 18px 26px', fontFamily: 'Instrument Sans, sans-serif' }}>
@@ -128,11 +131,15 @@ export default function CodRemittancesList() {
           <TextField select value="COD Date" sx={{ ...fieldSx, minWidth: 150 }}>
             <MenuItem value="COD Date">COD Date</MenuItem>
           </TextField>
-          <TextField
-            value="18 Mar, 2026 12:00 am - 16 Apr, 2026 09:31 pm"
-            sx={{ ...fieldSx, flex: 1 }}
-            InputProps={{ endAdornment: <FiCalendar size={16} color="#6b7280" /> }}
-          />
+          <Box sx={{ ...fieldSx, flex: 1 }}>
+            <ParcelXDateRangePicker
+              value={dateRange}
+              onApply={setDateRange}
+              placeholder="Select Date Range"
+              wrapperClassName="date-wrapper mui-date-wrapper"
+              inputClassName="custom-range-picker mui-range-picker"
+            />
+          </Box>
           <Button
             sx={{
               minHeight: 42,
