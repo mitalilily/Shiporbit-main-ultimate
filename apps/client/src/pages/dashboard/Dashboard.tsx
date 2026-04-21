@@ -509,8 +509,6 @@ const SelectStub = ({ label, width = 150 }: { label: string; width?: number }) =
 
 const dashboardTabs = [
   { label: 'Overview', path: '/dashboard' },
-  { label: 'Date Wise Shipment', path: '/dashboard/date-wise-shipments' },
-  { label: 'Product Wise Shipment', path: '/dashboard/product-wise-shipments' },
 ]
 
 export default function Dashboard() {
