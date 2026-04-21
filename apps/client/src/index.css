@@ -512,7 +512,7 @@ span.no__987 {
   background: #fff;
   border: 1px solid #eee;
   border-radius: 22px;
-  padding: 0;
+  padding: 0 14px;
   transition: left 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
   font-family: 'Instrument Sans', sans-serif;
   overflow: visible;
@@ -545,20 +545,6 @@ span.no__987 {
   height: 100%;
 }
 
-.header___nav > .container-fluid.h-100 {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
-.header___nav .row.h-100 {
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.header___nav nav.navbar {
-  padding: 0;
-}
-
 .header___nav .container-fluid.p-0,
 .nav-left-controls,
 .s__llii0099,
@@ -570,8 +556,6 @@ span.no__987 {
 .header___nav .container-fluid.p-0 {
   justify-content: space-between;
   gap: 12px;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
   min-width: 0;
   overflow: visible;
   flex-wrap: nowrap;

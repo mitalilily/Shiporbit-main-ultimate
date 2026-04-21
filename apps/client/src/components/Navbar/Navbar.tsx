@@ -52,9 +52,6 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
   const helplineRef = useRef<HTMLDivElement | null>(null)
   const notificationMenuRef = useRef<HTMLLIElement | null>(null)
   const profileMenuRef = useRef<HTMLLIElement | null>(null)
-  const profileTriggerRef = useRef<HTMLButtonElement | null>(null)
-  const firstProfileActionRef = useRef<HTMLButtonElement | null>(null)
-  const wasProfileOpenRef = useRef(false)
 
   const liveBalance = useMemo(() => {
     const value =
@@ -80,7 +77,7 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
   ]
 
   useEffect(() => {
-    const handleOutsidePointerDown = (event: MouseEvent | TouchEvent) => {
+    const handleOutsideClick = (event: MouseEvent) => {
       const target = event.target as Node | null
       if (!target) return
 
@@ -95,37 +92,9 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
       }
     }
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setHelplineOpen(false)
-        setNotificationOpen(false)
-        setProfileOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleOutsidePointerDown)
-    document.addEventListener('touchstart', handleOutsidePointerDown)
-    document.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      document.removeEventListener('mousedown', handleOutsidePointerDown)
-      document.removeEventListener('touchstart', handleOutsidePointerDown)
-      document.removeEventListener('keydown', handleKeyDown)
-    }
+    document.addEventListener('click', handleOutsideClick)
+    return () => document.removeEventListener('click', handleOutsideClick)
   }, [])
-
-  useEffect(() => {
-    if (profileOpen) {
-      wasProfileOpenRef.current = true
-      firstProfileActionRef.current?.focus()
-      return
-    }
-
-    if (wasProfileOpenRef.current) {
-      profileTriggerRef.current?.focus()
-      wasProfileOpenRef.current = false
-    }
-  }, [profileOpen])
 
   return (
     <div className="header___nav">
@@ -143,12 +112,7 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
                     <button
                       className="helpline-btn dropdown-toggle"
                       type="button"
-                      aria-expanded={helplineOpen}
-                      onClick={() => {
-                        setHelplineOpen((value) => !value)
-                        setNotificationOpen(false)
-                        setProfileOpen(false)
-                      }}
+                      onClick={() => setHelplineOpen((value) => !value)}
                     >
                       <h3>
                         <FiHeadphones size={22} />
@@ -230,12 +194,9 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
                         <button
                           type="button"
                           aria-label="Notifications"
-                          aria-expanded={notificationOpen}
                           onClick={(event) => {
                             event.stopPropagation()
                             setNotificationOpen((value) => !value)
-                            setHelplineOpen(false)
-                            setProfileOpen(false)
                           }}
                         >
                           <span className="iocns__00 c__114411 notification-wrapper">
@@ -271,18 +232,12 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
 
                       <li className="s_user_09 position-relative nav-item" ref={profileMenuRef}>
                         <button
-                          ref={profileTriggerRef}
                           className="chakra-menu__menu-button profile__0244"
                           type="button"
                           aria-label="Profile menu"
-                          aria-haspopup="menu"
-                          aria-expanded={profileOpen}
-                          aria-controls="top-navbar-profile-menu"
                           onClick={(event) => {
                             event.stopPropagation()
                             setProfileOpen((value) => !value)
-                            setHelplineOpen(false)
-                            setNotificationOpen(false)
                           }}
                         >
                           <span className="profiledropdown">
@@ -292,17 +247,15 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
                         </button>
 
                         {profileOpen ? (
-                          <div className="chakra-menu__menu-list profile-menu" id="top-navbar-profile-menu" role="menu">
+                          <div className="chakra-menu__menu-list profile-menu">
                             <div className="profile-menu-header">
                               <strong>{resolvedFullName || 'User'}</strong>
                               <p>{email}</p>
                             </div>
 
-                            {profileActions.map((item, index) => (
+                            {profileActions.map((item) => (
                               <button
                                 key={item.label}
-                                ref={index === 0 ? firstProfileActionRef : undefined}
-                                role="menuitem"
                                 className={item.danger ? 'logout-button' : ''}
                                 onClick={() => {
                                   setProfileOpen(false)
