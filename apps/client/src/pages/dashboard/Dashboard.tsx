@@ -748,7 +748,10 @@ export default function Dashboard() {
                     <div className="thechardheadandfiles">
                       <div className="wrapper-info">
                         <h3 className="thechardsheadings">Shipment Status</h3>
-                        <InfoHover text="This chart shows the overall status of your processed shipments." />
+                        <InfoHover
+                          className="shipment-status-hover-card"
+                          text="This chart shows the overall status of your processed shipments."
+                        />
                       </div>
                     </div>
                   </div>

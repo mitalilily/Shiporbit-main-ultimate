@@ -203,6 +203,19 @@ const theme = createTheme({
           fontSize: '0.88rem',
           fontWeight: 600,
           boxShadow: 'none',
+          cursor: 'pointer',
+          transition:
+            'transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, border-color 160ms ease',
+          '&:hover': {
+            transform: 'translateY(-1px)',
+          },
+          '&:active': {
+            transform: 'translateY(0) scale(0.985)',
+          },
+          '&.Mui-disabled': {
+            cursor: 'not-allowed',
+            transform: 'none',
+          },
         },
         containedPrimary: {
           background: brandGradients.button,
@@ -233,6 +246,52 @@ const theme = createTheme({
           color: brand.ink,
           '&:hover': {
             backgroundColor: alpha(brand.accent, 0.06),
+          },
+        },
+      },
+    },
+    MuiButtonBase: {
+      styleOverrides: {
+        root: {
+          cursor: 'pointer',
+          '&.Mui-disabled': {
+            cursor: 'not-allowed',
+          },
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          transition:
+            'transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, opacity 160ms ease',
+          '&:hover': {
+            transform: 'translateY(-1px)',
+          },
+          '&:active': {
+            transform: 'translateY(0) scale(0.96)',
+          },
+          '&.Mui-disabled': {
+            transform: 'none',
+          },
+        },
+      },
+    },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          cursor: 'pointer',
+          transition:
+            'transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, border-color 160ms ease',
+          '&:hover': {
+            transform: 'translateY(-1px)',
+          },
+          '&:active': {
+            transform: 'translateY(0) scale(0.985)',
+          },
+          '&.Mui-disabled': {
+            cursor: 'not-allowed',
+            transform: 'none',
           },
         },
       },

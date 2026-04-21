@@ -123,6 +123,55 @@ textarea {
   font: inherit;
 }
 
+button,
+[role='button'],
+.MuiButtonBase-root,
+.MuiButton-root,
+.MuiIconButton-root,
+.MuiToggleButton-root {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button,
+[role='button'],
+.MuiButton-root,
+.MuiIconButton-root,
+.MuiToggleButton-root {
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    opacity 160ms ease;
+}
+
+button:not(:disabled):hover,
+[role='button']:not([aria-disabled='true']):hover,
+.MuiButtonBase-root:not(.Mui-disabled):hover {
+  transform: translateY(-1px);
+}
+
+button:not(:disabled):active,
+[role='button']:not([aria-disabled='true']):active,
+.MuiButtonBase-root:not(.Mui-disabled):active {
+  transform: translateY(0) scale(0.985);
+}
+
+button:focus-visible,
+[role='button']:focus-visible,
+.MuiButtonBase-root.Mui-focusVisible {
+  outline: 3px solid rgba(31, 111, 235, 0.22);
+  outline-offset: 2px;
+}
+
+button:disabled,
+.MuiButtonBase-root.Mui-disabled,
+[role='button'][aria-disabled='true'] {
+  cursor: not-allowed;
+  transform: none;
+}
+
 .site-shell {
   position: relative;
   overflow-x: clip;
@@ -702,6 +751,35 @@ span.no__987 {
 
 .wallet__cash.s__0144114414.loa__dedd {
   cursor: pointer;
+}
+
+.wallet__cash.s__0144114414.loa__dedd:hover {
+  border-color: rgba(255, 102, 0, 0.36);
+}
+
+.wallet__cash.s__0144114414.full__trockk {
+  padding: 0;
+}
+
+.wallet__cash.s__0144114414.loa__dedd {
+  padding: 0;
+}
+
+.navbar-chip-button {
+  appearance: none;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+}
+
+.wallet__cash.s__0144114414.full__trockk:hover {
+  border-color: rgba(255, 102, 0, 0.36);
 }
 
 .wallet__cash.s__0144114414.loa__dedd:hover {
@@ -1434,6 +1512,7 @@ span.s__114414 a {
 }
 
 .rangeButton {
+  appearance: none;
   color: #0088cc;
   font-size: 13px;
   border: 1px solid #f5f5f5;
@@ -1551,6 +1630,7 @@ span.s__114414 a {
 
 .leftChevron,
 .rightChevron {
+  appearance: none;
   width: 30px;
   height: 30px;
   justify-content: center;
@@ -1558,6 +1638,7 @@ span.s__114414 a {
   cursor: pointer;
   color: #3b4654;
   background: #f7f8fa;
+  border: 0;
 }
 
 .calendarGrid {
@@ -1579,6 +1660,7 @@ span.s__114414 a {
 }
 
 .calendarCell {
+  appearance: none;
   min-height: 38px;
   display: flex;
   align-items: center;
@@ -1588,6 +1670,8 @@ span.s__114414 a {
   background: #fff;
   cursor: pointer;
   font-size: 13px;
+  border: 0;
+  padding: 0;
   transition: background-color 160ms ease, color 160ms ease, opacity 160ms ease;
 }
 
@@ -1669,6 +1753,7 @@ span.s__114414 a {
 }
 
 .buttonSeperator {
+  appearance: none;
   min-height: 38px;
   display: inline-flex;
   align-items: center;
@@ -1678,6 +1763,7 @@ span.s__114414 a {
   font-weight: 700;
   cursor: pointer;
   border: 1px solid rgba(18, 24, 38, 0.08);
+  padding: 0 14px;
 }
 
 .applyButton {
@@ -2219,6 +2305,23 @@ span.s__114414 a {
   transform: translateY(0) scale(1);
 }
 
+.dashboard___page .wrapper-info > .hover-container.shipment-status-hover-card .hover-info {
+  right: auto;
+  left: 50%;
+  bottom: calc(100% + 14px);
+  min-width: 260px;
+  max-width: 300px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  transform: translate(-50%, 12px) scale(0.98);
+  transform-origin: bottom center;
+  text-align: left;
+}
+
+.dashboard___page .wrapper-info > .hover-container.shipment-status-hover-card:hover .hover-info {
+  transform: translate(-50%, 0) scale(1);
+}
+
 .dashboard___page .wrapper-info > .hover-container:hover,
 .dashboard___page .logistics-wrapper > .hover-container:hover,
 .card.hover-container:hover {
@@ -2231,6 +2334,13 @@ span.s__114414 a {
   right: 10px;
   top: auto;
   bottom: -5px;
+}
+
+.dashboard___page .wrapper-info > .hover-container.shipment-status-hover-card .hover-info::before {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%) rotate(45deg);
+  bottom: -6px;
 }
 
 .number__donut {

@@ -353,9 +353,14 @@ export default function ParcelXDateRangePicker({
 
         <div>
           <div className="monthYearContainer">
-            <div className="multipleContentOnLine leftChevron" onClick={() => setVisibleMonth(addMonths(visibleMonth, -1))}>
+            <button
+              type="button"
+              className="multipleContentOnLine leftChevron"
+              onClick={() => setVisibleMonth(addMonths(visibleMonth, -1))}
+              aria-label={`Show previous month for ${panel} calendar`}
+            >
               <span>{'<'}</span>
-            </div>
+            </button>
             <div className="multipleContentOnLine">
               <select
                 id={`MonthSelector_${panel === 'start' ? 'start' : 'end'}`}
@@ -386,9 +391,14 @@ export default function ParcelXDateRangePicker({
                 ))}
               </select>
             </div>
-            <div className="multipleContentOnLine rightChevron" onClick={() => setVisibleMonth(addMonths(visibleMonth, 1))}>
+            <button
+              type="button"
+              className="multipleContentOnLine rightChevron"
+              onClick={() => setVisibleMonth(addMonths(visibleMonth, 1))}
+              aria-label={`Show next month for ${panel} calendar`}
+            >
               <span>{'>'}</span>
-            </div>
+            </button>
           </div>
 
           <div className="calendarGrid calendarGridHead">
@@ -425,11 +435,13 @@ export default function ParcelXDateRangePicker({
                     .join(' ')
 
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={`${panel}-${day.toISOString()}`}
                       className={className}
                       id={`row_${rowIndex}_cell_${calendarDays.slice(rowIndex * 7, rowIndex * 7 + 7).indexOf(day)}_${panel}`}
                       tabIndex={disabled ? -1 : 0}
+                      disabled={disabled}
                       onClick={() => !disabled && handleDaySelect(panel, day)}
                       onKeyDown={(event) => {
                         if (!disabled && (event.key === 'Enter' || event.key === ' ')) {
@@ -439,7 +451,7 @@ export default function ParcelXDateRangePicker({
                       }}
                     >
                       {format(day, 'd')}
-                    </div>
+                    </button>
                   )
                 })}
               </div>
@@ -490,12 +502,11 @@ export default function ParcelXDateRangePicker({
         <div id="daterangepicker" className="daterangepicker">
           <div className="rangecontainer">
             {presetOptions.map(({ key, label }, index) => (
-              <div
+              <button
+                type="button"
                 key={key}
                 id={`rangeButton${index}`}
                 className={`rangeButton ${activePreset === key ? 'active' : ''}`.trim()}
-                role="button"
-                tabIndex={0}
                 onClick={() => handlePresetClick(key)}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
@@ -505,7 +516,7 @@ export default function ParcelXDateRangePicker({
                 }}
               >
                 <div className="rangebuttontextstyle">{label}</div>
-              </div>
+              </button>
             ))}
           </div>
 
@@ -514,12 +525,12 @@ export default function ParcelXDateRangePicker({
 
           <div id="buttonContainer" className="buttonContainer">
             <div className="maxDateLabel">Max Date: {formatDateTimeField(maxDate)}</div>
-            <div className="buttonSeperator applyButton" role="button" tabIndex={0} onClick={applyDraft}>
+            <button type="button" className="buttonSeperator applyButton" onClick={applyDraft}>
               Apply
-            </div>
-            <div className="buttonSeperator cancelButton" role="button" tabIndex={0} onClick={cancelDraft}>
+            </button>
+            <button type="button" className="buttonSeperator cancelButton" onClick={cancelDraft}>
               Cancel
-            </div>
+            </button>
           </div>
         </div>
       </Popover>

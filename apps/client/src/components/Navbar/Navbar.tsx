@@ -11,6 +11,7 @@ import { FaWallet } from 'react-icons/fa'
 import { HiOutlineMenuAlt3 } from 'react-icons/hi'
 import { useAuth } from '../../context/auth/AuthContext'
 import { useWalletBalance } from '../../hooks/useWalletBalance'
+import FullTruckLoadDialog from './FullTruckLoadDialog'
 import UserMenu from './UserMenu'
 
 interface NavbarProps {
@@ -28,6 +29,7 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
 
   const [helplineOpen, setHelplineOpen] = useState(false)
   const [notificationOpen, setNotificationOpen] = useState(false)
+  const [fullTruckLoadOpen, setFullTruckLoadOpen] = useState(false)
 
   const helplineRef = useRef<HTMLDivElement | null>(null)
   const notificationMenuRef = useRef<HTMLLIElement | null>(null)
@@ -126,34 +128,37 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
                 <div className="s__llii0099 ms-auto">
                   <div className="nav-flex">
                     <div className="wallet__cash s__0144114414 full__trockk">
-                      <h3>
-                        <span className="s__114414">
-                          <FiTruck size={22} />
-                        </span>
-                        <span>Full Truck Load</span>
-                      </h3>
+                      <button
+                        type="button"
+                        className="navbar-chip-button ftl-trigger-button"
+                        aria-label="Open full truck load enquiry form"
+                        onClick={() => setFullTruckLoadOpen(true)}
+                      >
+                        <h3>
+                          <span className="s__114414">
+                            <FiTruck size={22} />
+                          </span>
+                          <span>Full Truck Load</span>
+                        </h3>
+                      </button>
                     </div>
 
                     <span className="dividerline">|</span>
 
-                    <div
-                      className="wallet__cash s__0144114414 loa__dedd"
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => navigate('/support/tickets')}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault()
-                          navigate('/support/tickets')
-                        }
-                      }}
-                    >
-                      <h3>
-                        <span className="s__114414">
-                          <img src={ticketGlyph} className="Apparrow" alt="logo" width={18} />
-                        </span>
-                        <span>Tickets</span>
-                      </h3>
+                    <div className="wallet__cash s__0144114414 loa__dedd">
+                      <button
+                        type="button"
+                        className="navbar-chip-button"
+                        aria-label="Open tickets"
+                        onClick={() => navigate('/support/tickets')}
+                      >
+                        <h3>
+                          <span className="s__114414">
+                            <img src={ticketGlyph} className="Apparrow" alt="logo" width={18} />
+                          </span>
+                          <span>Tickets</span>
+                        </h3>
+                      </button>
                     </div>
 
                   </div>
@@ -230,6 +235,7 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
           </div>
         </div>
       </div>
+      <FullTruckLoadDialog open={fullTruckLoadOpen} onClose={() => setFullTruckLoadOpen(false)} />
     </div>
   )
 }
