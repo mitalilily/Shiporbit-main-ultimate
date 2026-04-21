@@ -112,6 +112,11 @@ const isAllowedOrigin = (origin: string) => {
     return true
   }
 
+  // Allow local frontend dev servers even when Vite picks a different port.
+  if (/^https?:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0):\d+$/.test(normalizedOrigin)) {
+    return true
+  }
+
   return /^https:\/\/([a-z0-9-]+\.)*skyrushcargo\.in$/.test(normalizedOrigin)
 }
 
