@@ -2,19 +2,20 @@ import {
   alpha,
   Avatar,
   Box,
-  Divider,
   IconButton,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Popover,
   Typography,
 } from '@mui/material'
 import { useState } from 'react'
-import { BsKeyboardFill } from 'react-icons/bs'
-import { FaGavel } from 'react-icons/fa6'
-import { MdAccountCircle, MdLogout, MdSettings } from 'react-icons/md'
+import {
+  FiCheckCircle,
+  FiFileText,
+  FiHeadphones,
+  FiHome,
+  FiLogOut,
+  FiSettings,
+  FiUser,
+} from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/auth/AuthContext'
 import { usePresignedDownloadUrls } from '../../hooks/Uploads/usePresignedDownloadUrls'
@@ -24,8 +25,6 @@ const INK = brand.ink
 const TEXT = brand.ink
 const TEXT_SECONDARY = brand.inkSoft
 const ACCENT = brand.warning
-const SKY = '#4E90CA'
-const TEAL = brand.success
 const CRIMSON = brand.danger
 
 const getInitials = (fullName?: string) => {
@@ -51,9 +50,9 @@ const UserMenu = () => {
 
   const menuItems = [
     {
-      key: 'profile',
-      label: 'Profile',
-      icon: MdAccountCircle,
+      key: 'profile-settings',
+      label: 'Profile Settings',
+      icon: FiUser,
       color: INK,
       onClick: () => {
         navigate('/profile/user_profile')
@@ -61,40 +60,59 @@ const UserMenu = () => {
       },
     },
     {
-      key: 'settings',
-      label: 'Settings',
-      icon: MdSettings,
-      color: ACCENT,
+      key: 'dc-address',
+      label: 'DC Address',
+      icon: FiHome,
+      color: INK,
       onClick: () => {
-        navigate('/settings')
+        navigate('/settings/manage_pickups')
         handleClose()
       },
     },
     {
-      key: 'keyboard-shortcuts',
-      label: 'Keyboard Shortcuts',
-      icon: BsKeyboardFill,
-      color: SKY,
+      key: 'kyc',
+      label: 'KYC',
+      icon: FiCheckCircle,
+      color: INK,
       onClick: () => {
-        navigate('/help/shortcuts')
+        navigate('/profile/kyc_details')
+        handleClose()
+      },
+    },
+    {
+      key: 'change-password',
+      label: 'Change Password',
+      icon: FiSettings,
+      color: ACCENT,
+      onClick: () => {
+        navigate('/profile/password')
         handleClose()
       },
     },
     {
       key: 'terms-conditions',
-      label: 'Legal & Policies',
-      icon: FaGavel,
-      color: TEAL,
+      label: 'Term & Conditions',
+      icon: FiFileText,
+      color: INK,
       onClick: () => {
-        navigate('/policies/refund_cancellation')
+        navigate('/policies/terms_of_service')
         handleClose()
       },
     },
-    { key: 'divider' },
+    {
+      key: 'support',
+      label: 'Support',
+      icon: FiHeadphones,
+      color: INK,
+      onClick: () => {
+        navigate('/support/tickets')
+        handleClose()
+      },
+    },
     {
       key: 'logout',
-      label: 'Logout',
-      icon: MdLogout,
+      label: 'Log out',
+      icon: FiLogOut,
       color: CRIMSON,
       onClick: () => {
         logout()
@@ -144,21 +162,23 @@ const UserMenu = () => {
           elevation: 0,
           sx: {
             mt: 1.15,
-            width: 280,
-            borderRadius: 2,
+            width: 294,
+            borderRadius: 1.5,
             border: `1px solid ${alpha(INK, 0.08)}`,
-            boxShadow: `0 18px 36px ${alpha(INK, 0.12)}`,
+            boxShadow: `0 0 10px ${alpha(INK, 0.16)}`,
             overflow: 'hidden',
-            background:
-              'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)',
+            background: '#fff',
           },
         }}
       >
         <Box
+          className="profile-menu-header"
           sx={{
-            p: 1.4,
+            px: 2.25,
+            pt: 1.35,
+            pb: 1.2,
             borderBottom: `1px solid ${alpha(INK, 0.06)}`,
-            bgcolor: alpha(INK, 0.02),
+            bgcolor: '#fff',
           }}
         >
           <Typography sx={{ fontSize: '0.92rem', fontWeight: 900, color: TEXT }} noWrap>
@@ -169,51 +189,61 @@ const UserMenu = () => {
           </Typography>
         </Box>
 
-        <List sx={{ p: 1 }}>
-          {menuItems.map((item, index) => {
-            if (item.key === 'divider') return <Divider key={index} sx={{ my: 0.8, opacity: 0.6 }} />
+        <Box sx={{ py: 0.8 }}>
+          {menuItems.map((item) => {
+            const Icon = item.icon
 
-            const Icon = item.icon!
             return (
-              <ListItemButton
+              <Box
                 key={item.key}
+                component="button"
+                type="button"
+                className={item.key === 'logout' ? 'logout-button profile-settings' : 'profile-settings'}
                 onClick={item.onClick}
                 sx={{
-                  borderRadius: 2,
-                  py: 0.95,
-                  px: 1.1,
+                  width: '100%',
+                  border: 0,
+                  bgcolor: 'transparent',
+                  color: item.color,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 1.5,
+                  px: 2.25,
+                  py: 1.15,
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.18s ease, color 0.18s ease',
                   '&:hover': {
-                    bgcolor: alpha(item.color ?? INK, 0.08),
+                    bgcolor: alpha(item.color, item.key === 'logout' ? 0.08 : 0.05),
                   },
                 }}
               >
-                <ListItemIcon sx={{ minWidth: 40, color: item.color ?? INK }}>
-                  <Box
-                    sx={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bgcolor: alpha(item.color ?? INK, 0.1),
-                    }}
-                  >
-                    <Icon size={17} />
-                  </Box>
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{
-                    fontSize: '0.84rem',
-                    fontWeight: 800,
-                    color: TEXT,
+                <Typography
+                  sx={{
+                    fontSize: '0.88rem',
+                    fontWeight: 700,
+                    color: 'inherit',
+                    lineHeight: 1.2,
                   }}
-                />
-              </ListItemButton>
+                >
+                  {item.label}
+                </Typography>
+                <Box
+                  sx={{
+                    flexShrink: 0,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'inherit',
+                  }}
+                >
+                  <Icon size={18} />
+                </Box>
+              </Box>
             )
           })}
-        </List>
+        </Box>
       </Popover>
     </Box>
   )
