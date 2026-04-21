@@ -55,7 +55,7 @@ const UserMenu = () => {
       icon: FiUser,
       color: INK,
       onClick: () => {
-        navigate('/profile/user_profile')
+        navigate('/my-profile')
         handleClose()
       },
     },

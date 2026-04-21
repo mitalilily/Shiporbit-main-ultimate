@@ -24,6 +24,41 @@ const countFromStatus = (
     return matches.some((match) => status.includes(match)) ? total + numberFrom(item.count) : total
   }, 0)
 
+const sumFromStatuses = (
+  items: Array<{ status?: string; count?: number }> | undefined,
+  predicate: (status: string) => boolean,
+) =>
+  (items || []).reduce((total, item) => {
+    const status = String(item.status || '').toLowerCase().trim()
+    return predicate(status) ? total + numberFrom(item.count) : total
+  }, 0)
+
+const percentageOf = (value: number, total: number) => {
+  if (total <= 0) {
+    return 0
+  }
+
+  return Math.round((value / total) * 100)
+}
+
+const shortStateLabel = (value: string) => {
+  const cleaned = value.trim()
+  if (cleaned.length <= 10) {
+    return cleaned
+  }
+
+  return `${cleaned.slice(0, 10).trim()}...`
+}
+
+const shortDateLabel = (value: string) => {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) {
+    return value
+  }
+
+  return format(date, 'dd MMM')
+}
+
 const metricIconStyle = { width: '1em', height: '1em' as const }
 
 const infoGlyph = (
@@ -148,12 +183,14 @@ const DashboardStatCard = ({ item }: { item: DashboardMetricCard }) => (
 const LegendStat = ({
   label,
   value,
+  percentage,
   color,
   accent,
   shipmn = false,
 }: {
   label: string
   value: number
+  percentage: number
   color: string
   accent: string
   shipmn?: boolean
@@ -169,7 +206,7 @@ const LegendStat = ({
           <span className="theperentdatas">
             <span style={{ color: 'rgb(0, 0, 0)' }}>{value}</span>
             <span className="legend-divider" />
-            <span style={{ color: accent, fontWeight: 500 }}>0%</span>
+            <span style={{ color: accent, fontWeight: 500 }}>{percentage}%</span>
           </span>
         </p>
       </div>
@@ -180,6 +217,265 @@ const LegendStat = ({
 const EmptyCanvas = ({ height, width, className = '' }: { height: number; width: number; className?: string }) => (
   <canvas role="img" height={height} width={width} className={className} />
 )
+
+const ShipmentStatusDonut = ({
+  delivered,
+  live,
+  rto,
+}: {
+  delivered: number
+  live: number
+  rto: number
+}) => {
+  const total = delivered + live + rto
+  const deliveredAngle = percentageOf(delivered, total) * 3.6
+  const liveAngle = percentageOf(live, total) * 3.6
+  const chartStyle = {
+    '--shipment-status-chart': `conic-gradient(
+      rgba(19, 175, 40, 0.6) 0deg ${deliveredAngle}deg,
+      rgba(245, 206, 106, 0.698) ${deliveredAngle}deg ${deliveredAngle + liveAngle}deg,
+      rgba(175, 40, 19, 0.75) ${deliveredAngle + liveAngle}deg 360deg
+    )`,
+  } as React.CSSProperties
+
+  return (
+    <div
+      className="shipment-status-donut"
+      role="img"
+      aria-label={`Shipment status: ${delivered} delivered, ${live} live shipments, ${rto} RTO`}
+      style={chartStyle}
+    >
+      <div className="shipment-status-donut-core" />
+    </div>
+  )
+}
+
+const ShipmentTypeDonut = ({
+  cod,
+  prepaid,
+  reverse,
+}: {
+  cod: number
+  prepaid: number
+  reverse: number
+}) => {
+  const total = cod + prepaid + reverse
+  const codAngle = percentageOf(cod, total) * 3.6
+  const prepaidAngle = percentageOf(prepaid, total) * 3.6
+  const chartStyle = {
+    '--shipment-type-chart': `conic-gradient(
+      rgba(29, 76, 194, 0.8) 0deg ${codAngle}deg,
+      rgb(15, 39, 98) ${codAngle}deg ${codAngle + prepaidAngle}deg,
+      rgb(98, 143, 255) ${codAngle + prepaidAngle}deg 360deg
+    )`,
+  } as React.CSSProperties
+
+  return (
+    <div
+      className="shipment-type-donut"
+      role="img"
+      aria-label={`Shipment type: ${cod} COD, ${prepaid} prepaid, ${reverse} reverse`}
+      style={chartStyle}
+    >
+      <div className="shipment-type-donut-core" />
+    </div>
+  )
+}
+
+const OrderDistributionChart = ({
+  data,
+}: {
+  data: Array<{ label: string; value: number; color: string }>
+}) => {
+  const svgWidth = 960
+  const svgHeight = 500
+  const paddingTop = 24
+  const paddingRight = 18
+  const paddingBottom = 76
+  const paddingLeft = 58
+  const chartWidth = svgWidth - paddingLeft - paddingRight
+  const chartHeight = svgHeight - paddingTop - paddingBottom
+  const maxValue = Math.max(...data.map((item) => item.value), 1)
+  const barGap = 16
+  const barWidth = Math.max(28, Math.floor((chartWidth - barGap * Math.max(0, data.length - 1)) / Math.max(1, data.length)))
+  const innerHeight = chartHeight - 16
+  const yTicks = 4
+
+  return (
+    <svg
+      className="order-distribution-svg"
+      viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+      role="img"
+      aria-label="Order distribution by top states"
+    >
+      <defs>
+        <linearGradient id="orderDistributionBackdrop" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="rgba(232,239,255,0.86)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0.92)" />
+        </linearGradient>
+      </defs>
+
+      <rect x="0" y="0" width={svgWidth} height={svgHeight} rx="18" fill="url(#orderDistributionBackdrop)" />
+
+      {Array.from({ length: yTicks + 1 }).map((_, index) => {
+        const y = paddingTop + (innerHeight / yTicks) * index
+
+        return (
+          <g key={y}>
+            <line
+              x1={paddingLeft}
+              y1={y}
+              x2={svgWidth - paddingRight}
+              y2={y}
+              stroke="#d4d8df"
+              strokeDasharray="4 6"
+              strokeWidth="1"
+            />
+            <text
+              x={paddingLeft - 12}
+              y={y + 4}
+              textAnchor="end"
+              fontSize="11"
+              fill="#6b7280"
+              fontFamily="Instrument Sans, sans-serif"
+            >
+              {Math.round(maxValue - (maxValue / yTicks) * index)}
+            </text>
+          </g>
+        )
+      })}
+
+      <line x1={paddingLeft} y1={paddingTop + innerHeight} x2={svgWidth - paddingRight} y2={paddingTop + innerHeight} stroke="#c9d3e6" strokeWidth="1.25" />
+      <line x1={paddingLeft} y1={paddingTop} x2={paddingLeft} y2={paddingTop + innerHeight} stroke="#c9d3e6" strokeWidth="1.25" />
+
+      {data.map((item, index) => {
+        const barHeight = Math.max(18, (item.value / maxValue) * (innerHeight - 22))
+        const x = paddingLeft + index * (barWidth + barGap)
+        const y = paddingTop + innerHeight - barHeight
+
+        return (
+          <g key={item.label}>
+            <rect
+              x={x}
+              y={y}
+              width={barWidth}
+              height={barHeight}
+              rx="10"
+              fill={item.color}
+              opacity="0.92"
+            />
+            <rect
+              x={x}
+              y={y}
+              width={barWidth}
+              height={Math.min(26, barHeight)}
+              rx="10"
+              fill="rgba(255,255,255,0.18)"
+            />
+            <text
+              x={x + barWidth / 2}
+              y={y - 10}
+              textAnchor="middle"
+              fontSize="11"
+              fontWeight="600"
+              fill="#1f2937"
+              fontFamily="Instrument Sans, sans-serif"
+            >
+              {item.value}
+            </text>
+            <text
+              x={x + barWidth / 2}
+              y={svgHeight - 26}
+              textAnchor="middle"
+              fontSize="11"
+              fontWeight="500"
+              fill="#4b5563"
+              fontFamily="Instrument Sans, sans-serif"
+            >
+              {shortStateLabel(item.label)}
+            </text>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
+const NdrReportChart = ({
+  data,
+}: {
+  data: Array<{ label: string; delivered: number; rto: number }>
+}) => {
+  const svgWidth = 820
+  const svgHeight = 188
+  const paddingLeft = 24
+  const paddingRight = 18
+  const paddingTop = 18
+  const paddingBottom = 36
+  const chartWidth = svgWidth - paddingLeft - paddingRight
+  const chartHeight = svgHeight - paddingTop - paddingBottom
+  const maxValue = Math.max(...data.flatMap((item) => [item.delivered, item.rto]), 1)
+  const slotWidth = chartWidth / Math.max(data.length, 1)
+  const barWidth = Math.min(22, Math.max(12, slotWidth / 4))
+
+  return (
+    <svg className="ndr-report-chart" viewBox={`0 0 ${svgWidth} ${svgHeight}`} role="img" aria-label="NDR report delivered versus RTO chart">
+      {Array.from({ length: 3 }).map((_, index) => {
+        const y = paddingTop + (chartHeight / 2) * index
+        if (index === 2) {
+          return null
+        }
+
+        return (
+          <line
+            key={y}
+            x1={paddingLeft}
+            y1={y}
+            x2={svgWidth - paddingRight}
+            y2={y}
+            stroke="#d6dde6"
+            strokeDasharray="4 6"
+            strokeWidth="1"
+          />
+        )
+      })}
+
+      <line
+        x1={paddingLeft}
+        y1={paddingTop + chartHeight}
+        x2={svgWidth - paddingRight}
+        y2={paddingTop + chartHeight}
+        stroke="#d6dde6"
+        strokeWidth="1"
+      />
+
+      {data.map((item, index) => {
+        const groupX = paddingLeft + slotWidth * index + (slotWidth - barWidth * 2 - 8) / 2
+        const deliveredHeight = Math.max(8, (item.delivered / maxValue) * (chartHeight - 18))
+        const rtoHeight = Math.max(8, (item.rto / maxValue) * (chartHeight - 18))
+        const deliveredY = paddingTop + chartHeight - deliveredHeight
+        const rtoY = paddingTop + chartHeight - rtoHeight
+
+        return (
+          <g key={item.label}>
+            <rect x={groupX} y={deliveredY} width={barWidth} height={deliveredHeight} rx="6" fill="#6fc276" />
+            <rect x={groupX + barWidth + 8} y={rtoY} width={barWidth} height={rtoHeight} rx="6" fill="#c5624f" />
+            <text
+              x={paddingLeft + slotWidth * index + slotWidth / 2}
+              y={svgHeight - 10}
+              textAnchor="middle"
+              fontSize="11"
+              fill="#6b7280"
+              fontFamily="Instrument Sans, sans-serif"
+            >
+              {item.label}
+            </text>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
 
 const SelectStub = ({ label, width = 150 }: { label: string; width?: number }) => (
   <div className="ant-select ant-select-outlined css-1261szd ant-select-single ant-select-show-arrow" style={{ width }}>
@@ -235,10 +531,75 @@ export default function Dashboard() {
   const codOrders = numberFrom(stats?.metrics?.totalCodOrders)
   const prepaidOrders = numberFrom(stats?.metrics?.totalPrepaidOrders)
   const reverseOrders = countFromStatus(statusSeries, ['reverse'])
+  const shipmentTypeTotal = codOrders + prepaidOrders + reverseOrders
+  const liveShipmentStatuses = sumFromStatuses(statusSeries, (status) => {
+    if (!status) {
+      return false
+    }
+
+    const excludedStatuses = ['deliver', 'rto', 'return', 'cancel', 'fail', 'reverse']
+    return !excludedStatuses.some((match) => status.includes(match))
+  })
+  const liveShipments = Math.max(liveShipmentStatuses, picked, inTransit + outForDelivery)
+  const shipmentStatusTotal = delivered + liveShipments + rto
+  const deliveredPercent = percentageOf(delivered, shipmentStatusTotal)
+  const liveShipmentPercent = percentageOf(liveShipments, shipmentStatusTotal)
+  const rtoPercent = percentageOf(rto, shipmentStatusTotal)
   const tatDelivered = Math.max(0, delivered - rto)
   const tatOutside = rto
   const tatPercent = delivered > 0 ? Math.round((tatDelivered / Math.max(1, delivered)) * 100) : 0
   const walletBalance = numberFrom(stats?.financial?.walletBalance)
+  const totalRevenue = numberFrom(stats?.financial?.totalRevenue)
+  const stateDistributionMap = (stats?.geographic?.topDestinations || []).reduce(
+    (acc, item) => {
+      const state = String(item.state || '').trim() || 'Unknown'
+      acc[state] = (acc[state] || 0) + numberFrom(item.count)
+      return acc
+    },
+    {} as Record<string, number>,
+  )
+  const stateDistributionBase = Object.entries(stateDistributionMap)
+    .map(([label, value]) => ({ label, value }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 10)
+  const stateLegendStep = Math.max(
+    20,
+    Math.ceil((Math.max(...stateDistributionBase.map((item) => item.value), 0) || 20) / 3 / 10) * 10,
+  )
+  const stateLegendItems = [
+    { label: `0 - ${stateLegendStep}`, color: '#808080' },
+    { label: `${stateLegendStep} - ${stateLegendStep * 2}`, color: '#000000' },
+    { label: `${stateLegendStep * 2} - ${stateLegendStep * 3}`, color: '#FF7F50' },
+  ]
+  const stateDistribution = stateDistributionBase.map((item) => {
+    const color =
+      item.value <= stateLegendStep ? '#808080' : item.value <= stateLegendStep * 2 ? '#000000' : '#FF7F50'
+
+    return {
+      ...item,
+      color,
+    }
+  })
+  const ndrChartSource = (stats?.charts?.ordersByDate || []).slice(-6)
+  const ndrSourceTotal = Math.max(
+    ndrChartSource.reduce((sum, item) => sum + numberFrom(item.orders), 0),
+    1,
+  )
+  const ndrChartData =
+    ndrChartSource.length > 0
+      ? ndrChartSource.map((item) => {
+          const orderCount = numberFrom(item.orders)
+          return {
+            label: shortDateLabel(item.date),
+            delivered: Math.max(0, Math.round((orderCount / ndrSourceTotal) * delivered)),
+            rto: Math.max(0, Math.round((orderCount / ndrSourceTotal) * rto)),
+          }
+        })
+      : Array.from({ length: 6 }, (_, index) => ({
+          label: `D${index + 1}`,
+          delivered: 0,
+          rto: 0,
+        }))
 
   const cardsLeft: DashboardMetricCard[] = [
     {
@@ -391,14 +752,35 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
-                  <div className="number__donut shipment-status-value">0</div>
+                  <div className="number__donut shipment-status-value">{shipmentStatusTotal || processed}</div>
                   <div className="relative shipmentstatus shipment-status-visual d-flex justify-content-center align-items-center">
-                    <EmptyCanvas height={130} width={130} />
+                    <ShipmentStatusDonut delivered={delivered} live={liveShipments} rto={rto} />
                   </div>
                   <div className="thecartetails shipment-report shipment-status-legend">
-                    <LegendStat label="Delivered" value={delivered} color="rgba(19, 175, 40, 0.6)" accent="rgb(60, 191, 97)" shipmn />
-                    <LegendStat label="Live Shipments" value={inTransit} color="rgba(245, 206, 106, 0.698)" accent="rgb(245, 181, 68)" shipmn />
-                    <LegendStat label="RTO" value={rto} color="rgba(175, 40, 19, 0.75)" accent="rgb(232, 92, 92)" shipmn />
+                    <LegendStat
+                      label="Delivered"
+                      value={delivered}
+                      percentage={deliveredPercent}
+                      color="rgba(19, 175, 40, 0.6)"
+                      accent="rgb(60, 191, 97)"
+                      shipmn
+                    />
+                    <LegendStat
+                      label="Live Shipments"
+                      value={liveShipments}
+                      percentage={liveShipmentPercent}
+                      color="rgba(245, 206, 106, 0.698)"
+                      accent="rgb(245, 181, 68)"
+                      shipmn
+                    />
+                    <LegendStat
+                      label="RTO"
+                      value={rto}
+                      percentage={rtoPercent}
+                      color="rgba(175, 40, 19, 0.75)"
+                      accent="rgb(232, 92, 92)"
+                      shipmn
+                    />
                   </div>
                 </div>
               </div>
@@ -461,14 +843,32 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
-                  <div className="number__donut">0</div>
+                  <div className="number__donut">{shipmentTypeTotal}</div>
                   <div className="relative shipment-type flex-grow-1 d-flex justify-content-center align-items-center" style={{ minHeight: 130 }}>
-                    <EmptyCanvas height={130} width={130} />
+                    <ShipmentTypeDonut cod={codOrders} prepaid={prepaidOrders} reverse={reverseOrders} />
                   </div>
                   <div className="thecartetails mt-auto shipment-type-legend">
-                    <LegendStat label="COD" value={codOrders} color="rgba(29, 76, 194, 0.8)" accent="rgb(72, 110, 204)" />
-                    <LegendStat label="Prepaid" value={prepaidOrders} color="rgb(15, 39, 98)" accent="rgb(15, 39, 98)" />
-                    <LegendStat label="Reverse" value={reverseOrders} color="rgb(98, 143, 255)" accent="rgb(98, 143, 255)" />
+                    <LegendStat
+                      label="COD"
+                      value={codOrders}
+                      percentage={percentageOf(codOrders, shipmentTypeTotal)}
+                      color="rgba(29, 76, 194, 0.8)"
+                      accent="rgb(72, 110, 204)"
+                    />
+                    <LegendStat
+                      label="Prepaid"
+                      value={prepaidOrders}
+                      percentage={percentageOf(prepaidOrders, shipmentTypeTotal)}
+                      color="rgb(15, 39, 98)"
+                      accent="rgb(15, 39, 98)"
+                    />
+                    <LegendStat
+                      label="Reverse"
+                      value={reverseOrders}
+                      percentage={percentageOf(reverseOrders, shipmentTypeTotal)}
+                      color="rgb(98, 143, 255)"
+                      accent="rgb(98, 143, 255)"
+                    />
                   </div>
                 </div>
               </div>
@@ -537,12 +937,16 @@ export default function Dashboard() {
                           />
                         </div>
                       </div>
-                      
-                        
-                          
-                          
-                        
-                        
+                      <div className="flex items-center theooopttoionss thecollmeonflesd">
+                        <div className="legend-chip">
+                          <span className="legend-dot delivered-dot" />
+                          <span className="text-sm">Delivered</span>
+                        </div>
+                        <div className="legend-chip rto">
+                          <span className="legend-dot rto-dot" />
+                          <span className="text-sm">RTO</span>
+                        </div>
+                      </div>
                     </div>
                     <div className="thechardiifdatas">
                       <div className="thecharcardds">
@@ -565,17 +969,17 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <div className="thebarchharts mt-auto">
-                      <EmptyCanvas height={160} width={1060} />
+                      <NdrReportChart data={ndrChartData} />
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-12">
-                <div className="chart-statewise zone-wise">
-                  <div className="zone-wise-head">
+                <div className="chart-statewise zone-wise" style={{ paddingTop: 5 }}>
+                  <div className="zone-wise-head" style={{ margin: '1rem auto' }}>
                     <h3 className="thechardsheadings">Zone Wise Shipments</h3>
                   </div>
-                  <div className="zone-wise-canvas">
+                  <div className="zone-wise-canvas" style={{ height: 420 }}>
                     <EmptyCanvas height={630} width={1018} />
                   </div>
                 </div>
@@ -628,27 +1032,37 @@ export default function Dashboard() {
                     <div className="theinnerstaegraph row m-0">
                       <div className="col-md-11">
                         <div className="order-distribution-canvas">
-                          <EmptyCanvas height={560} width={856} />
+                          {stateDistribution.length > 0 ? (
+                            <OrderDistributionChart data={stateDistribution} />
+                          ) : (
+                            <div className="order-distribution-empty">No state-wise shipment data available</div>
+                          )}
                         </div>
                       </div>
                       <div className="legendstyle col-md-1 d-block">
-                        <span className="child-legend mb-2">0 - 20</span>
-                        <span className="child-legend mb-2">20 - 40</span>
-                        <span className="child-legend mb-2">40 - 60</span>
+                        {stateLegendItems.map((item) => (
+                          <span
+                            key={item.label}
+                            className="child-legend mb-2"
+                            style={{ background: item.color }}
+                          >
+                            {item.label}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-6 pe-0">
-                <div className="delivery-performance-container h-100">
+                <div className="delivery-performance-container h-100 total-revenue-panel">
                   <div className="thechardheadandfiles totalrevenue">
                     <div className="c__0099s">
                       <div className="wrapper-info produ">
                         <h3 className="thechardsheadings">Total Revenue</h3>
                         <InfoHover text="Total order value of delivered shipments in the selected date range." />
                       </div>
-                      <div className="number__donut mt-2">Rs {walletBalance.toLocaleString('en-IN')}</div>
+                      <div className="number__donut mt-2">₹{totalRevenue.toLocaleString('en-IN')}</div>
                     </div>
                     <form className="ant-form ant-form-horizontal css-1261szd">
                       <div className="ant-form-item css-1261szd">
@@ -664,7 +1078,7 @@ export default function Dashboard() {
                       </div>
                     </form>
                   </div>
-                  <div className="total-revenue-empty">
+                  <div className="total-revenue-empty" style={{ height: 280, marginTop: 10 }}>
                     <div className="flex items-center justify-center h-full text-gray-500">No valid data available</div>
                   </div>
                 </div>

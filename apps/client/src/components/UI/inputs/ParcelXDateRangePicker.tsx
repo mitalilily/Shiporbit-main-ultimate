@@ -61,6 +61,16 @@ const monthOptions = [
   'December',
 ]
 
+const presetOptions: Array<{ key: PresetKey; label: string }> = [
+  { key: 'today', label: 'Today' },
+  { key: 'yesterday', label: 'Yesterday' },
+  { key: 'last7', label: 'Last 7 Days' },
+  { key: 'last30', label: 'Last 30 Days' },
+  { key: 'thisMonth', label: 'This Month' },
+  { key: 'lastMonth', label: 'Last Month' },
+  { key: 'custom', label: 'Custom Range' },
+]
+
 export const getDefaultRange = (): RangeValue => ({
   start: startOfDay(subDays(new Date(), 30)),
   end: endOfDay(new Date()),
@@ -288,6 +298,7 @@ export default function ParcelXDateRangePicker({
             </span>
             <input
               type="text"
+              id={`DateTimeInput_${panel === 'start' ? 'start' : 'end'}`}
               className="inputDate form-control"
               value={formatDateTimeField(currentDate)}
               onChange={(event) => handleDateInputChange(panel, event.target.value)}
@@ -298,6 +309,7 @@ export default function ParcelXDateRangePicker({
             <div className="timeSelectContainer">
               <div className="multipleContentOnLine">
                 <select
+                  id={`Hour_${panel === 'start' ? 'start' : 'end'}`}
                   value={String(currentDate.getHours() % 12 === 0 ? 12 : currentDate.getHours() % 12)}
                   onChange={(event) => handleTimeChange(panel, 'hour', event.target.value)}
                 >
@@ -311,6 +323,7 @@ export default function ParcelXDateRangePicker({
               <div className="multipleContentOnLine">:</div>
               <div className="multipleContentOnLine">
                 <select
+                  id={`Minutes_${panel === 'start' ? 'start' : 'end'}`}
                   value={String(currentDate.getMinutes())}
                   onChange={(event) => handleTimeChange(panel, 'minute', event.target.value)}
                 >
@@ -323,6 +336,7 @@ export default function ParcelXDateRangePicker({
               </div>
               <div className="multipleContentOnLine">
                 <select
+                  id={`Meridiem_${panel === 'start' ? 'start' : 'end'}`}
                   value={currentDate.getHours() >= 12 ? 'pm' : 'am'}
                   onChange={(event) => handleTimeChange(panel, 'meridiem', event.target.value)}
                 >
@@ -344,6 +358,7 @@ export default function ParcelXDateRangePicker({
             </div>
             <div className="multipleContentOnLine">
               <select
+                id={`MonthSelector_${panel === 'start' ? 'start' : 'end'}`}
                 value={visibleMonth.getMonth()}
                 onChange={(event) =>
                   setVisibleMonth(new Date(visibleMonth.getFullYear(), Number(event.target.value), 1))
@@ -358,6 +373,7 @@ export default function ParcelXDateRangePicker({
             </div>
             <div className="multipleContentOnLine">
               <select
+                id={`YearSelector_${panel === 'start' ? 'start' : 'end'}`}
                 value={visibleMonth.getFullYear()}
                 onChange={(event) =>
                   setVisibleMonth(new Date(Number(event.target.value), visibleMonth.getMonth(), 1))
@@ -412,6 +428,7 @@ export default function ParcelXDateRangePicker({
                     <div
                       key={`${panel}-${day.toISOString()}`}
                       className={className}
+                      id={`row_${rowIndex}_cell_${calendarDays.slice(rowIndex * 7, rowIndex * 7 + 7).indexOf(day)}_${panel}`}
                       tabIndex={disabled ? -1 : 0}
                       onClick={() => !disabled && handleDaySelect(panel, day)}
                       onKeyDown={(event) => {
@@ -431,7 +448,9 @@ export default function ParcelXDateRangePicker({
         </div>
 
         <div className="activeNotifier">
-          {activePanel === panel ? `Selecting ${panel === 'start' ? 'From' : 'To'}` : panel === 'start' ? 'From' : 'To'}
+          <span id={`${panel}NotifierID`}>
+            {activePanel === panel ? `Selecting ${panel === 'start' ? 'From' : 'To'}` : panel === 'start' ? 'From' : 'To'}
+          </span>
           <span className={`dot ${activePanel === panel ? 'active' : ''}`} />
         </div>
       </div>
@@ -470,25 +489,18 @@ export default function ParcelXDateRangePicker({
       >
         <div id="daterangepicker" className="daterangepicker">
           <div className="rangecontainer">
-            {[
-              ['today', 'Today'],
-              ['yesterday', 'Yesterday'],
-              ['last7', 'Last 7 Days'],
-              ['last30', 'Last 30 Days'],
-              ['thisMonth', 'This Month'],
-              ['lastMonth', 'Last Month'],
-              ['custom', 'Custom Range'],
-            ].map(([key, label]) => (
+            {presetOptions.map(({ key, label }, index) => (
               <div
                 key={key}
+                id={`rangeButton${index}`}
                 className={`rangeButton ${activePreset === key ? 'active' : ''}`.trim()}
                 role="button"
                 tabIndex={0}
-                onClick={() => handlePresetClick(key as PresetKey)}
+                onClick={() => handlePresetClick(key)}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault()
-                    handlePresetClick(key as PresetKey)
+                    handlePresetClick(key)
                   }
                 }}
               >

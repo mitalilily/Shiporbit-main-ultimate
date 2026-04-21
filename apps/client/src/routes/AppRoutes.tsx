@@ -58,6 +58,7 @@ const TermsOfService = lazy(() => import('../pages/policy/TermsOfService'))
 
 // Profile
 const ProfileLayout = lazy(() => import('../pages/profile/Profile'))
+const ProfileSettingsCenter = lazy(() => import('../pages/profile/ProfileSettingsCenter'))
 const UserProfileSettings = lazy(() => import('../components/user/UserProfileSettings'))
 const CompanyInfoForm = lazy(() => import('../components/user/profile/CompanyInfoForm'))
 const BankAccountsSection = lazy(() =>
@@ -251,11 +252,10 @@ export default function AppRoutes() {
               <Route path="bank_details" element={<BankAccountsSection />} />
               <Route path="kyc_details" element={<KycSection />} />
             </Route>
-            <Route path="/user/profile-details" element={<Navigate to="/profile/user_profile" replace />} />
-            <Route
-              path="/profiles/billingdetail"
-              element={<Navigate to="/settings/billing_preferences" replace />}
-            />
+            <Route path="/user/profile-details" element={<Navigate to="/my-profile" replace />} />
+            <Route path="/my-profile" element={<ProfileSettingsCenter />} />
+            <Route path="/profiles/billingdetail" element={<ProfileSettingsCenter />} />
+            <Route path="/profiles/loginhistory" element={<ProfileSettingsCenter />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dashboard/date-wise-shipments" element={<Dashboard />} />
             <Route path="/dashboard/product-wise-shipments" element={<Dashboard />} />
