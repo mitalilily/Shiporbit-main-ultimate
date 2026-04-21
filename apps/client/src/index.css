@@ -1096,93 +1096,115 @@ span.s__114414 a {
   .header___nav {
     left: 16px;
     right: 16px;
-    height: auto;
+    height: 72px;
     min-height: 72px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-
-  .header___nav .container-fluid.p-0,
-  .s__llii0099,
-  .nav-left-controls,
-  .nav-flex,
-  .side__menuusd ul.nav {
-    width: 100%;
-  }
-
-  .header___nav .container-fluid.p-0,
-  .s__llii0099,
-  .nav-left-controls,
-  .nav-flex {
-    align-items: stretch;
+    padding: 0 10px;
   }
 
   .header___nav .container-fluid.p-0 {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 10px;
+    align-items: center;
   }
 
-  .nav-left-controls,
+  .nav-left-controls {
+    width: auto;
+    flex: 0 0 auto;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
   .s__llii0099 {
-    justify-content: space-between;
+    width: auto;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow: hidden;
   }
 
   .nav-flex {
-    gap: 8px;
+    width: auto;
+    flex: 1 1 auto;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
   }
 
-  .nav-flex > * {
-    flex: 1 1 calc(50% - 4px);
-  }
-
-  .nav-flex .dividerline {
+  .nav-flex::-webkit-scrollbar {
     display: none;
   }
 
+  .nav-flex > * {
+    flex: 0 0 auto;
+  }
+
   .side__menuusd {
-    flex: 1 1 100%;
+    width: auto;
+    flex: 0 0 auto;
   }
 
   .side__menuusd ul.nav {
-    display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     flex-wrap: nowrap;
-    margin: 0;
-    padding: 0;
+    width: auto;
+  }
+
+  .sidebar-responsive,
+  .side__menuusd button,
+  .profile__0244 {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 12px;
   }
 
   .helpline-btn,
   .wallet__cash.s__0144114414,
   .wallet__cash.therechareapps {
-    width: 100%;
+    width: auto;
+    height: 38px;
+    border-radius: 14px;
+  }
+
+  .helpline-btn {
+    padding: 8px 12px;
   }
 
   .helpline-btn h3,
   .navbar-chip-button h3,
   .wallet__cash.therechareapps h3 {
-    justify-content: center;
+    justify-content: flex-start;
+    font-size: 12px;
   }
 
-  .helpline-btn h3 span,
-  .d-responsive {
-    display: none;
+  .navbar-chip-button {
+    padding: 0 10px;
+  }
+
+  .wallet__cash.s__0144114414 {
+    padding: 0 10px;
   }
 
   .wallet__cash.therechareapps h3 {
+    padding: 0 10px;
     font-size: 11px;
   }
 
   .wallet__cash.therechareapps.wallet-corner-card {
-    max-width: none;
+    max-width: calc(100vw - 228px);
   }
 
-  .side__menuusd ul.nav {
+  .wallet__cash.therechareapps.wallet-corner-card h3 {
     gap: 6px;
   }
 
-  .profile__0244 {
-    margin-left: 8px;
+  .d-responsive {
+    display: none;
   }
 
   .customer-dropdown,
@@ -1196,17 +1218,37 @@ span.s__114414 a {
 }
 
 @media (max-width: 520px) {
-  .nav-flex > * {
-    flex-basis: 100%;
+  .header___nav {
+    padding: 0 8px;
   }
 
-  .side__menuusd ul.nav {
-    flex-wrap: wrap;
-    justify-content: flex-start;
+  .nav-left-controls {
+    gap: 8px;
   }
 
-  .wallet-nav-item {
-    flex: 1 1 100%;
+  .nav-flex {
+    gap: 4px;
+  }
+
+  .wallet__cash.s__0144114414 h3,
+  .wallet__cash.therechareapps h3,
+  .helpline-btn h3 {
+    font-size: 11px;
+  }
+
+  .wallet__cash.therechareapps.wallet-corner-card {
+    max-width: calc(100vw - 214px);
+  }
+
+  .wallet__cash.s__0144114414.full__trockk span:last-child,
+  .wallet__cash.s__0144114414.loa__dedd span:last-child {
+    display: none;
+  }
+
+  .wallet__cash.s__0144114414,
+  .helpline-btn {
+    padding-left: 8px;
+    padding-right: 8px;
   }
 }
 
