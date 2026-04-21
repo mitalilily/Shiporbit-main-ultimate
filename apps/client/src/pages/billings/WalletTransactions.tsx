@@ -16,10 +16,9 @@ import {
   Typography,
 } from '@mui/material'
 import { useMemo, useState } from 'react'
-import { FiChevronDown, FiDownload, FiRefreshCw, FiSearch, FiUpload } from 'react-icons/fi'
+import { FiChevronDown, FiRefreshCw, FiSearch, FiUpload } from 'react-icons/fi'
 import { NavLink, useLocation } from 'react-router-dom'
 import ParcelXDateRangePicker, { getDefaultRange, type RangeValue } from '../../components/UI/inputs/ParcelXDateRangePicker'
-import { toast } from '../../components/UI/Toast'
 import { useWalletTransactions } from '../../hooks/useWalletBalance'
 import { brand } from '../../theme/brand'
 
@@ -109,76 +108,6 @@ const channelPricingRows = [
   { id: 4, channel: 'IVR', credits: '₹ 0.90' },
 ]
 
-const notificationCategories = ['Order Status', 'NDR', 'Channel Order Confirmation', 'Other Notifications'] as const
-type NotificationCategory = (typeof notificationCategories)[number]
-type NotificationChannel = 'sms' | 'email' | 'whatsapp' | 'ivr'
-
-type CommunicationRechargeRow = {
-  id: number
-  createdAt: string
-  amount: number
-  credits: number
-  status: 'Success' | 'Pending' | 'Failed'
-  reference: string
-  channel: string
-}
-
-type NotificationHistoryRow = {
-  id: number
-  medium: 'SMS' | 'Email' | 'WhatsApp' | 'IVR'
-  orderId: string
-  trackingId: string
-  consignee: string
-  eventCategory: NotificationCategory
-  eventName: string
-  status: 'Sent' | 'Queued' | 'Failed'
-  credits: string
-  at: string
-}
-
-type LedgerRow = {
-  id: number
-  orderId: string
-  trackingId: string
-  event: string
-  transaction: string
-  action: 'Debit' | 'Credit'
-  channel: string
-  at: string
-}
-
-const communicationRechargeRows: CommunicationRechargeRow[] = [
-  { id: 1, createdAt: '2026-04-18T10:14:00.000Z', amount: 5000, credits: 5000, status: 'Success', reference: 'COM-784211', channel: 'All Channels' },
-  { id: 2, createdAt: '2026-04-11T08:42:00.000Z', amount: 2500, credits: 2500, status: 'Pending', reference: 'COM-781992', channel: 'WhatsApp' },
-  { id: 3, createdAt: '2026-04-02T13:20:00.000Z', amount: 1800, credits: 1800, status: 'Success', reference: 'COM-778431', channel: 'SMS' },
-]
-
-const notificationHistoryRows: NotificationHistoryRow[] = [
-  { id: 1, medium: 'SMS', orderId: 'ORD-29812', trackingId: 'TRK734822', consignee: 'Aarav Sharma', eventCategory: 'Order Status', eventName: 'Shipped', status: 'Sent', credits: '0.20', at: '2026-04-20T09:48:00.000Z' },
-  { id: 2, medium: 'Email', orderId: 'ORD-29813', trackingId: 'TRK734901', consignee: 'Riya Verma', eventCategory: 'NDR', eventName: 'NDR Created', status: 'Queued', credits: '0.10', at: '2026-04-20T11:12:00.000Z' },
-  { id: 3, medium: 'WhatsApp', orderId: 'ORD-29817', trackingId: 'TRK735104', consignee: 'Kabir Mehta', eventCategory: 'Channel Order Confirmation', eventName: 'Order Confirmed', status: 'Sent', credits: '1.00', at: '2026-04-19T16:02:00.000Z' },
-  { id: 4, medium: 'IVR', orderId: 'ORD-29788', trackingId: 'TRK733612', consignee: 'Anaya Kapoor', eventCategory: 'Other Notifications', eventName: 'COD Reminder', status: 'Failed', credits: '0.90', at: '2026-04-17T14:35:00.000Z' },
-]
-
-const ledgerRows: LedgerRow[] = [
-  { id: 1, orderId: 'ORD-29812', trackingId: 'TRK734822', event: 'Shipped SMS', transaction: 'TXN-COM-6112', action: 'Debit', channel: 'SMS', at: '2026-04-20T09:48:00.000Z' },
-  { id: 2, orderId: 'ORD-29813', trackingId: 'TRK734901', event: 'NDR Email', transaction: 'TXN-COM-6121', action: 'Debit', channel: 'Email', at: '2026-04-20T11:12:00.000Z' },
-  { id: 3, orderId: 'ORD-29817', trackingId: 'TRK735104', event: 'Confirmation WhatsApp', transaction: 'TXN-COM-6134', action: 'Debit', channel: 'WhatsApp', at: '2026-04-19T16:02:00.000Z' },
-]
-
-const downloadCsv = (filename: string, headers: string[], rows: Array<Array<string | number>>) => {
-  const csv = [headers, ...rows]
-    .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
-    .join('\n')
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = filename
-  link.click()
-  URL.revokeObjectURL(url)
-}
-
 export default function WalletTransactions() {
   const location = useLocation()
   const [page, setPage] = useState(1)
@@ -190,44 +119,6 @@ export default function WalletTransactions() {
   const [maxAmount, setMaxAmount] = useState('')
   const [rechargeAmount, setRechargeAmount] = useState('0')
   const [filters, setFilters] = useState<WalletFilter>({})
-  const [commRechargeSearch, setCommRechargeSearch] = useState('')
-  const [commRechargeStatus, setCommRechargeStatus] = useState('All')
-  const [commRechargeDateRange, setCommRechargeDateRange] = useState<RangeValue>(() => getDefaultRange())
-  const [settingCategory, setSettingCategory] = useState<NotificationCategory>('Order Status')
-  const [notificationChannels, setNotificationChannels] = useState<'All' | 'SMS' | 'Email' | 'WhatsApp' | 'IVR'>('All')
-  const [notificationSearchFor, setNotificationSearchFor] = useState('Order Updates')
-  const [notificationSearchType, setNotificationSearchType] = useState('Tracking ID')
-  const [notificationSearchText, setNotificationSearchText] = useState('')
-  const [notificationEventCategory, setNotificationEventCategory] = useState('All')
-  const [notificationEventName, setNotificationEventName] = useState('All')
-  const [notificationDateRange, setNotificationDateRange] = useState<RangeValue>(() => getDefaultRange())
-  const [ledgerSearchType, setLedgerSearchType] = useState('Tracking ID')
-  const [ledgerSearchText, setLedgerSearchText] = useState('')
-  const [ledgerAction, setLedgerAction] = useState('All')
-  const [ledgerChannel, setLedgerChannel] = useState('All')
-  const [ledgerDateRange, setLedgerDateRange] = useState<RangeValue>(() => getDefaultRange())
-  const [channelToggles, setChannelToggles] = useState<Record<NotificationCategory, Record<string, Record<NotificationChannel, boolean>>>>({
-    'Order Status': {
-      Packed: { sms: true, email: true, whatsapp: true, ivr: false },
-      'Pick up': { sms: true, email: true, whatsapp: true, ivr: false },
-      'Shipped (In Transit)': { sms: true, email: true, whatsapp: true, ivr: false },
-      'Out for Delivery': { sms: true, email: true, whatsapp: true, ivr: false },
-      Delivered: { sms: true, email: true, whatsapp: true, ivr: false },
-      'Draft Order': { sms: false, email: false, whatsapp: true, ivr: true },
-    },
-    NDR: {
-      'NDR Created': { sms: true, email: true, whatsapp: false, ivr: false },
-      'Customer Reattempt': { sms: true, email: false, whatsapp: true, ivr: false },
-    },
-    'Channel Order Confirmation': {
-      'Shopify Order Sync': { sms: false, email: true, whatsapp: true, ivr: false },
-      'WooCommerce Order Sync': { sms: false, email: true, whatsapp: true, ivr: false },
-    },
-    'Other Notifications': {
-      'COD Reminder': { sms: true, email: false, whatsapp: true, ivr: true },
-      'Low Wallet Balance': { sms: false, email: true, whatsapp: true, ivr: false },
-    },
-  })
 
   const isRechargePage = location.pathname === '/wallet/rechargehistory'
   const isAddMoneyPage = location.pathname === '/wallet/addmoney'
@@ -267,69 +158,8 @@ export default function WalletTransactions() {
 
   const totalCount = data?.totalCount ?? transactions.length
   const pageCount = Math.max(1, Math.ceil(totalCount / 50))
-  const commRechargeFiltered = useMemo(() => {
-    return communicationRechargeRows.filter((row) => {
-      const matchesStatus = commRechargeStatus === 'All' || row.status === commRechargeStatus
-      const query = commRechargeSearch.trim().toLowerCase()
-      const matchesSearch =
-        !query ||
-        row.reference.toLowerCase().includes(query) ||
-        row.channel.toLowerCase().includes(query)
-      return matchesStatus && matchesSearch
-    })
-  }, [commRechargeSearch, commRechargeStatus])
-  const visibleNotificationRows = useMemo(() => {
-    return notificationHistoryRows.filter((row) => {
-      const matchesChannel = notificationChannels === 'All' || row.medium === notificationChannels
-      const matchesCategory = notificationEventCategory === 'All' || row.eventCategory === notificationEventCategory
-      const matchesName = notificationEventName === 'All' || row.eventName === notificationEventName
-      const query = notificationSearchText.trim().toLowerCase()
-      const matchesSearch =
-        !query ||
-        row.trackingId.toLowerCase().includes(query) ||
-        row.orderId.toLowerCase().includes(query) ||
-        row.consignee.toLowerCase().includes(query)
-      return matchesChannel && matchesCategory && matchesName && matchesSearch
-    })
-  }, [notificationChannels, notificationEventCategory, notificationEventName, notificationSearchText])
-  const visibleLedgerRows = useMemo(() => {
-    return ledgerRows.filter((row) => {
-      const matchesAction = ledgerAction === 'All' || row.action === ledgerAction
-      const matchesChannel = ledgerChannel === 'All' || row.channel === ledgerChannel
-      const query = ledgerSearchText.trim().toLowerCase()
-      const matchesSearch =
-        !query ||
-        row.trackingId.toLowerCase().includes(query) ||
-        row.orderId.toLowerCase().includes(query) ||
-        row.transaction.toLowerCase().includes(query)
-      return matchesAction && matchesChannel && matchesSearch
-    })
-  }, [ledgerAction, ledgerChannel, ledgerSearchText])
-  const notificationSettingData = useMemo(() => {
-    return Object.entries(channelToggles[settingCategory]).map(([event, channels]) => ({
-      event,
-      channels,
-    }))
-  }, [channelToggles, settingCategory])
 
   const pageHeading = isRechargePage ? 'View Recharge History' : isAddMoneyPage ? 'Add Money Ledger' : 'View Wallet Deduction'
-
-  const toggleNotificationChannel = (
-    category: NotificationCategory,
-    eventName: string,
-    channel: NotificationChannel,
-  ) => {
-    setChannelToggles((prev) => ({
-      ...prev,
-      [category]: {
-        ...prev[category],
-        [eventName]: {
-          ...prev[category][eventName],
-          [channel]: !prev[category][eventName][channel],
-        },
-      },
-    }))
-  }
 
   if (isError) {
     return (

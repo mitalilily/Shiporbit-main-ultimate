@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useMerchantDashboardStats } from '../../hooks/useDashboard'
 import ParcelXDateRangePicker from '../../components/UI/inputs/ParcelXDateRangePicker'
@@ -548,7 +549,6 @@ export default function Dashboard() {
   const tatDelivered = Math.max(0, delivered - rto)
   const tatOutside = rto
   const tatPercent = delivered > 0 ? Math.round((tatDelivered / Math.max(1, delivered)) * 100) : 0
-  const walletBalance = numberFrom(stats?.financial?.walletBalance)
   const totalRevenue = numberFrom(stats?.financial?.totalRevenue)
   const stateDistributionMap = (stats?.geographic?.topDestinations || []).reduce(
     (acc, item) => {

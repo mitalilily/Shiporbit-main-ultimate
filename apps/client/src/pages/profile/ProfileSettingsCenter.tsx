@@ -1,5 +1,4 @@
-import { Box, CircularProgress, Switch } from '@mui/material'
-import { alpha } from '@mui/material/styles'
+import { CircularProgress, Switch } from '@mui/material'
 import { useMemo } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useBillingPreference } from '../../hooks/Billing/useBillingPreferences'

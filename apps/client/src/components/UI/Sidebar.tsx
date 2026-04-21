@@ -174,6 +174,26 @@ const routeAliases: Array<[string, string]> = [
   ['/settings', '/setting/labelsetting'],
 ]
 
+const routePreloaders: Record<string, () => Promise<unknown>> = {
+  '/dashboard': () => import('../../pages/dashboard/Dashboard'),
+  '/addorders/forward/AddOrder': () => import('../orders/CreateOrderWrapper'),
+  '/shipment': () => import('../../pages/orders/Orders'),
+  '/channel/pending': () => import('../../pages/channels/ChannelOrders'),
+  '/wallet/wallet_deduction': () => import('../../pages/billings/WalletTransactions'),
+  '/ndr/ndr-shipment': () => import('../../pages/ops/NdrList'),
+  '/report/mis-report': () => import('../../pages/reports/Reports'),
+  '/billing/cod': () => import('../../pages/cod-remittance/CodRemittancesList'),
+  '/custom-tracking': () => import('../../pages/tools/OrderTrackingForm'),
+  '/communication/credit_recharge': () => import('../../pages/billings/WalletTransactions'),
+  '/tickets': () => import('../../pages/support/SupportTicketsPage'),
+  '/utility/ratecalculator': () =>
+    import('../../pages/tools/RateCalculator').then((m) => ({ default: m.RateCalculator })),
+  '/support': () => import('../../pages/policy/CompanyDetails'),
+  '/setting/labelsetting': () => import('../../pages/settings/LegacySettingsSections'),
+}
+
+const preloadedRoutes = new Set<string>()
+
 const isExactActive = (pathname: string, item: MenuItem) => {
   if (pathname === item.href || pathname.startsWith(`${item.href}/`)) return true
   const alias = routeAliases.find(([source]) => pathname === source || pathname.startsWith(`${source}/`))
@@ -182,9 +202,24 @@ const isExactActive = (pathname: string, item: MenuItem) => {
 
 const renderItem = (item: MenuItem, pathname: string) => {
   const active = isExactActive(pathname, item)
+  const preloadRoute = () => {
+    if (preloadedRoutes.has(item.href)) return
+    const loader = routePreloaders[item.href]
+    if (!loader) return
+    preloadedRoutes.add(item.href)
+    void loader().catch(() => {
+      preloadedRoutes.delete(item.href)
+    })
+  }
+
   return (
     <li key={item.href} className={`NavLink ${active ? 'active-link' : ''} nav-item`}>
-      <NavLink className={active ? 'active-link' : ''} to={item.href}>
+      <NavLink
+        className={active ? 'active-link' : ''}
+        to={item.href}
+        onMouseEnter={preloadRoute}
+        onFocus={preloadRoute}
+      >
         <span className="iocns__00">
           <img
             src={item.inactiveIcon}

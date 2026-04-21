@@ -1,10 +1,11 @@
 import { Suspense, useEffect, useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import Navbar from '../Navbar/Navbar'
 import FullScreenLoader from './loader/FullScreenLoader'
 import Sidebar, { COLLAPSED_WIDTH, EXPANDED_WIDTH } from './Sidebar'
 
 export default function Layout() {
+  const location = useLocation()
   const [collapsed, setCollapsed] = useState(() => {
     if (typeof window === 'undefined') return false
     return window.innerWidth > 767
@@ -56,6 +57,12 @@ export default function Layout() {
       }
     }
   }, [])
+
+  useEffect(() => {
+    if (window.innerWidth <= 767) {
+      setMobileSidebarOpen(false)
+    }
+  }, [location.pathname])
 
   const toggleSidebar = () => {
     if (window.innerWidth <= 767) {
