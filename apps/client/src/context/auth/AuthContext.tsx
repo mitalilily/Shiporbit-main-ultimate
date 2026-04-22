@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { accessToken, refreshToken } = getAuthTokens()
   const hasTokens = !!accessToken && !!refreshToken
 
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
   const [walletBalance, setWalletBalance] = useState<number | null>(null)
   const [userId, setUserId] = useState('demo-user')
 
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const clearTokens = () => {
     clearAuthTokens()
-    setIsAuthenticated(true)
+    setIsAuthenticated(false)
     setUserId('demo-user')
     queryClient.removeQueries({ queryKey: ['userInfo'] })
     queryClient.removeQueries({ queryKey: ['userProfile'] })
@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Logout error ignored:', e)
     }
     clearTokens()
-    window.location.replace('/#/dashboard')
+    window.location.replace('/#/login')
   }
 
   const value: AuthCtx = {
