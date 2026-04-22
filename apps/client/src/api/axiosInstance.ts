@@ -75,7 +75,7 @@ api.interceptors.response.use(
     if (!refreshToken) {
       console.warn('⚠️ No refresh token available, redirecting to login')
       clearAuthTokens()
-      window.location.href = '/login'
+      window.location.replace('/#/login')
       return Promise.reject(err)
     }
 
@@ -106,8 +106,8 @@ api.interceptors.response.use(
       clearAuthTokens()
       
       // Only redirect if not already on login page
-      if (!window.location.pathname.includes('/login')) {
-        window.location.href = '/login'
+      if (!window.location.hash.includes('#/login')) {
+        window.location.replace('/#/login')
       }
       return Promise.reject(e)
     }

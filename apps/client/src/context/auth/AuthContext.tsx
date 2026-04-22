@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Logout error ignored:', e)
     }
     clearTokens()
-    window.location.href = '/dashboard'
+    window.location.replace('/#/dashboard')
   }
 
   const value: AuthCtx = {

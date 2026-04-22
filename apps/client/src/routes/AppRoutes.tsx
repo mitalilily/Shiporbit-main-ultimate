@@ -1,6 +1,6 @@
 // AppRoutes.tsx
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import RequireAuth from '../components/auth/wrapper/RequireAuth'
 import RequireMerchantReady from '../components/auth/wrapper/RequireMerchantReady'
 import Layout from '../components/UI/Layout'
@@ -102,7 +102,7 @@ const ApiIntegration = lazy(() => import('../pages/settings/ApiIntegration'))
 
 export default function AppRoutes() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <NavigationLoader />
       <GlobalRedirectHandler />
       <Suspense fallback={<FullScreenLoader />}>
@@ -303,6 +303,6 @@ export default function AppRoutes() {
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Suspense>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
