@@ -1,5 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import { googleLoginApi, requestOtpApi, verifyOtpApi } from "../api/auth";
+import {
+  googleLoginApi,
+  loginWithEmailOnlyApi,
+  requestOtpApi,
+  verifyOtpApi,
+} from "../api/auth";
+
+export const useEmailOnlyLogin = () =>
+  useMutation({
+    mutationFn: loginWithEmailOnlyApi,
+  });
 
 export const useRequestOtp = () =>
   useMutation({

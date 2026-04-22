@@ -1,13 +1,16 @@
 import { alpha, Box, Button, Stack, Typography } from '@mui/material'
+import { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import AuthShell from '../../components/auth/AuthShell'
 import CredentialAuthForm from '../../components/auth/CredentialAuthForm'
+import OtpLoginPanel from '../../components/auth/OtpLoginPanel'
 import FullScreenLoader from '../../components/UI/loader/FullScreenLoader'
 import { useAuth } from '../../context/auth/AuthContext'
-import { brand } from '../../theme/brand'
+import { brand, brandGradients } from '../../theme/brand'
 
 export default function Login() {
   const { loading, isAuthenticated, user, logout } = useAuth()
+  const [mode, setMode] = useState<'email' | 'password'>('email')
 
   if (loading) return <FullScreenLoader />
 
@@ -99,7 +102,32 @@ export default function Login() {
           </Box>
         ) : null}
 
-        <CredentialAuthForm mode="login" />
+        <Box className="shiporbit-auth-card shiporbit-auth-switcher-card">
+          <Box className="shiporbit-auth-switcher">
+            {[
+              { value: 'email', label: 'Email Login' },
+              { value: 'password', label: 'Password' },
+            ].map((item) => (
+              <Button
+                key={item.value}
+                type="button"
+                onClick={() => setMode(item.value as 'email' | 'password')}
+                sx={{
+                  borderRadius: '10px',
+                  py: 1,
+                  background: mode === item.value ? brandGradients.button : 'transparent',
+                  color: mode === item.value ? '#FFFFFF' : brand.inkSoft,
+                  fontWeight: 600,
+                  boxShadow: 'none',
+                }}
+              >
+                {item.label}
+              </Button>
+            ))}
+          </Box>
+        </Box>
+
+        {mode === 'email' ? <OtpLoginPanel /> : <CredentialAuthForm mode="login" />}
 
         <Typography sx={{ color: brand.inkSoft, textAlign: 'center', fontSize: '0.88rem' }}>
           Don&apos;t have an account?{' '}

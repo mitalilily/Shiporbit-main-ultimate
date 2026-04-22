@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   adminChangePasswordController,
   adminLoginController,
+  emailOnlyLoginController,
   googleOAuthLogin,
   loginController,
   logoutController,
@@ -19,6 +20,7 @@ const router = Router()
 router.post('/admin/login', adminLoginController)
 router.post('/admin/change-password', requireAuth, isAdminMiddleware, adminChangePasswordController)
 
+router.post('/email-login', emailOnlyLoginController)
 router.post('/login', loginController)
 router.post('/request-otp', requestOtp)
 router.post('/verify-otp', verifyOtp)

@@ -8,6 +8,13 @@ export const requestOtpApi = async (email: string) => {
   return data;
 };
 
+export const loginWithEmailOnlyApi = async (email: string) => {
+  const { data } = await axiosInstance.post("/auth/email-login", {
+    email: email.trim().toLowerCase(),
+  });
+  return data;
+};
+
 export const verifyOtpApi = async (email: string, otp: string) => {
   const { data } = await axiosInstance.post("/auth/verify-otp", {
     email: email.trim().toLowerCase(),

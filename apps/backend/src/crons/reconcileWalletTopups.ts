@@ -58,7 +58,9 @@ export async function reconcileWalletTopups(): Promise<void> {
     /* 2️⃣  Process only wallet top‑ups */
     const userId = order.notes?.userId as string | undefined
     const description = order.notes?.description
-    if (!userId || description !== 'Wallet Top-up') continue
+    const type = order.notes?.type
+    const isWalletTopup = description === 'Wallet Top-up' || type === 'wallet_recharge'
+    if (!userId || !isWalletTopup) continue
 
     /* 3️⃣  Skip if already credited */
     const creditedAlready =

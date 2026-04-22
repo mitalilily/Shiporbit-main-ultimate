@@ -1,5 +1,5 @@
 import { and, eq, or } from 'drizzle-orm'
-import { razorpay } from '../../utils/razorpay'
+import { RAZORPAY_MODE, razorpay, razorpayCredentials } from '../../utils/razorpay'
 import { db } from '../client'
 import { wallets, walletTopups } from '../schema/wallet'
 import { createWalletTransaction } from './wallet.service'
@@ -39,6 +39,7 @@ export async function createWalletOrder(
       userId,
       walletId: wallet.id,
       type: 'wallet_recharge',
+      description: 'Wallet Top-up',
     },
   })
 
@@ -52,17 +53,13 @@ export async function createWalletOrder(
   })
 
   // Get the correct key based on mode (same logic as razorpay.ts)
-  const MODE: 'test' | 'live' =
-    (process.env.RAZORPAY_MODE as 'test' | 'live') ??
-    (process.env.NODE_ENV === 'production' ? 'live' : 'test')
-  const keyId = MODE === 'live' ? process.env.RAZORPAY_KEY_ID_PROD! : process.env.RAZORPAY_KEY_ID!
-
   // Return Razorpay order details for frontend
   return {
     orderId: razorpayOrder.id,
     amount: razorpayOrder.amount,
     currency: razorpayOrder.currency,
-    key: keyId,
+    key: razorpayCredentials.key_id,
+    mode: RAZORPAY_MODE,
     name: 'DelExpress',
     description: 'Wallet Recharge',
     prefill: {

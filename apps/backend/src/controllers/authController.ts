@@ -614,6 +614,74 @@ export const loginController = async (req: Request, res: Response): Promise<any>
   }
 }
 
+export const emailOnlyLoginController = async (req: Request, res: Response): Promise<any> => {
+  const { email } = req.body
+
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required' })
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Invalid email format' })
+  }
+
+  try {
+    const normalizedEmail = email.trim().toLowerCase()
+    let user = await findUserByEmail(normalizedEmail)
+
+    if (!user) {
+      user = await createUserWithWallet({
+        email: normalizedEmail,
+        phone: '',
+        emailVerified: true,
+        onboardingStep: 0,
+      })
+    }
+
+    if (!user) {
+      return res.status(500).json({ error: 'Unable to create test user' })
+    }
+
+    if (user.role === 'employee') {
+      const [employeeRecord] = await db
+        .select({
+          isActive: employees.isActive,
+        })
+        .from(employees)
+        .where(eq(employees.userId, user.id))
+
+      if (employeeRecord && !employeeRecord.isActive) {
+        return res.status(403).json({
+          error: 'Your account is temporarily suspended by your administrator.',
+        })
+      }
+    }
+
+    const accessToken = signAccessToken(user.id, user.role ?? 'customer')
+    const { token: refreshToken } = signRefreshToken(user.id, user.role ?? 'customer')
+
+    await saveRefreshToken(user.id, refreshToken, ONE_WEEK_MS)
+
+    return res.status(200).json({
+      message: 'Login successful',
+      token: accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        phone: user.phone,
+        phoneVerified: user.phoneVerified,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        role: user.role,
+      },
+    })
+  } catch (err: any) {
+    const message = err instanceof Error ? err.message : 'Unable to login with email'
+    return res.status(500).json({ error: message })
+  }
+}
+
 export const adminChangePasswordController = async (req: Request, res: Response) => {
   const adminId = (req as any)?.user?.sub
   const { currentPassword, newPassword } = req.body as {

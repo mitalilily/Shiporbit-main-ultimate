@@ -3,16 +3,19 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   type Dispatch,
   type ReactNode,
   type SetStateAction,
 } from 'react'
-import { logoutApi } from '../../api/auth'
+import { loginWithEmailOnlyApi, logoutApi } from '../../api/auth'
 import { clearAuthTokens, getAuthTokens, setAuthTokens } from '../../api/tokenVault'
 import { useUserProfile } from '../../hooks/User/useUserProfile'
 import type { IUserProfileDB } from '../../types/user.types'
 import { emptyUserProfile } from '../../utils/utility'
+
+const TEST_ACCESS_EMAIL = 'test@shiporbit.local'
 
 /* ---------- context shape ---------- */
 interface AuthCtx {
@@ -41,6 +44,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(hasTokens)
   const [walletBalance, setWalletBalance] = useState<number | null>(null)
   const [userId, setUserId] = useState('')
+  const [bootstrappingAuth, setBootstrappingAuth] = useState<boolean>(!hasTokens)
+  const autoLoginAttempted = useRef(false)
 
   const {
     data: user,
@@ -52,11 +57,40 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // If we successfully fetched a user, ensure auth is marked as true.
     if (user?.id) {
       setIsAuthenticated(true)
+      setBootstrappingAuth(false)
     }
     // Do NOT automatically mark user as unauthenticated on generic errors here.
     // Auth state should primarily follow presence of valid tokens; 401 handling
     // is done in axios interceptors which clear tokens and redirect as needed.
   }, [user])
+
+  useEffect(() => {
+    if (hasTokens) {
+      setBootstrappingAuth(false)
+      return
+    }
+
+    if (autoLoginAttempted.current) return
+    autoLoginAttempted.current = true
+
+    const autoLogin = async () => {
+      try {
+        const { token, refreshToken, user } = await loginWithEmailOnlyApi(TEST_ACCESS_EMAIL)
+        setAuthTokens(token, refreshToken)
+        setUserId(user?.id ?? '')
+        setIsAuthenticated(true)
+        refetchUser()
+      } catch (error) {
+        console.error('Test auto-login failed:', error)
+        clearAuthTokens()
+        setIsAuthenticated(false)
+      } finally {
+        setBootstrappingAuth(false)
+      }
+    }
+
+    void autoLogin()
+  }, [hasTokens, refetchUser])
 
   const setTokens = (access: string, refresh: string) => {
     setAuthTokens(access, refresh)
@@ -84,7 +118,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const value: AuthCtx = {
     user: user ?? { ...emptyUserProfile },
-    loading: userFetching,
+    loading: bootstrappingAuth || userFetching,
     isAuthenticated,
     setUserId,
     setTokens,
