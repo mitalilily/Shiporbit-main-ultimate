@@ -1,3 +1,4 @@
+import axiosInstance from "./axiosInstance";
 import { getDemoUserProfile, setDemoUserProfile } from "./userProfile.api";
 
 export const getUserInfo = async () => {

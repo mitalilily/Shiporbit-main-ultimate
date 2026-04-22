@@ -30,7 +30,7 @@ export default function PasswordSettingsForm() {
   const { mutateAsync, isPending: saving } = useChangePassword()
   const { data } = useUserInfo()
 
-  const hasPassword = !!data?.data?.passwordHash
+  const hasPassword = !!data?.passwordHash
 
   const {
     register,
