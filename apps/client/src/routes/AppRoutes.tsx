@@ -3,20 +3,15 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import RequireAuth from '../components/auth/wrapper/RequireAuth'
 import RequireMerchantReady from '../components/auth/wrapper/RequireMerchantReady'
-import RequireOnboard from '../components/auth/wrapper/RequireOnboard'
 import Layout from '../components/UI/Layout'
 import FullScreenLoader from '../components/UI/loader/FullScreenLoader'
 import NavigationLoader from '../components/UI/loader/NavigationLoader'
-import Login from '../pages/auth/Login'
-import Signup from '../pages/auth/Signup'
 import ClientPreview from '../pages/preview/ClientPreview'
 import LandingPage from '../pages/LandingPage'
 import AppEntry from './AppEntry'
 import GlobalRedirectHandler from './WalletRedirectHandler'
 
 /* ---------- Lazy-loaded components ---------- */
-// Onboarding & Dashboard
-const UserOnboarding = lazy(() => import('../pages/onboarding/UserOnboarding'))
 const Dashboard = lazy(() => import('../pages/dashboard/Dashboard'))
 
 // Orders
@@ -111,23 +106,16 @@ export default function AppRoutes() {
       <Suspense fallback={<FullScreenLoader />}>
         <Routes>
           {/* public */}
-          <Route path="/" element={<Login />} />
-          <Route path="/auth" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/auth" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/login" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/signup" element={<Navigate to="/dashboard" replace />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/app" element={<AppEntry />} />
           <Route path="/preview" element={<ClientPreview />} />
           <Route path="/tracking" element={<OrderTracking />} /> {/* 👈 NEW ROUTE */}
           {/* onboarding */}
-          <Route
-            path="/onboarding-questions"
-            element={
-              <RequireOnboard>
-                <UserOnboarding />
-              </RequireOnboard>
-            }
-          />
+          <Route path="/onboarding-questions" element={<Navigate to="/dashboard" replace />} />
           {/* private layout (requires auth) */}
           <Route
             element={

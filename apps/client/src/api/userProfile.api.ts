@@ -1,22 +1,77 @@
 import type { IUserProfileDB } from "../types/user.types";
 import { emptyUserProfile } from "../utils/utility";
 
-let demoProfile: IUserProfileDB = {
+const createDefaultDemoProfile = (): IUserProfileDB => ({
   ...emptyUserProfile,
-  id: "demo-profile",
-  userId: "demo-user",
+  id: 'demo-profile',
+  userId: 'demo-user',
+  onboardingStep: 2,
+  onboardingComplete: true,
+  profileComplete: true,
+  monthlyOrderCount: '0-100',
+  approved: true,
+  approvedAt: new Date().toISOString(),
+  rejectionReason: null,
+  currentPlanId: 'basic-demo',
+  currentPlanName: 'Basic Demo',
+  submittedAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
   companyInfo: {
     ...emptyUserProfile.companyInfo,
-    brandName: "ShipOrbit Demo",
-    businessName: "ShipOrbit Demo",
-    contactEmail: "demo@shiporbit.local",
+    businessName: 'ShipOrbit Demo',
+    contactPerson: 'Demo User',
+    companyAddress: 'Demo Address',
+    companyContactNumber: '9999999999',
+    pincode: '110001',
+    POCEmailVerified: true,
+    POCPhoneVerified: true,
+    state: 'Delhi',
+    city: 'New Delhi',
+    contactNumber: '9999999999',
+    contactEmail: 'demo@shiporbit.local',
+    brandName: 'ShipOrbit Demo',
+    companyEmail: 'demo@shiporbit.local',
+    website: 'https://demo.shiporbit.local',
+    profilePicture: '',
+    companyLogoUrl: '',
   },
-}
+  domesticKyc: {
+    updatedAt: new Date(),
+    status: 'verified',
+  },
+  bankDetails: {
+    count: 1,
+    primaryAccount: {
+      accountHolder: 'Demo User',
+      accountNumber: '000000000000',
+      ifsc: 'DEMO0000001',
+      bankName: 'Demo Bank',
+      id: 'demo-bank',
+      status: 'verified',
+      isPrimary: true,
+    },
+  },
+  gstDetails: {
+    gstNumber: '07AAAAA0000A1Z5',
+    legalName: 'ShipOrbit Demo',
+    registrationDate: new Date().toISOString(),
+    state: 'Delhi',
+    documentUrl: '',
+  },
+  businessType: ['b2c'],
+})
+
+let demoProfile: IUserProfileDB = createDefaultDemoProfile()
 
 export const getDemoUserProfile = () => demoProfile
 
 export const setDemoUserProfile = (nextProfile: IUserProfileDB) => {
   demoProfile = nextProfile
+  return demoProfile
+}
+
+export const resetDemoUserProfile = () => {
+  demoProfile = createDefaultDemoProfile()
   return demoProfile
 }
 

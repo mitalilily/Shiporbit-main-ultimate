@@ -1,5 +1,5 @@
 // components/auth/RequireOnboard.tsx
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import FullScreenLoader from "../../UI/loader/FullScreenLoader";
 import type { JSX } from "@emotion/react/jsx-runtime";
 import { useAuth } from "../../../context/auth/AuthContext";
@@ -9,22 +9,9 @@ export default function RequireOnboard({
 }: {
   children: JSX.Element;
 }) {
-  const { user, loading, isAuthenticated } = useAuth();
-  const location = useLocation(); // keeps track of where the user came from
+  const { loading } = useAuth();
 
   /* 1️⃣  Still loading auth state? show spinner */
   if (loading) return <FullScreenLoader />;
-
-  /* 2️⃣  Not logged in at all → kick back to login */
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
-  }
-
-  /* 3️⃣  Logged‑in AND already onboarded → send to main app */
-  if (user?.onboardingComplete) {
-    return <Navigate to="/app" replace />;
-  }
-
-  /* 4️⃣  Logged‑in BUT NOT onboarded → let them see onboarding page */
-  return children;
+  return <Navigate to="/dashboard" replace />;
 }

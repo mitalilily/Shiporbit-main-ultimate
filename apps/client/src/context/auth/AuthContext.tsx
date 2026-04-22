@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { logoutApi } from '../../api/auth'
 import { clearAuthTokens, getAuthTokens, setAuthTokens } from '../../api/tokenVault'
+import { resetDemoUserProfile } from '../../api/userProfile.api'
 import { useUserProfile } from '../../hooks/User/useUserProfile'
 import type { IUserProfileDB } from '../../types/user.types'
 import { emptyUserProfile } from '../../utils/utility'
@@ -38,10 +39,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { accessToken, refreshToken } = getAuthTokens()
   const hasTokens = !!accessToken && !!refreshToken
 
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(hasTokens)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true)
   const [walletBalance, setWalletBalance] = useState<number | null>(null)
-  const [userId, setUserId] = useState('')
-  const [bootstrappingAuth, setBootstrappingAuth] = useState<boolean>(!hasTokens)
+  const [userId, setUserId] = useState('demo-user')
+  const [bootstrappingAuth, setBootstrappingAuth] = useState<boolean>(false)
 
   const {
     data: user,
@@ -50,18 +51,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   } = useUserProfile(isAuthenticated)
 
   useEffect(() => {
-    // If we successfully fetched a user, ensure auth is marked as true.
-    if (user?.id) {
-      setIsAuthenticated(true)
-      setBootstrappingAuth(false)
-    }
-    // Do NOT automatically mark user as unauthenticated on generic errors here.
-    // Auth state should primarily follow presence of valid tokens; 401 handling
-    // is done in axios interceptors which clear tokens and redirect as needed.
+    if (user?.id) setUserId(user.id)
   }, [user])
 
   useEffect(() => {
-    setBootstrappingAuth(false)
+    if (!hasTokens) {
+      resetDemoUserProfile()
+    }
   }, [hasTokens])
 
   const setTokens = (access: string, refresh: string) => {
@@ -72,10 +68,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const clearTokens = () => {
     clearAuthTokens()
-    setIsAuthenticated(false)
+    setIsAuthenticated(true)
+    setUserId('demo-user')
     queryClient.removeQueries({ queryKey: ['userInfo'] })
     queryClient.removeQueries({ queryKey: ['userProfile'] })
     queryClient.removeQueries({ queryKey: ['walletBalance'] })
+    resetDemoUserProfile()
   }
 
   const logout = async () => {
@@ -85,7 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Logout error ignored:', e)
     }
     clearTokens()
-    window.location.href = '/login'
+    window.location.href = '/dashboard'
   }
 
   const value: AuthCtx = {
