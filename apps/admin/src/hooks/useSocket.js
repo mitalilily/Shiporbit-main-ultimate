@@ -11,7 +11,9 @@ export const useSocket = () => {
   const socketUrl =
     process.env.REACT_APP_SOCKET_URL ||
     process.env.REACT_APP_API_BASE_URL?.replace(/\/api\/?$/, '') ||
-    (isLocalhost ? 'http://127.0.0.1:5002' : 'https://delexpress-backend.onrender.com')
+    (isLocalhost
+      ? 'http://127.0.0.1:5002'
+      : 'https://shiporbit-main-ultimate-production.up.railway.app')
 
   useEffect(() => {
     if (!userId) return

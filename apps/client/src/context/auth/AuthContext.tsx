@@ -17,6 +17,13 @@ import { emptyUserProfile } from '../../utils/utility'
 
 const TEST_ACCESS_EMAIL = 'test@shiporbit.local'
 
+const shouldAttemptAutoLogin = () => {
+  if (typeof window === 'undefined') return false
+
+  const host = window.location.hostname
+  return host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0'
+}
+
 /* ---------- context shape ---------- */
 interface AuthCtx {
   setUserId: Dispatch<SetStateAction<string>>
@@ -70,7 +77,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return
     }
 
-    if (autoLoginAttempted.current) return
+    if (autoLoginAttempted.current || !shouldAttemptAutoLogin()) {
+      setBootstrappingAuth(false)
+      return
+    }
     autoLoginAttempted.current = true
 
     const autoLogin = async () => {

@@ -45,7 +45,7 @@ echo "ðŸ”¨ Running build with production environment variables..."
 
 # Set production API URL
 # React apps need REACT_APP_ prefix for environment variables
-export REACT_APP_API_BASE_URL="https://api.delexpress.in/api"
+export REACT_APP_API_BASE_URL="https://shiporbit-main-ultimate-production.up.railway.app/api"
 
 echo "ðŸ“¡ Using production API URL: ${REACT_APP_API_BASE_URL}"
 echo ""
