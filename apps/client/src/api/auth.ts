@@ -16,6 +16,29 @@ const buildDemoUser = (email: string) => ({
   role: 'customer',
 })
 
+export interface DemoAuthUser {
+  id: string
+  phone: string
+  phoneVerified: boolean
+  email: string
+  emailVerified: boolean
+  role: string
+}
+
+export interface DemoSessionResponse {
+  message: string
+  token: string
+  refreshToken: string
+  user: DemoAuthUser
+}
+
+export interface DemoVerificationResponse extends Partial<DemoSessionResponse> {
+  message: string
+  verificationToken: string
+  email: string
+  hasPassword: boolean
+}
+
 export const requestOtpApi = async (email: string) => {
   await delay()
   return {
@@ -50,13 +73,16 @@ export const verifyOtpApi = async (email: string, otp: string) => {
 export const requestPasswordLoginApi = async (
   email: string,
   password?: string
-) => {
+): Promise<DemoVerificationResponse> => {
   await delay()
   return {
     message: 'Demo verification code generated',
     verificationToken: 'ABCD1234',
     email: email.trim().toLowerCase(),
     hasPassword: Boolean(password),
+    token: makeToken('access', email.trim().toLowerCase()),
+    refreshToken: makeToken('refresh', email.trim().toLowerCase()),
+    user: buildDemoUser(email),
   }
 }
 
