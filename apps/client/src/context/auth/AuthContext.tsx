@@ -9,7 +9,7 @@ import {
   type SetStateAction,
 } from 'react'
 import { logoutApi } from '../../api/auth'
-import { clearAuthTokens, getAuthTokens, setAuthTokens } from '../../api/tokenVault'
+import { clearAuthTokens, getAuthTokens } from '../../api/tokenVault'
 import { resetDemoUserProfile } from '../../api/userProfile.api'
 import { useUserProfile } from '../../hooks/User/useUserProfile'
 import type { IUserProfileDB } from '../../types/user.types'
@@ -60,7 +60,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [hasTokens])
 
   const setTokens = (access: string, refresh: string) => {
-    setAuthTokens(access, refresh)
+    void access
+    void refresh
     setIsAuthenticated(true)
     refetchUser()
   }

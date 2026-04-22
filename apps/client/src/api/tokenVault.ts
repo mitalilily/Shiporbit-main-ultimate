@@ -2,8 +2,12 @@
 let access = "";
 let refresh = "";
 
+const DEMO_MODE = true;
+
 /** Read the latest tokens (kept in‑memory + localStorage) */
 export const getAuthTokens = () => {
+  if (DEMO_MODE) return { accessToken: "", refreshToken: "" }
+
   const accessToken = access || localStorage.getItem("cc_access") || ""
   const refreshToken = refresh || localStorage.getItem("cc_refresh") || ""
   
@@ -16,6 +20,8 @@ export const getAuthTokens = () => {
 
 /** Save (and persist) a new token pair */
 export const setAuthTokens = (a: string, r: string) => {
+  if (DEMO_MODE) return
+
   access = a;
   refresh = r;
   localStorage.setItem("cc_access", a);
