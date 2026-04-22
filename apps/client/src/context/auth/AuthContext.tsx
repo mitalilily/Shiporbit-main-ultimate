@@ -42,7 +42,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true)
   const [walletBalance, setWalletBalance] = useState<number | null>(null)
   const [userId, setUserId] = useState('demo-user')
-  const [bootstrappingAuth, setBootstrappingAuth] = useState<boolean>(false)
 
   const {
     data: user,
@@ -88,7 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const value: AuthCtx = {
     user: user ?? { ...emptyUserProfile },
-    loading: bootstrappingAuth || userFetching,
+    loading: userFetching,
     isAuthenticated,
     setUserId,
     setTokens,

@@ -1,14 +1,9 @@
 // components/auth/RequireOnboard.tsx
 import { Navigate } from "react-router-dom";
 import FullScreenLoader from "../../UI/loader/FullScreenLoader";
-import type { JSX } from "@emotion/react/jsx-runtime";
 import { useAuth } from "../../../context/auth/AuthContext";
 
-export default function RequireOnboard({
-  children,
-}: {
-  children: JSX.Element;
-}) {
+export default function RequireOnboard() {
   const { loading } = useAuth();
 
   /* 1️⃣  Still loading auth state? show spinner */
