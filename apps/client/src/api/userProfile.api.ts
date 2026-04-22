@@ -13,6 +13,13 @@ let demoProfile: IUserProfileDB = {
   },
 }
 
+export const getDemoUserProfile = () => demoProfile
+
+export const setDemoUserProfile = (nextProfile: IUserProfileDB) => {
+  demoProfile = nextProfile
+  return demoProfile
+}
+
 export const fetchUserProfile = async (): Promise<IUserProfileDB> => {
   return demoProfile;
 };
