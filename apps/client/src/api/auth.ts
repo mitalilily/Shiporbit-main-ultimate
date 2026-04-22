@@ -32,7 +32,7 @@ export interface DemoSessionResponse {
   user: DemoAuthUser
 }
 
-export interface DemoVerificationResponse extends Partial<DemoSessionResponse> {
+export interface DemoVerificationResponse extends DemoSessionResponse {
   message: string
   verificationToken: string
   email: string
