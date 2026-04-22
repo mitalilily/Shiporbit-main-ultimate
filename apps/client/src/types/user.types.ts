@@ -105,6 +105,7 @@ export interface IUserProfileDB {
   userId: string;
   name?: string;
   email?: string;
+  passwordHash?: string | null;
 
   onboardingStep: number;
   monthlyOrderCount: string;
