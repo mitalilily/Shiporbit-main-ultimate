@@ -3,26 +3,16 @@ import {
   createContext,
   useContext,
   useEffect,
-  useRef,
   useState,
   type Dispatch,
   type ReactNode,
   type SetStateAction,
 } from 'react'
-import { loginWithEmailOnlyApi, logoutApi } from '../../api/auth'
+import { logoutApi } from '../../api/auth'
 import { clearAuthTokens, getAuthTokens, setAuthTokens } from '../../api/tokenVault'
 import { useUserProfile } from '../../hooks/User/useUserProfile'
 import type { IUserProfileDB } from '../../types/user.types'
 import { emptyUserProfile } from '../../utils/utility'
-
-const TEST_ACCESS_EMAIL = 'test@shiporbit.local'
-
-const shouldAttemptAutoLogin = () => {
-  if (typeof window === 'undefined') return false
-
-  const host = window.location.hostname
-  return host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0'
-}
 
 /* ---------- context shape ---------- */
 interface AuthCtx {
@@ -52,7 +42,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [walletBalance, setWalletBalance] = useState<number | null>(null)
   const [userId, setUserId] = useState('')
   const [bootstrappingAuth, setBootstrappingAuth] = useState<boolean>(!hasTokens)
-  const autoLoginAttempted = useRef(false)
 
   const {
     data: user,
@@ -72,35 +61,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [user])
 
   useEffect(() => {
-    if (hasTokens) {
-      setBootstrappingAuth(false)
-      return
-    }
-
-    if (autoLoginAttempted.current || !shouldAttemptAutoLogin()) {
-      setBootstrappingAuth(false)
-      return
-    }
-    autoLoginAttempted.current = true
-
-    const autoLogin = async () => {
-      try {
-        const { token, refreshToken, user } = await loginWithEmailOnlyApi(TEST_ACCESS_EMAIL)
-        setAuthTokens(token, refreshToken)
-        setUserId(user?.id ?? '')
-        setIsAuthenticated(true)
-        refetchUser()
-      } catch (error) {
-        console.error('Test auto-login failed:', error)
-        clearAuthTokens()
-        setIsAuthenticated(false)
-      } finally {
-        setBootstrappingAuth(false)
-      }
-    }
-
-    void autoLogin()
-  }, [hasTokens, refetchUser])
+    setBootstrappingAuth(false)
+  }, [hasTokens])
 
   const setTokens = (access: string, refresh: string) => {
     setAuthTokens(access, refresh)

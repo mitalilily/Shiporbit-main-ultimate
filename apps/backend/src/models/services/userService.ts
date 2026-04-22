@@ -504,7 +504,7 @@ export const handleEmailVerificationRequest = async (
     if (googleId) {
       await createUserWithWallet({
         email: normalizedEmail,
-        phone: '',
+        phone: null as any,
         passwordHash: password ? await bcrypt.hash(password, 10) : null,
         googleId,
         emailVerified: true,
@@ -519,7 +519,7 @@ export const handleEmailVerificationRequest = async (
 
     await createUserWithWallet({
       email: normalizedEmail,
-      phone: '',
+      phone: null as any,
       passwordHash: await bcrypt.hash(password, 10),
       googleId: null,
       emailVerificationToken: token,
@@ -601,10 +601,33 @@ export const saveRefreshToken = async (
 
 export async function createUserWithWallet(data: Partial<IUser>, txn: any = db) {
   return txn?.transaction(async (tx: any) => {
+    const normalizedUserData = {
+      ...data,
+      email: data.email?.trim().toLowerCase(),
+      phone: data.phone?.trim() ? data.phone.trim() : null,
+      googleId: data.googleId?.trim() ? data.googleId.trim() : null,
+      pendingEmail: data.pendingEmail?.trim() ? data.pendingEmail.trim() : null,
+      pendingPhone: data.pendingPhone?.trim() ? data.pendingPhone.trim() : null,
+      passwordHash: data.passwordHash ?? null,
+      refreshToken: data.refreshToken ?? null,
+      refreshTokenExpiresAt: data.refreshTokenExpiresAt ?? null,
+      previousRefreshToken: data.previousRefreshToken ?? null,
+      previousRefreshTokenExpiresAt: data.previousRefreshTokenExpiresAt ?? null,
+      emailVerified: data.emailVerified ?? false,
+      phoneVerified: data.phoneVerified ?? false,
+      accountVerified: data.accountVerified ?? false,
+      role: data.role ?? 'customer',
+      profilePicture: data.profilePicture ?? null,
+      otp: data.otp ?? null,
+      otpExpiresAt: data.otpExpiresAt ?? null,
+      emailVerificationToken: data.emailVerificationToken ?? null,
+      emailVerificationTokenExpiresAt: data.emailVerificationTokenExpiresAt ?? null,
+    }
+
     // 1) insert user
     const [user] = await tx
       .insert(users)
-      .values(data as IUser)
+      .values(normalizedUserData as IUser)
       .returning()
 
     // 2) insert wallet

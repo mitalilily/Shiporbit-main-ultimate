@@ -25,6 +25,17 @@ export default function Signup() {
       actions={
         <Box className="shiporbit-auth-card shiporbit-auth-actions-card">
           <Stack spacing={0.9} alignItems="flex-start">
+            <Typography
+              sx={{
+                color: brand.accent,
+                fontSize: '0.78rem',
+                fontWeight: 800,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Demo mode
+            </Typography>
             <Typography className="shiporbit-auth-actions-copy">
               <strong>Existing user?</strong>
             </Typography>

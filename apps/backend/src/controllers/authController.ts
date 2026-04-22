@@ -486,7 +486,7 @@ export const googleOAuthLogin = async (req: Request, res: Response): Promise<any
             email,
             googleId,
             firstName: name,
-            phone: '',
+            phone: null as any,
             emailVerified: true,
             onboardingStep: 0,
             onboardingComplete: false,
@@ -633,7 +633,7 @@ export const emailOnlyLoginController = async (req: Request, res: Response): Pro
     if (!user) {
       user = await createUserWithWallet({
         email: normalizedEmail,
-        phone: '',
+        phone: null as any,
         emailVerified: true,
         onboardingStep: 0,
       })

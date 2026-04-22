@@ -1,9 +1,20 @@
 import type { IUserProfileDB } from "../types/user.types";
-import axiosInstance from "./axiosInstance";
+import { emptyUserProfile } from "../utils/utility";
+
+let demoProfile: IUserProfileDB = {
+  ...emptyUserProfile,
+  id: "demo-profile",
+  userId: "demo-user",
+  companyInfo: {
+    ...emptyUserProfile.companyInfo,
+    brandName: "ShipOrbit Demo",
+    businessName: "ShipOrbit Demo",
+    contactEmail: "demo@shiporbit.local",
+  },
+}
 
 export const fetchUserProfile = async (): Promise<IUserProfileDB> => {
-  const response = await axiosInstance.get<IUserProfileDB>("/profile/user/");
-  return response.data;
+  return demoProfile;
 };
 
 /**
@@ -13,49 +24,65 @@ export const fetchUserProfile = async (): Promise<IUserProfileDB> => {
 export const updateUserProfile = async (
   payload: Partial<IUserProfileDB>
 ): Promise<{ message: string; user: IUserProfileDB }> => {
-  const { data } = await axiosInstance.patch<{
-    message: string;
-    user: IUserProfileDB;
-  }>("/profile/", payload);
-  return data;
+  demoProfile = {
+    ...demoProfile,
+    ...payload,
+    companyInfo: {
+      ...demoProfile.companyInfo,
+      ...(payload.companyInfo ?? {}),
+    },
+  }
+
+  return {
+    message: "Demo profile updated",
+    user: demoProfile,
+  };
 };
 
 export const requestProfileEmailVerification = async (
   updatedEmail?: string
 ) => {
-  const { data } = await axiosInstance.post(
-    "/profile/request-email-verification",
-    {
-      updatedEmail,
-    }
-  );
-  return data;
+  demoProfile = {
+    ...demoProfile,
+    companyInfo: {
+      ...demoProfile.companyInfo,
+      contactEmail: updatedEmail ?? demoProfile.companyInfo.contactEmail,
+    },
+  }
+  return {
+    message: "Demo profile email verification sent",
+    updatedEmail,
+  };
 };
 
 export const verifyProfileEmail = async (updatedEmail: string, otp: string) => {
-  const { data } = await axiosInstance.post("/profile/verify-profile-email", {
+  return {
+    message: "Demo profile email verified",
     email: updatedEmail,
     otp,
-  });
-  return data;
+  };
 };
 
 export const requestProfilePhoneVerification = async (
   updatedPhone?: string
 ) => {
-  const { data } = await axiosInstance.post(
-    "/profile/request-phone-verification",
-    {
-      updatedPhone,
-    }
-  );
-  return data;
+  demoProfile = {
+    ...demoProfile,
+    companyInfo: {
+      ...demoProfile.companyInfo,
+      contactNumber: updatedPhone ?? demoProfile.companyInfo.contactNumber,
+    },
+  }
+  return {
+    message: "Demo profile phone verification sent",
+    updatedPhone,
+  };
 };
 
 export const verifyProfilePhone = async (phone: string, otp: string) => {
-  const { data } = await axiosInstance.post("/profile/verify-profile-phone", {
+  return {
+    message: "Demo profile phone verified",
     phone,
     otp,
-  });
-  return data;
+  };
 };

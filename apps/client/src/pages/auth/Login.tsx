@@ -24,6 +24,17 @@ export default function Login() {
       actions={
         <Box className="shiporbit-auth-card shiporbit-auth-actions-card">
           <Stack spacing={1.1} alignItems="flex-start">
+            <Typography
+              sx={{
+                color: brand.accent,
+                fontSize: '0.78rem',
+                fontWeight: 800,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Demo mode
+            </Typography>
             <Typography className="shiporbit-auth-actions-copy">
               <strong>ShipOrbit</strong>
             </Typography>

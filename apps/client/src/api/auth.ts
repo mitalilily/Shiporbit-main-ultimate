@@ -1,79 +1,109 @@
-import axiosInstance from "./axiosInstance";
-import { getAuthTokens } from "./tokenVault";
+import { getAuthTokens } from './tokenVault'
+
+const DEMO_DELAY_MS = 250
+
+const delay = (ms = DEMO_DELAY_MS) => new Promise((resolve) => setTimeout(resolve, ms))
+
+const makeToken = (kind: 'access' | 'refresh', email: string) =>
+  `${kind}.${email}.${Date.now()}.${Math.random().toString(36).slice(2, 10)}`
+
+const buildDemoUser = (email: string) => ({
+  id: 'demo-user',
+  phone: '',
+  phoneVerified: false,
+  email: email.trim().toLowerCase(),
+  emailVerified: true,
+  role: 'customer',
+})
 
 export const requestOtpApi = async (email: string) => {
-  const { data } = await axiosInstance.post("/auth/request-otp", {
+  await delay()
+  return {
+    message: 'Demo mode: verification code displayed inline only',
+    otp: '123456',
     email: email.trim().toLowerCase(),
-  });
-  return data;
-};
+  }
+}
 
 export const loginWithEmailOnlyApi = async (email: string) => {
-  const { data } = await axiosInstance.post("/auth/email-login", {
-    email: email.trim().toLowerCase(),
-  });
-  return data;
-};
+  await delay()
+  const normalizedEmail = email.trim().toLowerCase()
+  return {
+    message: 'Demo quick login successful',
+    token: makeToken('access', normalizedEmail),
+    refreshToken: makeToken('refresh', normalizedEmail),
+    user: buildDemoUser(normalizedEmail),
+  }
+}
 
 export const verifyOtpApi = async (email: string, otp: string) => {
-  const { data } = await axiosInstance.post("/auth/verify-otp", {
-    email: email.trim().toLowerCase(),
+  await delay()
+  return {
+    message: 'Demo OTP verified successfully',
+    token: makeToken('access', email.trim().toLowerCase()),
+    refreshToken: makeToken('refresh', email.trim().toLowerCase()),
+    user: buildDemoUser(email),
     otp: otp.trim(),
-  });
-  return data;
-};
+  }
+}
 
 export const requestPasswordLoginApi = async (
   email: string,
   password?: string
 ) => {
-  const { data } = await axiosInstance.post("/auth/request-password-login", {
+  await delay()
+  return {
+    message: 'Demo verification code generated',
+    verificationToken: 'ABCD1234',
     email: email.trim().toLowerCase(),
-    password,
-  });
-  return data;
-};
+    hasPassword: Boolean(password),
+  }
+}
 
 export const loginWithEmailApi = async (email: string, password: string) => {
-  const { data } = await axiosInstance.post("/auth/login", {
-    email: email.trim().toLowerCase(),
-    password,
-  });
-  return data;
-};
+  await delay()
+  const normalizedEmail = email.trim().toLowerCase()
+  return {
+    message: 'Demo login successful',
+    token: makeToken('access', normalizedEmail),
+    refreshToken: makeToken('refresh', normalizedEmail),
+    user: buildDemoUser(normalizedEmail),
+    passwordLength: password.length,
+  }
+}
 
 export const verifyEmailOtpApi = async (
   email: string,
   otp: string,
   password: string
 ) => {
-  const { data } = await axiosInstance.post("/auth/verify-user-email", {
-    email: email.trim().toLowerCase(),
-    token: otp.trim().toUpperCase(),
-    password,
-  });
-  return data;
-};
+  await delay()
+  const normalizedEmail = email.trim().toLowerCase()
+  return {
+    message: 'Demo email verification successful',
+    token: makeToken('access', normalizedEmail),
+    refreshToken: makeToken('refresh', normalizedEmail),
+    user: buildDemoUser(normalizedEmail),
+    verificationToken: otp.trim().toUpperCase(),
+    passwordLength: password.length,
+  }
+}
 
 export const googleLoginApi = async (code: string) => {
-  const { data } = await axiosInstance.post("/auth/signin-with-google", {
-    code,
-  });
-  return data;
-};
+  await delay()
+  const demoEmail = `google.${code.trim().toLowerCase() || 'user'}@demo.local`
+  return {
+    message: 'Demo Google login successful',
+    token: makeToken('access', demoEmail),
+    refreshToken: makeToken('refresh', demoEmail),
+    user: buildDemoUser(demoEmail),
+  }
+}
 
 export const logoutApi = async () => {
-  const { refreshToken } = getAuthTokens();
-  if (!refreshToken) return;
-
-  await axiosInstance.post(
-    "/auth/logout",
-    {},
-    {
-      headers: { "x-refresh-token": refreshToken },
-    }
-  );
-};
+  await delay(100)
+  void getAuthTokens()
+}
 
 /** Payload accepted by the backend */
 export interface ChangePasswordPayload {
@@ -86,4 +116,9 @@ export interface ChangePasswordPayload {
  * (Auth cookie / bearer handled by interceptors)
  */
 export const changePassword = (data: ChangePasswordPayload) =>
-  axiosInstance.patch("/profile/profile-password", data);
+  Promise.resolve({
+    data: {
+      message: 'Demo mode: password change is disabled',
+      requested: data,
+    },
+  });
