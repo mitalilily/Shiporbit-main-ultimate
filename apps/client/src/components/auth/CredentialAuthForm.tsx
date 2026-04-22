@@ -4,7 +4,11 @@ import { FiMail, FiUser } from 'react-icons/fi'
 import { MdBusinessCenter, MdLocalPhone, MdPassword } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/auth/AuthContext'
-import { useRequestPasswordLogin, useVerifyEmailOtp } from '../../hooks/useRequestPasswordLogin'
+import {
+  useEmailLogin,
+  useRequestPasswordLogin,
+  useVerifyEmailOtp,
+} from '../../hooks/useRequestPasswordLogin'
 import { TERMS_AND_CONDITIONS } from '../../utils/constants'
 import { setOnboardingPrefill } from '../../utils/onboardingPrefill'
 import CustomIconLoadingButton from '../UI/button/CustomLoadingButton'
@@ -46,7 +50,9 @@ export default function CredentialAuthForm({ mode, audience = 'seller' }: Creden
   const navigate = useNavigate()
   const { setTokens, setUserId } = useAuth()
   const [step, setStep] = useState<'form' | 'verify'>(() =>
-    typeof window !== 'undefined' && sessionStorage.getItem(INLINE_VERIFY_STORAGE_KEY)
+    mode === 'signup' &&
+    typeof window !== 'undefined' &&
+    sessionStorage.getItem(INLINE_VERIFY_STORAGE_KEY)
       ? 'verify'
       : 'form',
   )
@@ -66,6 +72,7 @@ export default function CredentialAuthForm({ mode, audience = 'seller' }: Creden
   const [openTerms, setOpenTerms] = useState(false)
   const [error, setError] = useState('')
 
+  const { mutate: emailLogin, isPending: loggingIn } = useEmailLogin()
   const { mutate: requestPasswordAccess, isPending: requesting } = useRequestPasswordLogin()
   const { mutate: verifyEmailOtp, isPending: verifying } = useVerifyEmailOtp()
 
@@ -114,6 +121,34 @@ export default function CredentialAuthForm({ mode, audience = 'seller' }: Creden
 
   const handleRequest = (event?: React.FormEvent) => {
     event?.preventDefault()
+
+    if (mode === 'login') {
+      if (emailError || passwordError) {
+        setError(emailError || passwordError)
+        return
+      }
+
+      setError('')
+      emailLogin(
+        {
+          email: email.trim().toLowerCase(),
+          password,
+        },
+        {
+          onSuccess: ({ token, refreshToken, user }) => {
+            sessionStorage.removeItem(INLINE_VERIFY_STORAGE_KEY)
+            sessionStorage.setItem('activeEmail', email.trim().toLowerCase())
+            setUserId(user?.id)
+            setTokens(token, refreshToken)
+            navigate('/app', { replace: true })
+          },
+          onError: (err: any) => {
+            setError(getAuthErrorMessage(err, 'Login failed'))
+          },
+        },
+      )
+      return
+    }
 
     const formError =
       nameError ||
@@ -249,17 +284,19 @@ export default function CredentialAuthForm({ mode, audience = 'seller' }: Creden
             ? audience === 'seller'
               ? 'Fill in your account details below to continue with the seller signup flow.'
               : 'Fill in your account details below to continue with the buyer signup flow.'
-            : 'Use your registered email for passwordless login. When the backend exposes an inline code, it appears below on screen.'}
+            : 'Sign in directly with your registered email address and password.'}
         </Typography>
       </Box>
 
-      <Box className="shiporbit-auth-subcard">
-        <AuthCodePreview
-          title={mode === 'signup' ? 'Signup verification code' : 'Inline verification code'}
-          code={inlineCode}
-          helper="Use this code directly during development when inline verification exposure is enabled."
-        />
-      </Box>
+      {mode === 'signup' ? (
+        <Box className="shiporbit-auth-subcard">
+          <AuthCodePreview
+            title="Signup verification code"
+            code={inlineCode}
+            helper="Use this code directly during development when inline verification exposure is enabled."
+          />
+        </Box>
+      ) : null}
 
       {step === 'form' ? (
         <Stack component="form" spacing={1.1} onSubmit={handleRequest}>
@@ -389,35 +426,37 @@ export default function CredentialAuthForm({ mode, audience = 'seller' }: Creden
             </Typography>
           ) : null}
 
-          <FormControlLabel
-            sx={{ mt: 0.5, mb: 1.2, alignItems: 'flex-start' }}
-            control={
-              <CustomCheckbox
-                checked={termsChecked}
-                onChange={(event) => setTermsChecked(event.target.checked)}
-                color="primary"
-              />
-            }
-            label={
-              <Typography sx={{ color: brand.inkSoft, fontSize: '0.86rem', mt: 0.25 }}>
-                I agree to{' '}
-                <Link
-                  component="button"
-                  underline="hover"
-                  onClick={() => setOpenTerms(true)}
-                  sx={{ color: brand.ink, fontWeight: 700 }}
-                >
-                  Terms and Conditions
-                </Link>
-              </Typography>
-            }
-          />
+          {mode === 'signup' ? (
+            <FormControlLabel
+              sx={{ mt: 0.5, mb: 1.2, alignItems: 'flex-start' }}
+              control={
+                <CustomCheckbox
+                  checked={termsChecked}
+                  onChange={(event) => setTermsChecked(event.target.checked)}
+                  color="primary"
+                />
+              }
+              label={
+                <Typography sx={{ color: brand.inkSoft, fontSize: '0.86rem', mt: 0.25 }}>
+                  I agree to{' '}
+                  <Link
+                    component="button"
+                    underline="hover"
+                    onClick={() => setOpenTerms(true)}
+                    sx={{ color: brand.ink, fontWeight: 700 }}
+                  >
+                    Terms and Conditions
+                  </Link>
+                </Typography>
+              }
+            />
+          ) : null}
 
           <CustomIconLoadingButton
             type="submit"
-            text={mode === 'signup' ? 'Sign Up' : 'Submit'}
-            loading={requesting}
-            loadingText={mode === 'signup' ? 'Creating...' : 'Checking...'}
+            text={mode === 'signup' ? 'Sign Up' : 'Sign In'}
+            loading={mode === 'signup' ? requesting : loggingIn}
+            loadingText={mode === 'signup' ? 'Creating...' : 'Signing in...'}
             disabled={
               Boolean(
                 nameError ||
@@ -427,7 +466,7 @@ export default function CredentialAuthForm({ mode, audience = 'seller' }: Creden
                   monthlyOrderError ||
                   businessTypeError ||
                   passwordError,
-              ) || !termsChecked
+              ) || (mode === 'signup' && !termsChecked)
             }
             styles={{ width: '100%' }}
           />

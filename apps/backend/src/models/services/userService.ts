@@ -553,6 +553,30 @@ export const handleEmailVerificationRequest = async (
   })
 }
 
+export const loginWithEmailPassword = async (
+  email: string,
+  password: string,
+  tx: Tx = db,
+) => {
+  const normalizedEmail = email.trim().toLowerCase()
+  const user = await findUserByEmail(normalizedEmail, tx)
+
+  if (!user) {
+    throw new Error('Invalid credentials')
+  }
+
+  if (!user.passwordHash) {
+    throw new Error('Password login is not set up for this account')
+  }
+
+  const valid = await bcrypt.compare(password, user.passwordHash)
+  if (!valid) {
+    throw new Error('Invalid credentials')
+  }
+
+  return user
+}
+
 export const saveRefreshToken = async (
   userId: string,
   token: string | null,

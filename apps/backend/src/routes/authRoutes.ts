@@ -3,9 +3,8 @@ import {
   adminChangePasswordController,
   adminLoginController,
   googleOAuthLogin,
+  loginController,
   logoutController,
-  //   loginController,
-  //   logoutController,
   refreshTokenController,
   requestEmailVerification,
   requestOtp,
@@ -20,6 +19,7 @@ const router = Router()
 router.post('/admin/login', adminLoginController)
 router.post('/admin/change-password', requireAuth, isAdminMiddleware, adminChangePasswordController)
 
+router.post('/login', loginController)
 router.post('/request-otp', requestOtp)
 router.post('/verify-otp', verifyOtp)
 
@@ -28,7 +28,6 @@ router.post('/request-password-login', requestEmailVerification)
 router.post('/verify-user-email', verifyEmailToken)
 router.post('/signin-with-google', googleOAuthLogin)
 
-// router.post("/login", loginController);
 router.post('/refresh-token', refreshTokenController) // ✅ No auth needed - uses refresh token
 router.post('/logout', logoutController) // ✅ Logout should work even if access token expired
 

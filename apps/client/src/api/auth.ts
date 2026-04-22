@@ -27,6 +27,14 @@ export const requestPasswordLoginApi = async (
   return data;
 };
 
+export const loginWithEmailApi = async (email: string, password: string) => {
+  const { data } = await axiosInstance.post("/auth/login", {
+    email: email.trim().toLowerCase(),
+    password,
+  });
+  return data;
+};
+
 export const verifyEmailOtpApi = async (
   email: string,
   otp: string,

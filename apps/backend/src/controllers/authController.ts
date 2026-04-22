@@ -10,6 +10,7 @@ import {
   findUserByEmail,
   findUserById,
   handleEmailVerificationRequest,
+  loginWithEmailPassword,
   markEmailVerified,
   saveRefreshToken,
   updateUserByEmail,
@@ -550,6 +551,66 @@ export const adminLoginController = async (req: Request, res: Response) => {
     return res
       .status(isUnauthorized ? 401 : 500)
       .json({ error: err.message || 'Internal server error' })
+  }
+}
+
+export const loginController = async (req: Request, res: Response): Promise<any> => {
+  const { email, password } = req.body
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' })
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Invalid email format' })
+  }
+
+  try {
+    const normalizedEmail = email.trim().toLowerCase()
+    const user = await loginWithEmailPassword(normalizedEmail, password)
+
+    if (user.role === 'employee') {
+      const [employeeRecord] = await db
+        .select({
+          isActive: employees.isActive,
+        })
+        .from(employees)
+        .where(eq(employees.userId, user.id))
+
+      if (employeeRecord && !employeeRecord.isActive) {
+        return res.status(403).json({
+          error: 'Your account is temporarily suspended by your administrator.',
+        })
+      }
+    }
+
+    const accessToken = signAccessToken(user.id, user.role ?? 'customer')
+    const { token: refreshToken } = signRefreshToken(user.id, user.role ?? 'customer')
+
+    await saveRefreshToken(user.id, refreshToken, ONE_WEEK_MS)
+
+    return res.status(200).json({
+      message: 'Login successful',
+      token: accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        phone: user.phone,
+        phoneVerified: user.phoneVerified,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        role: user.role,
+      },
+    })
+  } catch (err: any) {
+    const message = err instanceof Error ? err.message : 'Invalid credentials'
+    const status =
+      message === 'Invalid credentials' || message === 'Password login is not set up for this account'
+        ? 401
+        : 500
+
+    return res.status(status).json({ error: message })
   }
 }
 
